@@ -44,7 +44,7 @@ export function useMatriculaDbPool() {
   return matriculaPool
 }
 
-// Backwards-compatible alias for app-owned attendance/logros/internal tables.
+// App-owned attendance, Logros, and internal tables use the attendance database.
 export function useDbPool() {
   return useAttendanceDbPool()
 }

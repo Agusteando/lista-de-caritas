@@ -77,7 +77,6 @@ https://wweb.casitaapps.com/files/1724624551591-file.jpeg
 ```bash
 npm install
 cp .env.example .env
-mysql -u root -p attendance_db < sql/schema.sql
 npm run dev
 ```
 
@@ -92,25 +91,21 @@ Use systemd, PM2, or another process manager for the built Nitro server. Put Ngi
 
 ## Environment
 
-Two database connections are supported because production keeps student-photo data and attendance data in different databases. Copy `.env.example` to `.env` and set both groups.
+Use two explicit database connections. Attendance data and app-owned write/log tables use `ATTENDANCE_MYSQL_*`. Student photos and Retardos support tables use `MATRICULA_MYSQL_*`.
 
 ```txt
-# Attendance database: legacy asistencia + app-owned attendance/logros/internal tables
 ATTENDANCE_MYSQL_HOST=127.0.0.1
 ATTENDANCE_MYSQL_PORT=3306
-ATTENDANCE_MYSQL_USER=attendance_user
-ATTENDANCE_MYSQL_PASSWORD=change-me
-ATTENDANCE_MYSQL_DATABASE=attendance_db
+ATTENDANCE_MYSQL_USER=
+ATTENDANCE_MYSQL_PASSWORD=
+ATTENDANCE_MYSQL_DATABASE=
 
-# Matricula database: matricula(matricula, foto), and optionally acceso/alumno_pa/users for Retardos
 MATRICULA_MYSQL_HOST=127.0.0.1
 MATRICULA_MYSQL_PORT=3306
-MATRICULA_MYSQL_USER=matricula_user
-MATRICULA_MYSQL_PASSWORD=change-me
-MATRICULA_MYSQL_DATABASE=matricula_db
+MATRICULA_MYSQL_USER=
+MATRICULA_MYSQL_PASSWORD=
+MATRICULA_MYSQL_DATABASE=
 ```
-
-The older `MYSQL_*` variables still work as a fallback for the attendance connection. If `MATRICULA_MYSQL_*` is omitted, the matricula lookup falls back to the attendance connection.
 
 ## Database
 

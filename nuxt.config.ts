@@ -18,18 +18,18 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     attendanceMysql: {
-      host: process.env.ATTENDANCE_MYSQL_HOST || process.env.MYSQL_HOST || '127.0.0.1',
-      port: Number(process.env.ATTENDANCE_MYSQL_PORT || process.env.MYSQL_PORT || 3306),
-      user: process.env.ATTENDANCE_MYSQL_USER || process.env.MYSQL_USER || 'attendance_user',
-      password: process.env.ATTENDANCE_MYSQL_PASSWORD || process.env.MYSQL_PASSWORD || '',
-      database: process.env.ATTENDANCE_MYSQL_DATABASE || process.env.MYSQL_DATABASE || 'attendance'
+      host: process.env.ATTENDANCE_MYSQL_HOST || '127.0.0.1',
+      port: Number(process.env.ATTENDANCE_MYSQL_PORT || 3306),
+      user: process.env.ATTENDANCE_MYSQL_USER || '',
+      password: process.env.ATTENDANCE_MYSQL_PASSWORD || '',
+      database: process.env.ATTENDANCE_MYSQL_DATABASE || ''
     },
     matriculaMysql: {
-      host: process.env.MATRICULA_MYSQL_HOST || process.env.ATTENDANCE_MYSQL_HOST || process.env.MYSQL_HOST || '127.0.0.1',
-      port: Number(process.env.MATRICULA_MYSQL_PORT || process.env.ATTENDANCE_MYSQL_PORT || process.env.MYSQL_PORT || 3306),
-      user: process.env.MATRICULA_MYSQL_USER || process.env.ATTENDANCE_MYSQL_USER || process.env.MYSQL_USER || 'attendance_user',
-      password: process.env.MATRICULA_MYSQL_PASSWORD || process.env.ATTENDANCE_MYSQL_PASSWORD || process.env.MYSQL_PASSWORD || '',
-      database: process.env.MATRICULA_MYSQL_DATABASE || process.env.ATTENDANCE_MYSQL_DATABASE || process.env.MYSQL_DATABASE || 'attendance'
+      host: process.env.MATRICULA_MYSQL_HOST || '127.0.0.1',
+      port: Number(process.env.MATRICULA_MYSQL_PORT || 3306),
+      user: process.env.MATRICULA_MYSQL_USER || '',
+      password: process.env.MATRICULA_MYSQL_PASSWORD || '',
+      database: process.env.MATRICULA_MYSQL_DATABASE || ''
     },
     public: {
       appName: 'lista-de-caritas app',
