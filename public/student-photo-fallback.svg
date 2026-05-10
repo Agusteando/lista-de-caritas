@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Foto de alumno">
+  <defs>
+    <radialGradient id="bg" cx="35%" cy="20%" r="85%">
+      <stop offset="0" stop-color="#fff7ce"/>
+      <stop offset="0.42" stop-color="#e7f6d9"/>
+      <stop offset="1" stop-color="#d7f3ef"/>
+    </radialGradient>
+    <linearGradient id="leaf" x1="36" x2="212" y1="58" y2="218" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#78c76f"/>
+      <stop offset="1" stop-color="#1d8a63"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#3a6c57" flood-opacity=".18"/>
+    </filter>
+  </defs>
+  <rect width="256" height="256" rx="72" fill="url(#bg)"/>
+  <circle cx="128" cy="116" r="42" fill="#fffaf0" filter="url(#shadow)"/>
+  <path d="M61 222c8-48 35-74 67-74s59 26 67 74" fill="#fffaf0" filter="url(#shadow)"/>
+  <circle cx="111" cy="112" r="6" fill="#1b553f"/>
+  <circle cx="145" cy="112" r="6" fill="#1b553f"/>
+  <path d="M111 133c10 9 24 9 34 0" fill="none" stroke="#1b553f" stroke-width="7" stroke-linecap="round"/>
+  <path d="M55 78c30-38 72-47 126-28-42 7-77 29-103 66" fill="url(#leaf)" opacity=".88"/>
+  <path d="M172 43c18 20 26 47 20 82-9-29-24-51-48-66" fill="url(#leaf)" opacity=".45"/>
+  <path d="M42 177l14 4 4 14 4-14 14-4-14-4-4-14-4 14-14 4Z" fill="#ffd166" opacity=".9"/>
+  <path d="M197 83l10 3 3 10 3-10 10-3-10-3-3-10-3 10-10 3Z" fill="#fff4b2" opacity=".95"/>
+</svg>

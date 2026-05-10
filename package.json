@@ -1,0 +1,24 @@
+{
+  "name": "lista-de-caritas-app",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "preview": "nuxt preview",
+    "start": "node .output/server/index.mjs",
+    "lint:types": "nuxi typecheck"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.20",
+    "lucide-vue-next": "^0.577.0",
+    "mysql2": "^3.20.0",
+    "nuxt": "^3.21.2",
+    "vue": "^3.5.30"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^1.9.0",
+    "typescript": "^5.9.3"
+  }
+}

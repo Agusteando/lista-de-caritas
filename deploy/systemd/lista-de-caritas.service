@@ -1,0 +1,21 @@
+[Unit]
+Description=lista-de-caritas app Nuxt/Nitro attendance app
+After=network.target mysql.service
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/lista-de-caritas
+EnvironmentFile=/var/www/lista-de-caritas/.env
+ExecStart=/usr/bin/node .output/server/index.mjs
+Restart=always
+RestartSec=5
+User=www-data
+Group=www-data
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/www/lista-de-caritas
+
+[Install]
+WantedBy=multi-user.target
