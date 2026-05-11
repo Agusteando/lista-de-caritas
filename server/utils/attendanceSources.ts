@@ -93,25 +93,31 @@ function dedupeAttendanceRows(rows: AttendanceSourceRow[]) {
 }
 
 async function readAppAttendanceRows(pool: Pool, params: { plantel: string; grado: string; grupo: string; startDate: string; endDate: string }) {
-  const [rows] = await pool.execute(
-    `SELECT
-        'app' AS source,
-        DATE_FORMAT(attendance_date, '%Y-%m-%d') AS date,
-        student_id AS studentId,
-        nombre,
-        attendance,
-        modalidad,
-        status,
-        DATE_FORMAT(updated_at, '%Y-%m-%d %H:%i:%s') AS updatedAt
-      FROM attendance_records
-      WHERE plantel = :plantel
-        AND grado = :grado
-        AND grupo = :grupo
-        AND attendance_date >= :startDate
-        AND attendance_date <= :endDate`,
-    params
-  ) as unknown as [AttendanceSourceRow[], unknown]
-  return rows
+  if (!(await tableExists(pool, 'attendance_records'))) return []
+
+  try {
+    const [rows] = await pool.execute(
+      `SELECT
+          'app' AS source,
+          DATE_FORMAT(attendance_date, '%Y-%m-%d') AS date,
+          student_id AS studentId,
+          nombre,
+          attendance,
+          modalidad,
+          status,
+          DATE_FORMAT(updated_at, '%Y-%m-%d %H:%i:%s') AS updatedAt
+        FROM attendance_records
+        WHERE plantel = :plantel
+          AND grado = :grado
+          AND grupo = :grupo
+          AND attendance_date >= STR_TO_DATE(:startDate, '%Y-%m-%d')
+          AND attendance_date <= STR_TO_DATE(:endDate, '%Y-%m-%d')`,
+      params
+    ) as unknown as [AttendanceSourceRow[], unknown]
+    return rows
+  } catch {
+    return []
+  }
 }
 
 async function readLegacyAttendanceRows(pool: Pool, params: { plantel: string; grado: string; grupo: string; startDate: string; endDate: string }) {
@@ -132,8 +138,8 @@ async function readLegacyAttendanceRows(pool: Pool, params: { plantel: string; g
         WHERE plantel = :plantel
           AND LOWER(TRIM(grado)) = :grado
           AND UPPER(TRIM(grupo)) = :grupo
-          AND DATE(fecha) >= :startDate
-          AND DATE(fecha) <= :endDate`,
+          AND fecha >= STR_TO_DATE(:startDate, '%Y-%m-%d')
+          AND fecha < DATE_ADD(STR_TO_DATE(:endDate, '%Y-%m-%d'), INTERVAL 1 DAY)`,
       params
     ) as unknown as [AttendanceSourceRow[], unknown]
     return rows

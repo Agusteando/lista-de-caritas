@@ -1,7 +1,6 @@
 import { createError, getQuery } from 'h3'
 import { routeGroup } from '../../../../../../utils/validation'
 import { useDbPool } from '../../../../../../utils/db'
-import { ensureDatabaseSchema } from '../../../../../../utils/schema'
 import { logTechnicalFailure } from '../../../../../../utils/logger'
 import { normalizeAttendanceDate } from '../../../../../../utils/dates'
 import { readDailyAttendance } from '../../../../../../utils/attendanceSources'
@@ -13,7 +12,6 @@ export default defineEventHandler(async (event) => {
 
   try {
     const pool = useDbPool()
-    await ensureDatabaseSchema(pool)
     const records = await readDailyAttendance(pool, { plantel, grado, grupo, attendanceDate })
 
     return {

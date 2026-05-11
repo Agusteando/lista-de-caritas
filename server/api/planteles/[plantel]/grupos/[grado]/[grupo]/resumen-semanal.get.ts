@@ -1,7 +1,6 @@
 import { createError, getQuery } from 'h3'
 import { routeGroup } from '../../../../../../utils/validation'
 import { useDbPool } from '../../../../../../utils/db'
-import { ensureDatabaseSchema } from '../../../../../../utils/schema'
 import { logTechnicalFailure } from '../../../../../../utils/logger'
 import { summarizeWeeklyAttendance } from '../../../../../../utils/attendanceSources'
 
@@ -11,7 +10,6 @@ export default defineEventHandler(async (event) => {
 
   try {
     const pool = useDbPool()
-    await ensureDatabaseSchema(pool)
     const summary = await summarizeWeeklyAttendance(pool, { plantel, grado, grupo, date: query.date })
 
     return {
