@@ -1,0 +1,69 @@
+.hero-card {
+  border-radius: 30px;
+  padding: 22px;
+  margin: 16px 0;
+}
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #176d45;
+  font-size: .8rem;
+  font-weight: 850;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.hero-card h2 { margin: 12px 0 8px; font-size: clamp(2.1rem, 8vw, 4.7rem); line-height: .96; letter-spacing: -.075em; }
+.hero-card p { margin: 0; color: var(--muted); line-height: 1.55; }
+.compact-copy h2 { max-width: 9ch; }
+.landing-shell { padding-top: 18px; }
+.continue-card,
+.plantel-card {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+.continue-card {
+  margin-top: 18px;
+  border-radius: 24px;
+  padding: 14px;
+  background: linear-gradient(145deg, rgba(237,250,231,.96), rgba(255,255,255,.78));
+  border: 1px solid rgba(58, 159, 83, .18);
+}
+.continue-icon,
+.plantel-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  color: #17784b;
+  background: var(--green-soft);
+}
+.continue-card strong,
+.plantel-card strong { display: block; color: var(--ink); font-weight: 900; }
+.continue-card small,
+.plantel-card small { display: block; margin-top: 3px; color: var(--muted); font-weight: 760; }
+.plantel-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.plantel-card {
+  border-radius: 24px;
+  padding: 14px;
+  background: rgba(255,253,248,.78);
+}
+.plantel-card.remembered { background: linear-gradient(145deg, rgba(237,250,231,.92), rgba(255,253,248,.82)); }
+.accent-gold .plantel-icon { color: #a86f0c; background: #fff1c9; }
+.accent-blue .plantel-icon { color: #126ebd; background: #e9f4ff; }
+.accent-rose .plantel-icon { color: #ad4564; background: #ffeef5; }
+.accent-violet .plantel-icon { color: #6b54be; background: #f0ecff; }
+@media (min-width: 640px) {
+  .page-shell { padding-left: 24px; padding-right: 24px; }
+  .plantel-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .context-change { display: inline-flex; }
+}
+@media (min-width: 980px) {
+  .landing-shell { display: grid; grid-template-columns: .72fr 1fr; align-items: start; gap: 20px; }
+  .landing-shell .app-header { grid-column: 1 / -1; }
+}

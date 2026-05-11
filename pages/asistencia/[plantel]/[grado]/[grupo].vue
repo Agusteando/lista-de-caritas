@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { ArrowLeft, CalendarDays, CheckCircle2, CheckSquare, ClipboardCheck, Filter, List, MoreHorizontal, Pencil, RefreshCcw, Search, Shuffle, Star, Thermometer, Trophy, UserRoundX, Users } from 'lucide-vue-next'
 import type { AttendanceRecord, AttendanceStatus, AttendanceSubmission, ClassLogrosSummary, GroupMeta, LogroCategory, RetardoRecord, Student, WeeklyAttendanceSummary } from '~/types/domain'
 
 const route = useRoute()
@@ -417,97 +416,56 @@ onMounted(() => {
 
 <template>
   <main class="attendance-shell">
-    <header class="attendance-topbar">
-      <div class="topbar-left">
-        <NuxtLink class="round-button back" :to="`/asistencia/${plantel}?cambiar=grupo`" aria-label="Cambiar grupo">
-          <ArrowLeft class="icon" />
-        </NuxtLink>
-        <span class="round-button soft asset-button clipboard-asset" aria-hidden="true"><span class="reference-icon reference-icon-clipboard" /></span>
-        <div class="attendance-title">
-          <h1>Pase de lista <span aria-hidden="true">🌿</span></h1>
-          <small>lista-de-caritas app</small>
-        </div>
-      </div>
-      <div class="topbar-actions">
-        <button class="date-pill reference-date-pill" type="button"><span class="reference-icon reference-icon-calendar" aria-hidden="true" /> {{ todayLabel }}</button>
-        <button class="round-button soft" type="button" aria-label="Más"><MoreHorizontal class="icon" /></button>
-        <NuxtLink class="change-group-pill" :to="`/asistencia/${plantel}?cambiar=grupo`"><Shuffle class="icon-sm" /> Cambiar grupo</NuxtLink>
-      </div>
-    </header>
+    <AttendanceTopbar :plantel="plantel" :today-label="todayLabel" />
 
     <div class="attendance-layout">
       <section class="attendance-main">
-        <section class="class-hero-card">
-          <div class="hero-badge">
-            <span class="badge-aura" aria-hidden="true" />
-            <span class="laurel laurel-left" aria-hidden="true" />
-            <span class="laurel laurel-right" aria-hidden="true" />
-            <div class="shield"><span class="shield-shine" aria-hidden="true" /><GroupIcon :label="grupo" tone="green" /></div>
-            <span class="medal"><Star class="icon-sm" /></span>
-          </div>
-          <div class="hero-copy">
-            <h2>{{ groupTitle }}</h2>
-            <p class="hero-meta"><span>{{ classCode }}</span><template v-if="classDetail"><i>•</i> {{ classDetail }}</template></p>
-            <p class="hero-roster-meta"><Users class="icon-sm" /> {{ studentCountLabel }} alumnos</p>
-          </div>
-          <GroupIcon :label="grupo" tone="green" decorative />
-          <div class="hero-sparkles" aria-hidden="true" />
-        </section>
+        <ClassHero
+          :grupo="grupo"
+          :title="groupTitle"
+          :class-code="classCode"
+          :detail="classDetail"
+          :student-count-label="studentCountLabel"
+        />
 
-        <AttendanceSummaryCards :presentes="totals.presentes" :faltas="totals.faltas" :enfermedad="totals.enfermedad" :total="totals.total" />
+        <AttendanceSummaryCards
+          :presentes="totals.presentes"
+          :faltas="totals.faltas"
+          :enfermedad="totals.enfermedad"
+          :total="totals.total"
+        />
 
-        <nav class="class-mode-switcher" aria-label="Modo de trabajo">
-          <button type="button" :class="{ active: mode === 'attendance' }" @click="setMode('attendance')">
-            <ClipboardCheck class="icon-sm" /> Asistencia
-          </button>
-          <button type="button" class="logros-tab" :class="{ active: mode === 'logros' }" @click="setMode('logros')">
-            <Trophy class="icon-sm" /> Logros
-            <span v-if="activeLogrosStudents" class="mode-count">{{ activeLogrosStudents }}</span>
-          </button>
-        </nav>
+        <AttendanceWorkflowTabs
+          :mode="mode"
+          :active-logros-students="activeLogrosStudents"
+          @change="setMode"
+        />
 
-        <section v-if="mode === 'attendance'" class="attendance-controls" aria-label="Herramientas de asistencia">
-          <div class="mode-segments">
-            <button :class="{ active: viewMode === 'exceptions' }" type="button" @click="setViewMode('exceptions')" :aria-pressed="viewMode === 'exceptions'"><Star class="icon-sm" /> Solo excepciones</button>
-            <button :class="{ active: viewMode === 'one' }" type="button" @click="setViewMode('one')" :aria-pressed="viewMode === 'one'"><Pencil class="icon-sm" /> Uno por uno</button>
-            <button :class="{ active: viewMode === 'compact' }" type="button" @click="setViewMode('compact')" :aria-pressed="viewMode === 'compact'"><List class="icon-sm" /> Compacta</button>
-          </div>
-          <div class="search-row">
-            <label class="search-box"><Search class="icon" /><input v-model="searchTerm" type="search" placeholder="Buscar alumno..."></label>
-            <button class="filter-button" type="button"><Filter class="icon" /> Filtros</button>
-          </div>
-          <div class="quick-actions">
-            <button class="mark-all-button" type="button" :disabled="!rosterReady" @click="markAllPresent"><CheckSquare class="icon-sm" /> Marcar todos presentes</button>
-            <button class="quiet-button" type="button" aria-label="Actualizar lista" @click="refreshRoster"><RefreshCcw class="icon-sm" :class="{ 'spin-soft': refreshing }" /></button>
-            <SoundToggle :enabled="sounds.enabled.value" @toggle="sounds.setEnabled(!sounds.enabled.value)" />
-          </div>
-          <div v-if="pendingCount" class="safe-note compact">Pendiente de guardar</div>
-          <div v-else-if="refreshing" class="sync-strip"><span class="sync-dot" /> Sincronizando</div>
-        </section>
+        <template v-if="mode === 'attendance'">
+          <AttendanceViewControls
+            v-model:search-term="searchTerm"
+            :view-mode="viewMode"
+            :roster-ready="rosterReady"
+            :pending-count="pendingCount"
+            :refreshing="refreshing"
+            :sound-enabled="sounds.enabled.value"
+            @set-view-mode="setViewMode"
+            @mark-all-present="markAllPresent"
+            @refresh-roster="refreshRoster"
+            @toggle-sound="sounds.setEnabled(!sounds.enabled.value)"
+          />
 
-        <section v-if="mode === 'attendance'" class="roster-grid reference-density" :class="`view-${viewMode}`" aria-label="Lista de alumnos">
-          <StudentAttendanceCard
-            v-for="(student, index) in visibleStudents"
-            :key="student.id"
-            :student="student"
-            :index="index + 1"
-            :status="attendance[student.id] || 'unmarked'"
-            :highlighted="recentlyChangedStudentId === student.id || recentlyChangedStudentId === 'all'"
-            :retardo="retardos[student.id]"
+          <AttendanceRoster
+            :students="visibleStudents"
+            :attendance="attendance"
+            :view-mode="viewMode"
             :interaction-mode="cardInteractionMode"
+            :show-skeleton="showRosterSkeleton"
+            :recently-changed-student-id="recentlyChangedStudentId"
+            :retardos="retardos"
             @set-status="setStatus"
           />
-          <template v-if="showRosterSkeleton">
-            <article v-for="index in 10" :key="`skeleton-${index}`" class="student-card skeleton-card" aria-hidden="true">
-              <div class="student-main-button">
-                <span class="rank-bubble">{{ index }}</span>
-                <span class="student-avatar-ring skeleton-avatar" />
-                <span class="student-info"><span class="skeleton-line wide" /><span class="skeleton-line short" /><span class="skeleton-pill" /></span>
-              </div>
-            </article>
-          </template>
-          <div v-if="!students.length && !showRosterSkeleton" class="empty-state"><strong>Lista en preparación</strong></div>
-        </section>
+        </template>
 
         <LogrosPanel
           v-else
@@ -521,50 +479,22 @@ onMounted(() => {
         />
       </section>
 
-      <aside class="attendance-sidebar" aria-label="Resumen">
-        <section class="side-card save-side-card">
-          <div class="pending-badge"><Star class="icon" /></div>
-          <div>
-            <h3>{{ pendingExceptionCount || pendingCount }} cambios pendientes</h3>
-            <p><b class="danger">{{ totals.faltas }} faltas</b> <i>•</i> <b class="info">{{ totals.enfermedad }} enfermo</b></p>
-          </div>
-          <button class="primary-button save-button desktop" type="button" :disabled="totals.total === 0" @click="saveAttendance">Guardar pase de lista</button>
-          <small class="ready-line">{{ status.label.value }}</small>
-        </section>
-
-        <section class="side-card group-info-card">
-          <h3>Información del grupo</h3>
-          <p><GroupIcon :label="grupo" tone="green" /> {{ groupTitle }}</p>
-          <p><span>{{ classCode }}</span><template v-if="classDetail"><i>•</i>{{ classDetail }}</template></p>
-          <p><Users class="icon-sm" /> {{ studentCountLabel }} alumnos</p>
-        </section>
-
-        <section class="side-card weekly-real-card">
-          <h3><CalendarDays class="icon-sm" /> Resumen semanal</h3>
-          <div class="weekly-grid restored-weekly-grid">
-            <span />
-            <strong v-for="day in displayWeeklyDays" :key="`h-${day.date}`" :class="{ today: day.isToday }">{{ day.label }}<small>{{ day.shortLabel }}</small></strong>
-            <span class="week-status-icon present"><CheckCircle2 class="icon-sm" /></span><b v-for="day in displayWeeklyDays" :key="`p-${day.date}`" :class="{ today: day.isToday }">{{ day.total ? day.presentes : '–' }}</b>
-            <span class="week-status-icon absent"><UserRoundX class="icon-sm" /></span><b v-for="day in displayWeeklyDays" :key="`a-${day.date}`" :class="{ today: day.isToday }">{{ day.total ? day.faltas : '–' }}</b>
-            <span class="week-status-icon sick"><Thermometer class="icon-sm" /></span><b v-for="day in displayWeeklyDays" :key="`s-${day.date}`" :class="{ today: day.isToday }">{{ day.total ? day.enfermedad : '–' }}</b>
-          </div>
-        </section>
-
-        <section class="side-card logros-real-card restored-logros-card">
-          <h3><Trophy class="icon-sm" /> Logros de la clase</h3>
-          <div class="logros-celebration-body">
-            <span class="logros-star-medal" aria-hidden="true"><Star class="icon" /></span>
-            <div class="logros-celebration-copy">
-              <strong>{{ logrosClassHeadline }}</strong>
-              <p>{{ logrosClassLine }}</p>
-              <button class="open-logros-button" type="button" @click="setMode('logros')">Abrir Logros</button>
-            </div>
-            <div class="logros-group-mascot" aria-hidden="true">
-              <GroupIcon :label="grupo" tone="green" decorative />
-            </div>
-          </div>
-        </section>
-      </aside>
+      <AttendanceSidebar
+        :pending-changes="pendingExceptionCount"
+        :pending-count="pendingCount"
+        :totals="totals"
+        :status-label="status.label.value"
+        :grupo="grupo"
+        :title="groupTitle"
+        :class-code="classCode"
+        :detail="classDetail"
+        :student-count-label="studentCountLabel"
+        :weekly-days="displayWeeklyDays"
+        :logros-headline="logrosClassHeadline"
+        :logros-line="logrosClassLine"
+        @save="saveAttendance"
+        @open-logros="setMode('logros')"
+      />
     </div>
 
     <SummarySheet
@@ -579,7 +509,14 @@ onMounted(() => {
       @close="summaryVisible = false"
     />
 
-    <FixedSaveBar :label="status.label.value" :pending-count="pendingCount" :faltas="totals.faltas" :enfermedad="totals.enfermedad" :total="totals.total" @save="saveAttendance" />
+    <FixedSaveBar
+      :label="status.label.value"
+      :pending-count="pendingCount"
+      :faltas="totals.faltas"
+      :enfermedad="totals.enfermedad"
+      :total="totals.total"
+      @save="saveAttendance"
+    />
     <ModeFooter :mode="mode" :pending-attendance="pendingCount > 0" @change="setMode" />
   </main>
 </template>

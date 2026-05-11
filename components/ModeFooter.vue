@@ -20,13 +20,3 @@ const emit = defineEmits<{ change: [mode: 'attendance' | 'logros'] }>()
     </div>
   </nav>
 </template>
-
-<style scoped>
-.micro-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: #ffd166;
-  box-shadow: 0 0 0 4px rgba(255, 209, 102, 0.2);
-}
-</style>
