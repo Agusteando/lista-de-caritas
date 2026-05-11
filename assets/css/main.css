@@ -1089,188 +1089,666 @@ img { display: block; max-width: 100%; }
 }
 
 @media (min-width: 980px) and (max-width: 1279px) {
-  .attendance-shell { max-width: 1240px; padding: 14px 18px 26px; }
-  .attendance-layout { grid-template-columns: minmax(0, 1fr) 268px; gap: 16px; }
-  .attendance-sidebar { display: grid; gap: 12px; position: sticky; top: 12px; }
-  .attendance-topbar { margin-bottom: 12px; gap: 12px; }
+  .attendance-shell {
+    max-width: 1260px;
+    padding: 18px 24px 32px;
+  }
+  .attendance-layout {
+    grid-template-columns: minmax(0, 1fr) 306px;
+    gap: 22px;
+  }
+  .attendance-sidebar {
+    display: grid;
+    gap: 16px;
+    position: sticky;
+    top: 18px;
+  }
+  .attendance-topbar {
+    margin-bottom: 18px;
+    gap: 16px;
+  }
   .topbar-left,
-  .topbar-actions { gap: 10px; }
+  .topbar-actions {
+    gap: 12px;
+  }
   .round-button,
   .date-pill,
-  .change-group-pill { min-height: 42px; border-radius: 17px; }
-  .round-button { width: 42px; }
+  .change-group-pill {
+    min-height: 50px;
+    border-radius: 20px;
+  }
+  .round-button {
+    width: 50px;
+  }
   .round-button .icon,
   .date-pill .icon-sm,
-  .change-group-pill .icon-sm { width: 17px; height: 17px; stroke-width: 2.45; }
-  .topbar-left .round-button.soft .icon { width: 20px; height: 20px; }
-  .date-pill { min-width: 150px; padding: 0 13px; font-size: .82rem; }
-  .change-group-pill { min-width: 142px; padding: 0 13px; font-size: .78rem; }
-  .attendance-title { gap: 8px; }
-  .attendance-title h1 { font-size: clamp(1.38rem, 1.7vw, 1.62rem); letter-spacing: -.052em; }
-  .attendance-title small { font-size: .64rem; }
-  .class-hero-card { min-height: 158px; grid-template-columns: 118px minmax(0, 1fr); gap: 18px; padding: 17px 24px 52px; border-radius: 25px; }
-  .hero-badge { width: 116px; height: 124px; }
-  .badge-aura { inset: 12px 6px 0; }
-  .laurel { width: 31px; height: 58px; bottom: 11px; }
-  .shield { width: 96px; height: 124px; }
-  .shield .group-icon { width: 60px; height: 60px; }
-  .medal { width: 31px; height: 31px; border-width: 3px; bottom: -2px; }
-  .hero-copy h2 { font-size: 1.52rem; margin-bottom: 9px; }
-  .hero-copy p { font-size: .8rem; margin-bottom: 7px; gap: 8px; }
+  .change-group-pill .icon-sm {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2.45;
+  }
+  .round-button.asset-button {
+    width: 56px;
+    min-height: 56px;
+  }
+  .date-pill {
+    min-width: 188px;
+    padding: 0 18px;
+    font-size: .92rem;
+  }
+  .change-group-pill {
+    min-width: 176px;
+    padding: 0 18px;
+    font-size: .88rem;
+  }
+  .attendance-title {
+    gap: 12px;
+  }
+  .attendance-title h1 {
+    font-size: 1.86rem;
+    letter-spacing: -.055em;
+  }
+  .attendance-title small {
+    font-size: .76rem;
+  }
+  .class-hero-card {
+    min-height: 232px;
+    grid-template-columns: 168px minmax(0, 1fr);
+    gap: 28px;
+    padding: 24px 36px 76px;
+    border-radius: 32px;
+  }
+  .hero-badge {
+    width: 156px;
+    height: 168px;
+  }
+  .badge-aura {
+    inset: 18px 9px -1px;
+  }
+  .laurel {
+    width: 74px;
+    height: 82px;
+    bottom: 6px;
+  }
+  .shield {
+    width: 130px;
+    height: 168px;
+  }
+  .shield .group-icon {
+    width: 72px;
+    height: 72px;
+  }
+  .medal {
+    width: 42px;
+    height: 42px;
+    border-width: 3px;
+    bottom: -3px;
+  }
+  .hero-copy h2 {
+    font-size: 2rem;
+    margin-bottom: 16px;
+  }
+  .hero-copy p {
+    font-size: 1rem;
+    margin-bottom: 12px;
+    gap: 11px;
+  }
   .hero-copy .hero-meta span,
-  .group-info-card p span { min-height: 23px; padding: 1px 8px; border-radius: 8px; }
-  .group-icon.decorative { width: 178px; height: 178px; right: 2%; bottom: 0; opacity: .76; }
-  .attendance-metrics { width: calc(100% - 50px); min-height: 60px; margin: -43px auto 10px; border-radius: 21px; }
-  .metric-cell { column-gap: 9px; padding: 8px 5px 6px; }
-  .metric-cell + .metric-cell::before { top: 14px; bottom: 14px; }
-  .metric-icon { width: 39px; height: 39px; }
-  .metric-icon .icon { width: 21px; height: 21px; }
-  .metric-cell strong { font-size: 1.66rem; }
-  .metric-cell small { font-size: .53rem; }
-  .class-mode-switcher { min-height: 34px; margin-bottom: 7px; padding: 3px; border-radius: 16px; }
-  .class-mode-switcher button { min-height: 28px; border-radius: 12px; font-size: .7rem; }
-  .mode-segments { min-height: 42px; border-radius: 18px; }
-  .mode-segments button { gap: 8px; font-size: .76rem; }
-  .mode-segments .icon-sm { width: 16px; height: 16px; }
-  .search-row { gap: 10px; }
+  .group-info-card p span {
+    min-height: 28px;
+    padding: 2px 10px;
+    border-radius: 10px;
+  }
+  .group-icon.decorative {
+    width: 236px;
+    height: 236px;
+    right: 4%;
+    bottom: 2%;
+    opacity: .78;
+  }
+  .attendance-metrics {
+    width: calc(100% - 60px);
+    min-height: 86px;
+    margin: -52px auto 18px;
+    border-radius: 30px;
+  }
+  .metric-cell {
+    column-gap: 18px;
+    padding: 18px 8px 12px;
+  }
+  .metric-cell + .metric-cell::before {
+    top: 22px;
+    bottom: 22px;
+  }
+  .metric-icon {
+    width: 54px;
+    height: 54px;
+  }
+  .metric-icon .icon {
+    width: 28px;
+    height: 28px;
+  }
+  .metric-cell strong {
+    font-size: 2.45rem;
+  }
+  .metric-cell small {
+    font-size: .78rem;
+  }
+  .class-mode-switcher {
+    display: none;
+  }
+  .mode-segments {
+    min-height: 58px;
+    border-radius: 23px;
+  }
+  .mode-segments button {
+    gap: 11px;
+    font-size: .92rem;
+  }
+  .mode-segments .icon-sm {
+    width: 20px;
+    height: 20px;
+  }
+  .search-row {
+    gap: 16px;
+  }
   .search-box,
-  .filter-button { min-height: 42px; border-radius: 18px; }
-  .search-box { padding: 0 16px; }
-  .search-box .icon { width: 20px; height: 20px; }
-  .filter-button { min-width: 106px; padding: 0 16px; font-size: .78rem; }
-  .filter-button .icon { width: 21px; height: 21px; }
-  .attendance-controls { gap: 9px; margin-bottom: 10px; }
-  .quick-actions { display: none; }
-  .reference-density.roster-grid { grid-template-columns: repeat(3, minmax(184px, 1fr)); gap: 9px; }
+  .filter-button {
+    min-height: 58px;
+    border-radius: 24px;
+  }
+  .search-box {
+    padding: 0 24px;
+  }
+  .search-box .icon {
+    width: 24px;
+    height: 24px;
+  }
+  .filter-button {
+    min-width: 132px;
+    padding: 0 24px;
+    font-size: .94rem;
+  }
+  .filter-button .icon {
+    width: 26px;
+    height: 26px;
+  }
+  .attendance-controls {
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .quick-actions {
+    display: none;
+  }
+  .reference-density.roster-grid {
+    grid-template-columns: repeat(3, minmax(230px, 1fr));
+    gap: 14px;
+  }
   .reference-density .student-card,
-  .student-main-button { min-height: 84px; border-radius: 17px; }
-  .student-main-button { grid-template-columns: 54px minmax(0, 1fr); padding: 8px 8px 7px 9px; gap: 8px; }
-  .rank-bubble { width: 25px; height: 25px; font-size: .74rem; }
-  .student-avatar-ring { width: 50px; height: 50px; padding: 3px; }
-  .reference-density .student-name { font-size: .68rem; line-height: 1.11; }
-  .student-line { min-height: 12px; }
-  .student-line .group-icon { width: 13px; height: 13px; }
-  .status-control { min-height: 22px; width: min(100%, 112px); font-size: .56rem; padding: 0 6px; gap: 4px; }
-  .status-control .icon-sm { width: 12px; height: 12px; }
-  .status-control .chevron { width: 11px; height: 11px; }
-  .side-card { border-radius: 20px; padding: 14px; }
-  .save-side-card { grid-template-columns: 48px 1fr; gap: 8px 10px; }
-  .save-side-card .pending-badge { width: 46px; height: 46px; }
+  .student-main-button {
+    min-height: 116px;
+    border-radius: 22px;
+  }
+  .student-main-button {
+    grid-template-columns: 78px minmax(0, 1fr);
+    padding: 13px 14px 12px 14px;
+    gap: 12px;
+  }
+  .rank-bubble {
+    width: 34px;
+    height: 34px;
+    font-size: .95rem;
+  }
+  .student-avatar-ring {
+    width: 72px;
+    height: 72px;
+    padding: 4px;
+  }
+  .reference-density .student-name {
+    font-size: .86rem;
+    line-height: 1.16;
+  }
+  .student-line {
+    min-height: 18px;
+  }
+  .student-line .group-icon {
+    width: 18px;
+    height: 18px;
+  }
+  .status-control {
+    min-height: 32px;
+    width: min(100%, 152px);
+    font-size: .76rem;
+    padding: 0 10px;
+    gap: 6px;
+  }
+  .status-control .icon-sm {
+    width: 15px;
+    height: 15px;
+  }
+  .status-control .chevron {
+    width: 13px;
+    height: 13px;
+  }
+  .side-card {
+    border-radius: 26px;
+    padding: 20px;
+  }
+  .save-side-card {
+    grid-template-columns: 62px 1fr;
+    gap: 10px 14px;
+  }
+  .save-side-card .pending-badge {
+    width: 58px;
+    height: 58px;
+  }
   .save-side-card h3,
-  .side-card h3 { font-size: .94rem; }
-  .save-button { min-height: 40px; border-radius: 16px; font-size: .78rem; }
+  .side-card h3 {
+    font-size: 1.08rem;
+  }
+  .save-button {
+    min-height: 58px;
+    border-radius: 22px;
+    font-size: 1rem;
+  }
   .weekly-real-card,
-  .restored-logros-card { padding: 14px 16px; border-radius: 20px; }
+  .restored-logros-card {
+    padding: 22px 24px;
+    border-radius: 24px;
+  }
   .weekly-real-card h3,
-  .logros-real-card h3 { margin-bottom: 12px; font-size: .9rem; }
-  .weekly-grid { grid-template-columns: 28px repeat(5, minmax(0, 1fr)); gap: 7px 6px; }
+  .logros-real-card h3 {
+    margin-bottom: 18px;
+    font-size: 1.1rem;
+  }
+  .weekly-grid {
+    grid-template-columns: 36px repeat(5, minmax(0, 1fr));
+    gap: 12px;
+  }
   .weekly-grid strong,
-  .weekly-grid b { min-height: 24px; font-size: .78rem; }
-  .weekly-grid strong { font-size: .62rem; }
-  .weekly-grid strong small { font-size: .72rem; }
-  .week-status-icon { width: 26px; height: 26px; }
-  .week-status-icon .icon-sm { width: 15px; height: 15px; }
-  .logros-celebration-body { grid-template-columns: 50px minmax(0, 1fr) 66px; gap: 10px; min-height: 76px; }
-  .logros-star-medal { width: 50px; height: 50px; border-width: 5px; }
-  .logros-star-medal .icon { width: 26px; height: 26px; }
-  .logros-celebration-copy strong { font-size: .94rem; }
-  .logros-celebration-copy p { font-size: .74rem; }
-  .logros-group-mascot { width: 104px; height: 104px; right: -18px; bottom: -24px; }
-  .logros-group-mascot .group-icon.decorative { width: 96px; height: 96px; }
-  .fixed-save-area { display: none; }
+  .weekly-grid b {
+    min-height: 32px;
+    font-size: 1rem;
+  }
+  .weekly-grid strong {
+    font-size: .74rem;
+  }
+  .weekly-grid strong small {
+    font-size: .85rem;
+  }
+  .week-status-icon {
+    width: 34px;
+    height: 34px;
+  }
+  .week-status-icon .icon-sm {
+    width: 20px;
+    height: 20px;
+  }
+  .logros-celebration-body {
+    grid-template-columns: 68px minmax(0, 1fr) 96px;
+    gap: 16px;
+    min-height: 94px;
+  }
+  .logros-star-medal {
+    width: 64px;
+    height: 64px;
+    border-width: 7px;
+  }
+  .logros-star-medal .icon {
+    width: 34px;
+    height: 34px;
+  }
+  .logros-celebration-copy strong {
+    font-size: 1.18rem;
+  }
+  .logros-celebration-copy p {
+    font-size: .9rem;
+  }
+  .logros-group-mascot {
+    width: 138px;
+    height: 138px;
+    right: -16px;
+    bottom: -28px;
+  }
+  .logros-group-mascot .group-icon.decorative {
+    width: 128px;
+    height: 128px;
+  }
+  .fixed-save-area {
+    display: none;
+  }
 }
 
 
 
 @media (min-width: 1280px) {
-  .attendance-shell { max-width: 1760px; padding: 18px clamp(24px, 2vw, 34px) 30px; }
+  .attendance-shell {
+    max-width: 1640px;
+    padding: 26px clamp(30px, 2.4vw, 46px) 38px;
+  }
+  .attendance-topbar {
+    margin-bottom: 22px;
+  }
+  .topbar-left,
+  .topbar-actions {
+    gap: 16px;
+  }
   .round-button,
   .date-pill,
-  .change-group-pill { min-height: 50px; border-radius: 19px; }
-  .round-button { width: 50px; }
+  .change-group-pill {
+    min-height: 58px;
+    border-radius: 22px;
+  }
+  .round-button {
+    width: 58px;
+  }
   .round-button .icon,
   .date-pill .icon-sm,
-  .change-group-pill .icon-sm { width: 19px; height: 19px; stroke-width: 2.45; }
-  .topbar-left .round-button.soft .icon { width: 22px; height: 22px; stroke-width: 2.2; }
-  .date-pill { min-width: 190px; padding: 0 18px; font-size: .92rem; }
-  .change-group-pill { min-width: 178px; padding: 0 18px; font-size: .88rem; }
+  .change-group-pill .icon-sm {
+    width: 22px;
+    height: 22px;
+    stroke-width: 2.45;
+  }
+  .round-button.asset-button {
+    width: 64px;
+    min-height: 64px;
+  }
+  .date-pill {
+    min-width: 214px;
+    padding: 0 22px;
+    font-size: 1.04rem;
+  }
+  .change-group-pill {
+    min-width: 202px;
+    padding: 0 22px;
+    font-size: 1rem;
+  }
   .date-pill .icon-sm,
-  .change-group-pill .icon-sm { color: #126f43; }
-  .attendance-title h1 { font-size: clamp(1.7rem, 1.45vw, 2rem); }
-  .attendance-title small { font-size: .74rem; }
-  .attendance-topbar { margin-bottom: 14px; }
-  .attendance-layout { grid-template-columns: minmax(0, 1fr) 326px; gap: 22px; }
-  .attendance-sidebar { display: grid; gap: 14px; position: sticky; top: 14px; }
-  .class-hero-card { min-height: 176px; grid-template-columns: 148px minmax(0, 1fr); gap: 24px; padding: 20px 34px 58px; border-radius: 28px; }
-  .hero-badge { width: 138px; height: 146px; }
-  .badge-aura { inset: 14px 7px -1px; }
-  .laurel { width: 36px; height: 68px; bottom: 12px; }
-  .shield { width: 112px; height: 145px; }
-  .shield .group-icon { width: 70px; height: 70px; }
-  .medal { bottom: -3px; width: 36px; height: 36px; }
-  .hero-copy h2 { font-size: 1.82rem; margin-bottom: 11px; }
-  .hero-copy p { font-size: .9rem; margin-bottom: 8px; }
-  .group-icon.decorative { width: 218px; height: 218px; right: 3%; bottom: 0; opacity: .76; }
-  .attendance-metrics { width: calc(100% - 58px); min-height: 68px; margin: -48px auto 12px; border-radius: 23px; }
-  .metric-icon { width: 44px; height: 44px; }
-  .metric-icon .icon { width: 24px; height: 24px; }
-  .metric-cell { column-gap: 12px; padding: 10px 6px 8px; }
-  .metric-cell strong { font-size: 1.94rem; }
-  .metric-cell small { font-size: .58rem; }
-  .class-mode-switcher { min-height: 36px; margin-bottom: 8px; padding: 4px; border-radius: 17px; }
-  .class-mode-switcher button { min-height: 29px; border-radius: 13px; font-size: .72rem; }
-  .mode-segments { min-height: 48px; border-radius: 20px; }
-  .mode-segments .icon-sm { width: 19px; height: 19px; }
-  .mode-segments button { gap: 10px; font-size: .86rem; }
-  .mode-segments button.active { box-shadow: inset 0 0 0 2px rgba(94, 174, 107, .32); }
+  .change-group-pill .icon-sm {
+    color: #126f43;
+  }
+  .attendance-title h1 {
+    font-size: 2.08rem;
+  }
+  .attendance-title small {
+    font-size: .84rem;
+  }
+  .attendance-layout {
+    grid-template-columns: minmax(0, 1fr) 390px;
+    gap: 30px;
+  }
+  .attendance-sidebar {
+    display: grid;
+    gap: 20px;
+    position: sticky;
+    top: 22px;
+  }
+  .class-hero-card {
+    min-height: 266px;
+    grid-template-columns: 198px minmax(0, 1fr);
+    gap: 34px;
+    padding: 30px 48px 88px;
+    border-radius: 34px;
+  }
+  .hero-badge {
+    width: 184px;
+    height: 196px;
+  }
+  .badge-aura {
+    inset: 21px 10px -2px;
+  }
+  .laurel {
+    width: 88px;
+    height: 98px;
+    bottom: 6px;
+  }
+  .shield {
+    width: 152px;
+    height: 196px;
+  }
+  .shield .group-icon {
+    width: 90px;
+    height: 90px;
+  }
+  .medal {
+    bottom: -4px;
+    width: 48px;
+    height: 48px;
+  }
+  .hero-copy h2 {
+    font-size: 2.28rem;
+    margin-bottom: 18px;
+  }
+  .hero-copy p {
+    font-size: 1.08rem;
+    margin-bottom: 14px;
+  }
+  .group-icon.decorative {
+    width: 292px;
+    height: 292px;
+    right: 4.5%;
+    bottom: 2%;
+    opacity: .78;
+  }
+  .attendance-metrics {
+    width: calc(100% - 76px);
+    min-height: 94px;
+    margin: -58px auto 22px;
+    border-radius: 32px;
+  }
+  .metric-icon {
+    width: 62px;
+    height: 62px;
+  }
+  .metric-icon .icon {
+    width: 32px;
+    height: 32px;
+  }
+  .metric-cell {
+    column-gap: 20px;
+    padding: 20px 10px 14px;
+  }
+  .metric-cell strong {
+    font-size: 2.72rem;
+  }
+  .metric-cell small {
+    font-size: .82rem;
+  }
+  .class-mode-switcher {
+    display: none;
+  }
+  .mode-segments {
+    min-height: 62px;
+    border-radius: 24px;
+  }
+  .mode-segments .icon-sm {
+    width: 21px;
+    height: 21px;
+  }
+  .mode-segments button {
+    gap: 12px;
+    font-size: .98rem;
+  }
+  .mode-segments button.active {
+    box-shadow: inset 0 0 0 2px rgba(94, 174, 107, .32);
+  }
   .search-box,
-  .filter-button { min-height: 48px; border-radius: 20px; }
-  .search-box { padding: 0 22px; }
-  .search-box .icon { width: 23px; height: 23px; }
-  .search-row { gap: 12px; }
-  .filter-button { min-width: 122px; padding: 0 20px; font-size: .88rem; }
-  .filter-button .icon { width: 25px; height: 25px; stroke-width: 2.25; }
-  .attendance-controls { gap: 12px; margin-bottom: 14px; }
-  .quick-actions { display: none; }
-  .reference-density.roster-grid { grid-template-columns: repeat(3, minmax(224px, 1fr)); gap: 11px; }
+  .filter-button {
+    min-height: 62px;
+    border-radius: 24px;
+  }
+  .search-box {
+    padding: 0 26px;
+  }
+  .search-box .icon {
+    width: 25px;
+    height: 25px;
+  }
+  .search-row {
+    gap: 18px;
+  }
+  .filter-button {
+    min-width: 144px;
+    padding: 0 26px;
+    font-size: 1rem;
+  }
+  .filter-button .icon {
+    width: 27px;
+    height: 27px;
+    stroke-width: 2.25;
+  }
+  .attendance-controls {
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+  .quick-actions {
+    display: none;
+  }
+  .reference-density.roster-grid {
+    grid-template-columns: repeat(3, minmax(280px, 1fr));
+    gap: 16px;
+  }
   .reference-density .student-card,
-  .student-main-button { min-height: 94px; }
-  .student-main-button { grid-template-columns: 62px minmax(0, 1fr); padding: 10px 10px 9px 11px; gap: 9px; }
-  .student-avatar-ring { width: 58px; height: 58px; }
-  .reference-density .student-name { font-size: .74rem; line-height: 1.12; }
-  .student-line .group-icon { width: 15px; height: 15px; }
-  .status-control { min-height: 25px; width: min(100%, 124px); font-size: .62rem; }
-  .status-control .icon-sm { width: 13px; height: 13px; }
-  .logros-content-grid { grid-template-columns: minmax(0, 1fr) 320px; }
-  .logros-roster { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-  .side-card { border-radius: 22px; padding: 16px; }
+  .student-main-button {
+    min-height: 126px;
+    border-radius: 24px;
+  }
+  .student-main-button {
+    grid-template-columns: 86px minmax(0, 1fr);
+    padding: 16px 16px 14px 17px;
+    gap: 14px;
+  }
+  .student-avatar-ring {
+    width: 80px;
+    height: 80px;
+  }
+  .rank-bubble {
+    width: 38px;
+    height: 38px;
+    font-size: 1.08rem;
+  }
+  .reference-density .student-name {
+    font-size: .92rem;
+    line-height: 1.16;
+  }
+  .student-line .group-icon {
+    width: 20px;
+    height: 20px;
+  }
+  .status-control {
+    min-height: 34px;
+    width: min(100%, 168px);
+    font-size: .8rem;
+  }
+  .status-control .icon-sm {
+    width: 16px;
+    height: 16px;
+  }
+  .logros-content-grid {
+    grid-template-columns: minmax(0, 1fr) 340px;
+  }
+  .logros-roster {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .side-card {
+    border-radius: 28px;
+    padding: 24px;
+  }
   .weekly-real-card,
-  .restored-logros-card { padding: 16px 18px; }
-  .fixed-save-area { display: none; }
+  .restored-logros-card {
+    padding: 24px 26px;
+  }
+  .fixed-save-area {
+    display: none;
+  }
 }
 
 
 
 @media (min-width: 1480px) {
-  .attendance-shell { max-width: 1760px; padding-inline: clamp(30px, 2.1vw, 42px); }
-  .attendance-layout { grid-template-columns: minmax(0, 1fr) 348px; gap: 26px; }
-  .class-hero-card { min-height: 188px; grid-template-columns: 158px minmax(0, 1fr); padding: 22px 38px 62px; }
-  .hero-badge { width: 150px; height: 158px; }
-  .shield { width: 124px; height: 160px; }
-  .shield .group-icon { width: 78px; height: 78px; }
-  .group-icon.decorative { width: 236px; height: 236px; right: 4%; }
-  .attendance-metrics { min-height: 70px; margin-top: -50px; }
-  .metric-icon { width: 46px; height: 46px; }
-  .metric-cell strong { font-size: 2.04rem; }
-  .reference-density.roster-grid { grid-template-columns: repeat(3, minmax(236px, 1fr)); gap: 12px; }
+  .attendance-shell {
+    max-width: 1720px;
+    padding-inline: clamp(36px, 2.4vw, 54px);
+  }
+  .attendance-layout {
+    grid-template-columns: minmax(0, 1fr) 410px;
+    gap: 34px;
+  }
+  .class-hero-card {
+    min-height: 274px;
+    grid-template-columns: 206px minmax(0, 1fr);
+    padding: 32px 52px 92px;
+  }
+  .hero-badge {
+    width: 194px;
+    height: 206px;
+  }
+  .shield {
+    width: 160px;
+    height: 206px;
+  }
+  .shield .group-icon {
+    width: 96px;
+    height: 96px;
+  }
+  .group-icon.decorative {
+    width: 308px;
+    height: 308px;
+    right: 5%;
+  }
+  .attendance-metrics {
+    min-height: 98px;
+    margin-top: -60px;
+  }
+  .metric-icon {
+    width: 64px;
+    height: 64px;
+  }
+  .metric-cell strong {
+    font-size: 2.86rem;
+  }
+  .reference-density.roster-grid {
+    grid-template-columns: repeat(3, minmax(300px, 1fr));
+    gap: 16px;
+  }
   .reference-density .student-card,
-  .student-main-button { min-height: 96px; }
-  .reference-density .student-name { font-size: .76rem; }
-  .attendance-sidebar .icon-sm { width: 17px; height: 17px; }
+  .student-main-button {
+    min-height: 130px;
+  }
+  .reference-density .student-name {
+    font-size: .95rem;
+  }
+  .attendance-sidebar .icon-sm {
+    width: 20px;
+    height: 20px;
+  }
   .weekly-real-card h3 .icon-sm,
-  .logros-real-card h3 .icon-sm { width: 19px; height: 19px; }
+  .logros-real-card h3 .icon-sm {
+    width: 23px;
+    height: 23px;
+  }
 }
 
+
+@media (min-width: 980px) and (max-width: 1279px) {
+  .reference-density.view-one { grid-template-columns: repeat(2, minmax(280px, 1fr)); }
+  .reference-density.view-one .student-card,
+  .reference-density.view-one .student-main-button { min-height: 138px; }
+  .reference-density.view-compact { grid-template-columns: repeat(3, minmax(230px, 1fr)); gap: 12px; }
+  .reference-density.view-compact .student-card,
+  .reference-density.view-compact .student-main-button { min-height: 104px; }
+  .reference-density.view-compact .student-main-button { grid-template-columns: 66px minmax(0, 1fr); padding: 11px 12px 10px 12px; }
+  .reference-density.view-compact .student-avatar-ring { width: 60px; height: 60px; }
+  .reference-density.view-compact .student-name { font-size: .78rem; }
+  .reference-density.view-compact .status-control { min-height: 28px; width: min(100%, 136px); font-size: .68rem; }
+}
+
+@media (min-width: 980px) and (max-width: 1120px) {
+  .attendance-layout { grid-template-columns: minmax(0, 1fr) 286px; gap: 18px; }
+  .reference-density.roster-grid,
+  .reference-density.view-compact { grid-template-columns: repeat(2, minmax(260px, 1fr)); }
+}
 
 
 @media (max-width: 760px) {
@@ -1321,67 +1799,6 @@ img { display: block; max-width: 100%; }
 }
 
 
-@media (min-width: 980px) and (max-height: 940px) {
-  .attendance-shell { padding-top: 14px; }
-  .attendance-topbar { margin-bottom: 11px; }
-  .class-hero-card { min-height: 158px; padding-bottom: 52px; }
-  .hero-badge { width: 124px; height: 132px; }
-  .shield { width: 100px; height: 129px; }
-  .shield .group-icon { width: 62px; height: 62px; }
-  .group-icon.decorative { width: 190px; height: 190px; }
-  .attendance-metrics { min-height: 60px; margin-top: -42px; margin-bottom: 10px; }
-  .metric-icon { width: 39px; height: 39px; }
-  .metric-icon .icon { width: 21px; height: 21px; }
-  .metric-cell strong { font-size: 1.72rem; }
-  .class-mode-switcher { min-height: 32px; margin-bottom: 7px; padding: 3px; }
-  .class-mode-switcher button { min-height: 26px; font-size: .68rem; }
-  .mode-segments { min-height: 42px; }
-  .search-box,
-  .filter-button { min-height: 42px; }
-  .attendance-controls { gap: 9px; margin-bottom: 10px; }
-  .reference-density .student-card,
-  .student-main-button { min-height: 84px; }
-  .student-main-button { grid-template-columns: 54px minmax(0, 1fr); padding: 8px 8px 7px 9px; }
-  .student-avatar-ring { width: 50px; height: 50px; }
-  .reference-density .student-name { font-size: .68rem; }
-}
-
-@media (min-width: 980px) and (max-height: 820px) {
-  .attendance-shell { padding-top: 12px; }
-  .round-button,
-  .date-pill,
-  .change-group-pill { min-height: 40px; border-radius: 16px; }
-  .round-button { width: 40px; }
-  .date-pill { min-width: 150px; font-size: .8rem; }
-  .change-group-pill { min-width: 142px; font-size: .78rem; }
-  .attendance-title h1 { font-size: 1.44rem; }
-  .attendance-title small { font-size: .64rem; }
-  .class-hero-card { min-height: 142px; grid-template-columns: 108px minmax(0, 1fr); gap: 17px; padding: 15px 22px 46px; }
-  .hero-badge { width: 106px; height: 114px; }
-  .shield { width: 88px; height: 114px; }
-  .shield .group-icon { width: 54px; height: 54px; }
-  .medal { width: 30px; height: 30px; }
-  .hero-copy h2 { font-size: 1.42rem; margin-bottom: 8px; }
-  .hero-copy p { font-size: .78rem; margin-bottom: 6px; }
-  .group-icon.decorative { width: 168px; height: 168px; }
-  .attendance-metrics { min-height: 56px; margin-top: -38px; border-radius: 19px; }
-  .metric-icon { width: 36px; height: 36px; }
-  .metric-cell strong { font-size: 1.58rem; }
-  .metric-cell small { font-size: .5rem; }
-  .mode-segments,
-  .search-box,
-  .filter-button { min-height: 38px; border-radius: 16px; }
-  .mode-segments button { font-size: .72rem; }
-  .mode-segments .icon-sm { width: 15px; height: 15px; }
-  .search-box .icon { width: 18px; height: 18px; }
-  .filter-button .icon { width: 20px; height: 20px; }
-  .reference-density .student-card,
-  .student-main-button { min-height: 78px; }
-  .student-main-button { grid-template-columns: 50px minmax(0, 1fr); padding: 7px 8px 6px 8px; }
-  .student-avatar-ring { width: 46px; height: 46px; }
-  .reference-density .student-name { font-size: .63rem; }
-  .status-control { min-height: 21px; font-size: .54rem; }
-}
 
 
 @media (max-width: 560px) {
@@ -1595,18 +2012,18 @@ img { display: block; max-width: 100%; }
 }
 
 @media (min-width: 1280px) {
-  .reference-density.view-one { grid-template-columns: repeat(2, minmax(300px, 1fr)); }
-  .reference-density.view-compact { grid-template-columns: repeat(3, minmax(224px, 1fr)); gap: 10px; }
+  .reference-density.view-one { grid-template-columns: repeat(2, minmax(340px, 1fr)); }
+  .reference-density.view-compact { grid-template-columns: repeat(3, minmax(280px, 1fr)); gap: 14px; }
   .reference-density.view-compact .student-card,
-  .reference-density.view-compact .student-main-button { min-height: 82px; }
-  .reference-density.view-compact .student-main-button { grid-template-columns: 52px minmax(0, 1fr); padding: 7px 8px 6px 8px; }
-  .reference-density.view-compact .student-avatar-ring { width: 48px; height: 48px; }
-  .reference-density.view-compact .student-name { font-size: .64rem; }
-  .reference-density.view-compact .status-control { min-height: 22px; width: min(100%, 108px); font-size: .55rem; }
+  .reference-density.view-compact .student-main-button { min-height: 110px; }
+  .reference-density.view-compact .student-main-button { grid-template-columns: 72px minmax(0, 1fr); padding: 12px 13px 11px 14px; }
+  .reference-density.view-compact .student-avatar-ring { width: 66px; height: 66px; }
+  .reference-density.view-compact .student-name { font-size: .82rem; }
+  .reference-density.view-compact .status-control { min-height: 30px; width: min(100%, 148px); font-size: .72rem; }
 }
 
 @media (min-width: 1480px) {
-  .reference-density.view-compact { grid-template-columns: repeat(3, minmax(236px, 1fr)); }
+  .reference-density.view-compact { grid-template-columns: repeat(3, minmax(300px, 1fr)); }
 }
 
 @media (max-width: 560px) {
