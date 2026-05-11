@@ -46,7 +46,7 @@ interface EventRow {
 const emptyState = (studentId: string) => ({
   studentId,
   pointsThisWeek: 0,
-  categoryPoints: {},
+  categoryPoints: {} as Record<string, number>,
   recent: [] as Array<{ category: string; points: number; awardedAt: string }>,
   streaks: {
     'Racha de asistencia': 0,

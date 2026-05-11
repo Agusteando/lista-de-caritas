@@ -75,6 +75,7 @@ export const useAttendanceScreen = () => {
   const logroSummary = computed(() => summarizeLogroState(logros.states.value || {}, serverLogrosSummary.value, logros.featuredCategory.value))
   const displayWeeklyDays = computed(() => buildWeeklyDisplayDays(selectedDate.value, weeklySummary.value, attendance.value))
   const logrosClassCopy = computed(() => getLogrosClassCopy(weeklySummary.value, logroSummary.value))
+  const classPositiveWeekStreak = computed(() => weeklySummary.value?.positiveWeekStreak || 0)
   const logrosClassHeadline = computed(() => logrosClassCopy.value.headline)
   const logrosClassLine = computed(() => logrosClassCopy.value.line)
 
@@ -348,6 +349,7 @@ export const useAttendanceScreen = () => {
     attendance,
     awardLogro,
     classCode,
+    classPositiveWeekStreak,
     classDetail,
     displayWeeklyDays,
     grado,

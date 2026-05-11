@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeft, ArrowRight, CheckCircle2, RefreshCcw } from 'lucide-vue-next'
+import { ArrowLeft, ArrowRight, CheckCircle2, ClipboardList, RefreshCcw, UsersRound } from 'lucide-vue-next'
 import type { PlantelMeta } from '~/types/domain'
 
 const props = defineProps<{
@@ -16,6 +16,9 @@ const grados = computed(() => props.meta?.grados || [])
 const grupos = computed(() => selectedGrado.value && props.meta ? props.meta.gruposByGrado[selectedGrado.value] || [] : [])
 const plantelTitle = computed(() => props.meta?.title || props.plantel)
 const groupMeta = (grado: string, grupo: string) => props.meta?.groupMetaByKey?.[`${grado}:${grupo}`]
+const totalGroups = computed(() => Object.values(props.meta?.gruposByGrado || {}).reduce((sum, groups) => sum + groups.length, 0))
+const selectedMeta = computed(() => selectedGrado.value && selectedGrupo.value ? groupMeta(selectedGrado.value, selectedGrupo.value) : null)
+const selectedRosterLabel = computed(() => selectedMeta.value?.rosterCount ? `${selectedMeta.value.rosterCount} alumnos` : 'Grupo seleccionado')
 
 watch(() => props.remembered, (value) => {
   if (value?.grado) selectedGrado.value = value.grado
@@ -46,17 +49,26 @@ const target = computed(() => selectedGrado.value && selectedGrupo.value
       </div>
     </div>
 
-    <section class="hero-card group-hero compact-copy">
-      <span class="hero-eyebrow">{{ plantel }}</span>
-      <h2>{{ plantelTitle }}</h2>
+    <section class="group-hero selection-hero-card">
+      <div class="selection-hero-copy">
+        <span class="hero-eyebrow">{{ plantel }}</span>
+        <h2>{{ plantelTitle }}</h2>
+        <p>Selecciona grado y grupo. La siguiente visita recordará esta elección.</p>
+      </div>
+
+      <div class="group-hero-summary" aria-label="Resumen del plantel">
+        <article><ClipboardList class="icon-sm" /><strong>{{ grados.length }}</strong><span>grados</span></article>
+        <article><UsersRound class="icon-sm" /><strong>{{ totalGroups }}</strong><span>grupos</span></article>
+      </div>
+
       <div v-if="remembered?.grado && remembered?.grupo" class="remembered-chip">
-        <CheckCircle2 class="icon-sm" /> {{ remembered.grado }} {{ remembered.grupo }}
+        <CheckCircle2 class="icon-sm" /> Último grupo: {{ remembered.grado }} {{ remembered.grupo }}
       </div>
     </section>
 
-    <section class="choice-panel" aria-label="Grado">
+    <section class="choice-panel grade-panel" aria-label="Grado">
       <div class="choice-heading">
-        <span>Grado</span>
+        <span><b>1</b> Grado</span>
         <strong>{{ selectedGrado || '—' }}</strong>
       </div>
       <div class="grade-grid">
@@ -73,9 +85,9 @@ const target = computed(() => selectedGrado.value && selectedGrupo.value
       </div>
     </section>
 
-    <section class="choice-panel" aria-label="Grupo">
+    <section class="choice-panel groups-panel" aria-label="Grupo">
       <div class="choice-heading">
-        <span>Grupo</span>
+        <span><b>2</b> Grupo</span>
         <strong>{{ selectedGrupo || '—' }}</strong>
       </div>
       <div class="group-grid">
@@ -88,14 +100,20 @@ const target = computed(() => selectedGrado.value && selectedGrupo.value
           @click="selectedGrupo = grupo"
         >
           <span class="group-card-icon"><GroupIcon :label="grupo" tone="green" /></span>
-          <span>{{ groupMeta(selectedGrado, grupo)?.code || selectedGrado }}</span>
+          <span class="group-card-meta">{{ groupMeta(selectedGrado, grupo)?.code || selectedGrado }}</span>
           <strong>{{ grupo }}</strong>
+          <small v-if="groupMeta(selectedGrado, grupo)?.rosterCount">{{ groupMeta(selectedGrado, grupo)?.rosterCount }} alumnos</small>
+          <small v-else>{{ groupMeta(selectedGrado, grupo)?.turn || 'Disponible' }}</small>
         </button>
       </div>
     </section>
 
     <NuxtLink v-if="target" class="primary-button group-start-button" :to="target">
-      <CheckCircle2 class="icon-sm" /> Pase de lista <ArrowRight class="icon-sm" />
+      <span>
+        <strong>Pase de lista</strong>
+        <small>{{ selectedGrado }} · {{ selectedGrupo }} · {{ selectedRosterLabel }}</small>
+      </span>
+      <ArrowRight class="icon-sm" />
     </NuxtLink>
   </section>
 </template>

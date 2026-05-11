@@ -34,6 +34,9 @@
   position: relative;
   width: 62px;
   height: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
   isolation: isolate;
   color: #ff8a00;
   background: #fff9ef;
@@ -43,10 +46,12 @@
 .save-side-card .pending-badge::before,
 .fixed-save-inner .pending-badge::before {
   content: '';
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 2;
   width: 58%;
   height: 58%;
+  margin: auto;
   background: url('/reference-assets/star.png') center / contain no-repeat;
 }
 .save-side-card .pending-badge::after,
@@ -126,7 +131,7 @@
 .class-logros-copy small,
 .class-logros-empty { color: #4d5e67; font-size: .78rem; line-height: 1.24; font-weight: 760; }
 .class-logros-empty { color: #6f766f; }
-.class-logros-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+.class-logros-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); gap: 7px; }
 .class-logros-metrics span { min-height: 32px; display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 0 7px; border-radius: 12px; color: #7a5510; background: #fff1c9; font-size: .69rem; line-height: 1; font-weight: 880; white-space: nowrap; }
 .class-logros-metrics.empty span { color: #5f7165; background: rgba(239,252,232,.9); }
 .class-logros-category { min-height: 34px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 11px; border-radius: 14px; background: rgba(255,255,255,.7); border: 1px solid rgba(226,216,194,.55); }

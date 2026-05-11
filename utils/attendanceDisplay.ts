@@ -93,7 +93,7 @@ export const buildWeeklyDisplayDays = (
 }
 
 export const summarizeLogroState = (
-  states: Record<string, { pointsThisWeek?: number; recent?: unknown[]; categoryPoints?: Partial<Record<LogroCategory, number>> }>,
+  states: Record<string, { pointsThisWeek?: number; recent?: unknown[]; categoryPoints?: Partial<Record<LogroCategory, number>>; streaks?: Record<string, number> }>,
   server: ClassLogrosSummary | null,
   featuredCategory: LogroCategory
 ) => {
@@ -113,29 +113,46 @@ export const summarizeLogroState = (
   const local = {
     totalPoints: stateList.reduce((sum, state) => sum + (state.pointsThisWeek || 0), 0),
     totalEvents: stateList.reduce((sum, state) => sum + (state.recent?.length || 0), 0),
-    activeStudents: stateList.filter((state) => (state.pointsThisWeek || 0) > 0).length
+    activeStudents: stateList.filter((state) => (state.pointsThisWeek || 0) > 0).length,
+    topStreak: stateList.reduce((max, state) => Math.max(max, ...Object.values(state.streaks || {}).map((value) => Number(value || 0))), 0)
   }
 
   return {
     totalPoints: Math.max(local.totalPoints, server?.totalPoints || 0),
     totalEvents: Math.max(local.totalEvents, server?.totalEvents || 0),
     activeStudents: Math.max(local.activeStudents, server?.activeStudents || 0),
-    topCategory: server?.topCategory || localTopCategory || featuredCategory
+    topCategory: server?.topCategory || localTopCategory || featuredCategory,
+    topStreak: local.topStreak
   }
 }
 
 export const getLogrosClassCopy = (
-  _weeklySummary: WeeklyAttendanceSummary | null,
+  weeklySummary: WeeklyAttendanceSummary | null,
   logroSummary: { totalEvents: number; totalPoints: number; activeStudents?: number }
 ) => {
   const events = logroSummary.totalEvents
   const points = logroSummary.totalPoints
   const activeStudents = logroSummary.activeStudents || 0
+  const positiveWeekStreak = weeklySummary?.positiveWeekStreak || 0
+  const streakCopy = positiveWeekStreak > 0
+    ? `${positiveWeekStreak} ${positiveWeekStreak === 1 ? 'semana positiva' : 'semanas positivas'}`
+    : ''
 
   if (events > 0) {
     return {
       headline: `${events} ${events === 1 ? 'logro' : 'logros'}`,
-      line: `${points} ${points === 1 ? 'punto' : 'puntos'} · ${activeStudents} ${activeStudents === 1 ? 'alumno activo' : 'alumnos activos'}`
+      line: [
+        `${points} ${points === 1 ? 'punto' : 'puntos'}`,
+        `${activeStudents} ${activeStudents === 1 ? 'alumno activo' : 'alumnos activos'}`,
+        streakCopy
+      ].filter(Boolean).join(' · ')
+    }
+  }
+
+  if (positiveWeekStreak > 0) {
+    return {
+      headline: `${positiveWeekStreak} ${positiveWeekStreak === 1 ? 'semana positiva' : 'semanas positivas'}`,
+      line: 'Más presentes que faltas con datos reales.'
     }
   }
 

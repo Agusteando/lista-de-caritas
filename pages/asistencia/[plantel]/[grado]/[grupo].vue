@@ -4,6 +4,7 @@ const {
   attendance,
   awardLogro,
   classCode,
+  classPositiveWeekStreak,
   classDetail,
   displayWeeklyDays,
   grado,
@@ -103,6 +104,7 @@ const {
           :total-events="logroSummary.totalEvents"
           :active-students="logroSummary.activeStudents"
           :top-category="logroSummary.topCategory"
+          :class-positive-week-streak="classPositiveWeekStreak"
           @award="awardLogro"
           @refresh="refreshLogrosState"
         />
@@ -125,6 +127,7 @@ const {
         :logros-total-events="logroSummary.totalEvents"
         :logros-active-students="logroSummary.activeStudents"
         :logros-top-category="logroSummary.topCategory"
+        :logros-positive-week-streak="classPositiveWeekStreak"
         @save="saveAttendance"
         @open-logros="setMode('logros')"
       />

@@ -21,7 +21,7 @@
 .featured-logro,
 .top-category-logro { width: max-content; max-width: 100%; display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; padding: 7px 11px; border-radius: 999px; color: #76540f; background: #fff1c9; font-weight: 880; }
 .top-category-logro { margin-top: 7px; color: #126829; background: rgba(239,252,232,.92); }
-.logros-command-stats { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(3, minmax(72px, 1fr)); gap: 8px; }
+.logros-command-stats { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(auto-fit, minmax(72px, 1fr)); gap: 8px; }
 .logros-command-stats article { min-height: 66px; display: grid; place-items: center; padding: 10px; border-radius: 18px; background: rgba(255,255,255,.72); border: 1px solid rgba(226,216,194,.58); box-shadow: inset 0 1px 0 rgba(255,255,255,.88); }
 .logros-command-stats strong { color: #9b5f00; font-size: clamp(1.5rem, 1.9vw, 2.05rem); line-height: .86; letter-spacing: -.06em; }
 .logros-command-stats span { margin-top: 4px; color: #68736d; font-weight: 860; font-size: .74rem; }
@@ -71,11 +71,11 @@
 .logro-student-name small { color: #6d756d; font-size: .7rem; font-weight: 800; }
 .points-bubble,
 .ranking-rank { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 999px; color: white; background: linear-gradient(#ffca66, #f0922d); font-weight: 950; box-shadow: 0 8px 18px rgba(240,146,45,.2); }
-.logro-streak-strip,
+.logro-activity-strip,
 .selected-metrics { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; }
-.logro-streak-strip span,
+.logro-activity-strip span,
 .selected-metrics span,
-.badge-token { display: inline-flex; align-items: center; gap: 5px; border-radius: 999px; color: #a65d00; background: #fff1c9; padding: 5px 8px; font-weight: 850; font-size: .7rem; }
+.badge-token { display: inline-flex; align-items: center; gap: 5px; border-radius: 999px; color: #246444; background: rgba(239,252,232,.92); padding: 5px 8px; font-weight: 850; font-size: .7rem; }
 .quick-logros,
 .selected-awards { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
 .logro-choice { min-height: 30px; display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 0 10px; background: rgba(255,255,255,.82); border: 1px solid var(--line); color: #225240; font-size: .68rem; font-weight: 860; }
@@ -87,8 +87,10 @@
 .profile-head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; }
 .profile-head strong { display: block; font-weight: 920; line-height: 1.15; }
 .profile-head small { display: block; margin-top: 3px; color: #7a6a47; font-weight: 800; }
+.profile-streaks,
 .profile-badges,
 .recent-logros { display: grid; gap: 7px; margin-top: 12px; }
+.profile-streaks span { display: inline-flex; align-items: center; gap: 6px; width: max-content; max-width: 100%; padding: 6px 9px; border-radius: 999px; color: #9b5f00; background: #fff1c9; border: 1px solid rgba(240,184,62,.28); font-size: .72rem; font-weight: 880; }
 .recent-logros p { display: flex; align-items: center; gap: 7px; margin: 0; color: #536158; font-size: .8rem; font-weight: 780; }
 .recent-logros h4 { margin: 4px 0 2px; color: #26353f; }
 .ranking-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
@@ -116,7 +118,7 @@
 }
 @media (max-width: 760px) {
   .logros-command-card { grid-template-columns: 1fr; }
-  .logros-command-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .logros-command-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .logros-toolbar { grid-template-columns: 1fr; }
   .logros-filter-chip,
   .logros-refresh-button { justify-content: center; }

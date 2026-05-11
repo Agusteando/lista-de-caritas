@@ -69,8 +69,8 @@ https://wweb.casitaapps.com/files/1724624551591-file.jpeg
 - Fixed bottom save action.
 - Teacher-safe save states.
 - Summary sheet with subtle completion motion.
-- Optional subtle sounds for status changes, save, completion, Logros, streaks, and milestones.
-- Secondary Logros mode with fixed categories, points, streaks, badges, and weekly rankings.
+- Optional subtle sounds for status changes, save, completion, Logros and milestones.
+- Secondary Logros mode with fixed categories, points, badges, and weekly rankings.
 
 ## Install
 
@@ -152,7 +152,6 @@ Badge levels:
 Weekly ranking types:
 
 - Top Logros de la semana
-- Mejor racha activa
 - Más participativo
 - Mejor actitud
 - Mayor avance

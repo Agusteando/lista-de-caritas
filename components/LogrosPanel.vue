@@ -19,6 +19,7 @@ const props = defineProps<{
   totalEvents: number
   activeStudents: number
   topCategory?: LogroCategory | null
+  classPositiveWeekStreak?: number
 }>()
 
 const emit = defineEmits<{
@@ -39,10 +40,10 @@ const categories = computed(() => [
 
 const rankingTitle: Record<RankingMode, string> = {
   topLogros: 'Top semanal',
-  bestStreak: 'Racha',
+  bestStreak: 'Rachas',
   masParticipativo: 'Participación',
   mejorActitud: 'Actitud',
-  mayorAvance: 'Avance'
+  mayorAvance: 'Actividad'
 }
 const rankingOptions = Object.entries(rankingTitle).map(([value, label]) => ({ value: value as RankingMode, label }))
 
@@ -68,11 +69,18 @@ const normalize = (value: unknown) => String(value || '')
   .trim()
 
 const stateFor = (studentId: string) => props.states[studentId] || defaultState(studentId)
-const maxStreak = (state: StudentLogrosState) => Math.max(0, ...Object.values(state.streaks || {}).map((value) => Number(value || 0)))
 const categoryPoints = (state: StudentLogrosState, category: LogroCategory) => state.categoryPoints?.[category] || 0
 const badgeCount = (state: StudentLogrosState) => state.badges?.length || 0
+const recentCount = (state: StudentLogrosState) => state.recent?.length || 0
+const streakEntries = (state: StudentLogrosState) => Object.entries(state.streaks || {})
+  .map(([name, value]) => ({ name, value: Number(value || 0) }))
+  .filter((entry) => entry.value > 0)
+  .sort((a, b) => b.value - a.value)
+const maxStreak = (state: StudentLogrosState) => streakEntries(state)[0]?.value || 0
+const topStreakLabel = (state: StudentLogrosState) => streakEntries(state)[0]?.name.replace('Racha de ', '') || ''
 const bestCategoryLabel = (state: StudentLogrosState) => {
   if (state.bestCategory && categoryPoints(state, state.bestCategory) > 0) return state.bestCategory
+  if (maxStreak(state) > 0) return `Racha de ${topStreakLabel(state)}`
   if (state.pointsThisWeek > 0) return 'Semana activa'
   return 'Sin logros'
 }
@@ -81,7 +89,7 @@ const filteredStudents = computed(() => {
   const needle = normalize(searchTerm.value)
   return props.students.filter((student) => {
     const state = stateFor(student.id)
-    if (onlyWithLogros.value && state.pointsThisWeek <= 0) return false
+    if (onlyWithLogros.value && state.pointsThisWeek <= 0 && maxStreak(state) <= 0) return false
     if (!needle) return true
     return normalize(student.nombre).includes(needle) || String(student.matricula || '').toLowerCase().includes(needle)
   })
@@ -96,6 +104,7 @@ const selectedStudent = computed(() => {
 })
 const selectedState = computed(() => selectedStudent.value ? stateFor(selectedStudent.value.id) : null)
 const selectedRecent = computed(() => selectedState.value?.recent?.slice(0, 5) || [])
+const selectedStreaks = computed(() => selectedState.value ? streakEntries(selectedState.value).slice(0, 4) : [])
 const selectedTopCategories = computed(() => {
   if (!selectedState.value) return [] as Array<{ category: LogroCategory; points: number }>
   return logroCategories
@@ -105,7 +114,15 @@ const selectedTopCategories = computed(() => {
     .slice(0, 3)
 })
 const currentRanking = computed(() => props.rankings[rankingMode.value] || [])
-const hasLogros = computed(() => props.totalEvents > 0 || props.totalPoints > 0)
+const hasLogros = computed(() => props.totalEvents > 0 || props.totalPoints > 0 || Boolean(props.classPositiveWeekStreak))
+
+const rankingScore = (entry: RankingEntry) => {
+  if (rankingMode.value === 'bestStreak') return maxStreak(entry.state)
+  if (rankingMode.value === 'masParticipativo') return categoryPoints(entry.state, 'Participación')
+  if (rankingMode.value === 'mejorActitud') return categoryPoints(entry.state, 'Buena actitud')
+  if (rankingMode.value === 'mayorAvance') return recentCount(entry.state)
+  return entry.state.pointsThisWeek
+}
 
 watch(filteredStudents, () => {
   if (!selectedStudentId.value || !filteredStudents.value.some((student) => student.id === selectedStudentId.value)) {
@@ -139,6 +156,7 @@ const clearSearch = () => { searchTerm.value = '' }
         <article><strong>{{ totalEvents }}</strong><span>logros</span></article>
         <article><strong>{{ totalPoints }}</strong><span>puntos</span></article>
         <article><strong>{{ activeStudents }}</strong><span>activos</span></article>
+        <article v-if="classPositiveWeekStreak"><strong>{{ classPositiveWeekStreak }}</strong><span>semanas</span></article>
       </div>
 
       <div class="logros-toolbar">
@@ -181,10 +199,10 @@ const clearSearch = () => { searchTerm.value = '' }
             <span class="points-bubble">{{ stateFor(student.id).pointsThisWeek }}</span>
           </button>
 
-          <div class="logro-streak-strip">
-            <span><Flame class="icon-sm" /> {{ maxStreak(stateFor(student.id)) }}</span>
-            <span><Award class="icon-sm" /> {{ badgeCount(stateFor(student.id)) }}</span>
-            <span><Star class="icon-sm" /> {{ stateFor(student.id).recent?.length || 0 }}</span>
+          <div class="logro-activity-strip">
+            <span v-if="maxStreak(stateFor(student.id))"><Flame class="icon-sm" /> {{ maxStreak(stateFor(student.id)) }} racha</span>
+            <span><Star class="icon-sm" /> {{ recentCount(stateFor(student.id)) }} registros</span>
+            <span><Award class="icon-sm" /> {{ badgeCount(stateFor(student.id)) }} insignias</span>
           </div>
 
           <div class="quick-logros" aria-label="Registrar logro">
@@ -218,14 +236,15 @@ const clearSearch = () => { searchTerm.value = '' }
             </span>
             <div>
               <strong>{{ selectedStudent.nombre }}</strong>
-              <small>{{ selectedState.pointsThisWeek }} pts · {{ selectedState.recent?.length || 0 }} logros</small>
+              <small>{{ selectedState.pointsThisWeek }} pts · {{ recentCount(selectedState) }} logros</small>
             </div>
           </div>
 
           <div class="selected-metrics" aria-label="Resumen del alumno seleccionado">
-            <span><Flame class="icon-sm" /> {{ maxStreak(selectedState) }}</span>
-            <span><Award class="icon-sm" /> {{ badgeCount(selectedState) }}</span>
-            <span><Star class="icon-sm" /> {{ selectedState.pointsThisWeek }}</span>
+            <span v-if="maxStreak(selectedState)"><Flame class="icon-sm" /> {{ maxStreak(selectedState) }} racha</span>
+            <span><Star class="icon-sm" /> {{ selectedState.pointsThisWeek }} pts</span>
+            <span><Award class="icon-sm" /> {{ badgeCount(selectedState) }} insignias</span>
+            <span><Trophy class="icon-sm" /> {{ bestCategoryLabel(selectedState) }}</span>
           </div>
 
           <div class="selected-awards" aria-label="Registrar logro al alumno seleccionado">
@@ -239,6 +258,10 @@ const clearSearch = () => { searchTerm.value = '' }
             >
               {{ category }}
             </button>
+          </div>
+
+          <div class="profile-streaks" v-if="selectedStreaks.length">
+            <span v-for="entry in selectedStreaks" :key="entry.name"><Flame class="icon-sm" /> {{ entry.name }} · {{ entry.value }}</span>
           </div>
 
           <div class="profile-badges" v-if="selectedTopCategories.length">
@@ -275,7 +298,7 @@ const clearSearch = () => { searchTerm.value = '' }
                 <strong>{{ entry.student.nombre }}</strong>
                 <small>{{ rankingTitle[rankingMode] }}</small>
               </span>
-              <strong>{{ rankingMode === 'bestStreak' ? maxStreak(entry.state) : entry.state.pointsThisWeek }}</strong>
+              <strong>{{ rankingScore(entry) }}</strong>
             </button>
             <p v-if="!currentRanking.length" class="ranking-empty">{{ hasLogros ? 'Sin datos para este ranking' : 'Aún no hay logros registrados' }}</p>
           </div>

@@ -13,10 +13,59 @@ export const logroCategories: LogroCategory[] = [
   'Liderazgo'
 ]
 
+export const logroStreakNames = {
+  attendance: 'Racha de asistencia',
+  participation: 'Racha de participación',
+  attitude: 'Racha de buena actitud',
+  completedWork: 'Racha de trabajo completo'
+} as const
+
 const streakCategories: Partial<Record<LogroCategory, string>> = {
-  'Participación': 'Racha de participación',
-  'Buena actitud': 'Racha de buena actitud',
-  'Trabajo completo': 'Racha de trabajo completo'
+  'Participación': logroStreakNames.participation,
+  'Buena actitud': logroStreakNames.attitude,
+  'Trabajo completo': logroStreakNames.completedWork
+}
+
+const defaultStreaks = () => ({
+  [logroStreakNames.attendance]: 0,
+  [logroStreakNames.participation]: 0,
+  [logroStreakNames.attitude]: 0,
+  [logroStreakNames.completedWork]: 0
+})
+
+const maxStreakValue = (state: StudentLogrosState) => Math.max(0, ...Object.values(state.streaks || {}).map((value) => Number(value || 0)))
+
+const consecutiveCalendarDaysFromLatest = (dates: Iterable<string>) => {
+  const sorted = [...new Set(dates)]
+    .filter(Boolean)
+    .sort((a, b) => dayjs(b).valueOf() - dayjs(a).valueOf())
+
+  if (!sorted.length) return 0
+
+  let streak = 1
+  let cursor = dayjs(sorted[0]).startOf('day')
+  for (const date of sorted.slice(1)) {
+    const next = dayjs(date).startOf('day')
+    if (cursor.diff(next, 'day') === 1) {
+      streak += 1
+      cursor = next
+    } else if (cursor.isSame(next, 'day')) {
+      continue
+    } else {
+      break
+    }
+  }
+  return streak
+}
+
+const categoryStreakAfterAward = (state: StudentLogrosState, category: LogroCategory, awardedAt: string) => {
+  const dates = new Set(
+    (state.recent || [])
+      .filter((entry) => entry.category === category)
+      .map((entry) => dayjs(entry.awardedAt).format('YYYY-MM-DD'))
+  )
+  dates.add(dayjs(awardedAt).format('YYYY-MM-DD'))
+  return consecutiveCalendarDaysFromLatest(dates)
 }
 
 export function useLogrosContext(plantel: Ref<string> | ComputedRef<string>, grado: Ref<string> | ComputedRef<string>, grupo: Ref<string> | ComputedRef<string>, students: Ref<Student[]>) {
@@ -32,12 +81,7 @@ export function useLogrosContext(plantel: Ref<string> | ComputedRef<string>, gra
     pointsThisWeek: 0,
     categoryPoints: {},
     recent: [],
-    streaks: {
-      'Racha de asistencia': 0,
-      'Racha de participación': 0,
-      'Racha de buena actitud': 0,
-      'Racha de trabajo completo': 0
-    },
+    streaks: defaultStreaks(),
     badges: []
   })
 
@@ -124,7 +168,7 @@ export function useLogrosContext(plantel: Ref<string> | ComputedRef<string>, gra
       )
       mergeServerStates(response.states || {})
     } catch {
-      // The local optimistic state remains usable. Technical details stay server-side.
+      // Local optimistic state stays usable; technical details stay server-side.
     } finally {
       syncing.value = false
     }
@@ -133,18 +177,20 @@ export function useLogrosContext(plantel: Ref<string> | ComputedRef<string>, gra
   const awardLocal = (studentId: string, category: LogroCategory) => {
     const state = normalizeState(studentId, states.value[studentId])
     const featured = category === featuredCategory.value
-    const streakName = streakCategories[category]
-    const streakBonus = streakName ? 1 : 0
     const currentCategoryPoints = state.categoryPoints[category] || 0
     const pointsBefore = state.pointsThisWeek
     const normalPoints = featured ? 2 : 1
+    const awardedAt = new Date().toISOString()
+    const streakName = streakCategories[category]
+    const nextStreak = streakName ? Math.max(Number(state.streaks[streakName] || 0), categoryStreakAfterAward(state, category, awardedAt)) : 0
+    const streakBonus = streakName && nextStreak >= 3 ? 1 : 0
     const weeklyMilestoneBonus = Math.floor((pointsBefore + normalPoints + streakBonus) / 10) > Math.floor(pointsBefore / 10) ? 3 : 0
     const totalPoints = normalPoints + streakBonus + weeklyMilestoneBonus
 
     state.pointsThisWeek += totalPoints
     state.categoryPoints[category] = currentCategoryPoints + normalPoints
-    state.recent = [{ category, points: totalPoints, awardedAt: new Date().toISOString() }, ...state.recent].slice(0, 8)
-    if (streakName) state.streaks[streakName] = (state.streaks[streakName] || 0) + 1
+    state.recent = [{ category, points: totalPoints, awardedAt }, ...state.recent].slice(0, 8)
+    if (streakName) state.streaks[streakName] = nextStreak
 
     const allBadges = logroCategories.flatMap((cat) => badgesFor(cat, state.categoryPoints[cat] || 0))
     state.badges = allBadges
@@ -166,7 +212,7 @@ export function useLogrosContext(plantel: Ref<string> | ComputedRef<string>, gra
       featured,
       streakBonus,
       weeklyMilestoneBonus,
-      awardedAt: new Date().toISOString()
+      awardedAt
     }
     return event
   }
@@ -210,7 +256,11 @@ export function useLogrosContext(plantel: Ref<string> | ComputedRef<string>, gra
   const award = async (studentId: string, category: LogroCategory) => {
     const event = awardLocal(studentId, category)
     try {
-      await $fetch('/api/logros', { method: 'POST', body: event })
+      const saved = await $fetch<{ streakBonus?: number; weeklyMilestoneBonus?: number }>('/api/logros', { method: 'POST', body: event })
+      if (saved) {
+        event.streakBonus = Number(saved.streakBonus || 0)
+        event.weeklyMilestoneBonus = Number(saved.weeklyMilestoneBonus || 0)
+      }
       void flushPending()
       void refreshFromServer()
     } catch {
@@ -221,9 +271,8 @@ export function useLogrosContext(plantel: Ref<string> | ComputedRef<string>, gra
 
   const rankings = computed(() => {
     const list = students.value.map((student) => ({ student, state: states.value[student.id] || defaultState(student.id) }))
-    const maxStreak = (state: StudentLogrosState) => Math.max(0, ...Object.values(state.streaks || {}).map((value) => Number(value || 0)))
     const topLogros = [...list].filter((entry) => entry.state.pointsThisWeek > 0).sort((a, b) => b.state.pointsThisWeek - a.state.pointsThisWeek).slice(0, 5)
-    const bestStreak = [...list].filter((entry) => maxStreak(entry.state) > 0).sort((a, b) => maxStreak(b.state) - maxStreak(a.state)).slice(0, 5)
+    const bestStreak = [...list].filter((entry) => maxStreakValue(entry.state) > 0).sort((a, b) => maxStreakValue(b.state) - maxStreakValue(a.state)).slice(0, 5)
     const masParticipativo = [...list].filter((entry) => (entry.state.categoryPoints['Participación'] || 0) > 0).sort((a, b) => (b.state.categoryPoints['Participación'] || 0) - (a.state.categoryPoints['Participación'] || 0)).slice(0, 5)
     const mejorActitud = [...list].filter((entry) => (entry.state.categoryPoints['Buena actitud'] || 0) > 0).sort((a, b) => (b.state.categoryPoints['Buena actitud'] || 0) - (a.state.categoryPoints['Buena actitud'] || 0)).slice(0, 5)
     const mayorAvance = [...list].filter((entry) => entry.state.recent.length > 0).sort((a, b) => b.state.recent.length - a.state.recent.length).slice(0, 5)
