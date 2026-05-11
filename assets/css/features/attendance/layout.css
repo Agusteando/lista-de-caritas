@@ -98,6 +98,9 @@
 .reference-date-pill { gap: 11px; padding-left: clamp(14px, 1.05vw, 18px); }
 .date-pill { padding: 0 clamp(15px, 1.25vw, 22px); }
 .change-group-pill { padding: 0 clamp(15px, 1.25vw, 22px); }
+.date-pill span,
+.change-group-pill span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.pill-chevron { flex: none; opacity: .72; stroke-width: 2.8; }
 .attendance-title {
   min-width: 0;
   display: flex;

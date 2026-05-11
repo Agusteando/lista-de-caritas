@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeft, CheckSquare, MoreHorizontal, RefreshCcw, Shuffle, Volume2, VolumeX } from 'lucide-vue-next'
+import { ArrowLeft, CheckSquare, ChevronDown, MoreHorizontal, RefreshCcw, Shuffle, Volume2, VolumeX } from 'lucide-vue-next'
 
 const clipboardSrc = '/reference-assets/clipboard.png'
 
@@ -40,7 +40,7 @@ onBeforeUnmount(() => document.removeEventListener('click', handleDocumentClick)
 <template>
   <header class="attendance-topbar">
     <div class="topbar-left">
-      <NuxtLink class="round-button back" :to="`/asistencia/${props.plantel}?cambiar=grupo`" aria-label="Cambiar grupo">
+      <NuxtLink class="round-button back" :to="`/asistencia/${props.plantel}?cambiar=grupo`" aria-label="Cambiar lista">
         <ArrowLeft class="icon" />
       </NuxtLink>
       <span class="round-button soft asset-button clipboard-asset" aria-hidden="true">
@@ -55,7 +55,8 @@ onBeforeUnmount(() => document.removeEventListener('click', handleDocumentClick)
     <div class="topbar-actions">
       <button class="date-pill reference-date-pill" type="button" aria-label="Fecha del pase de lista">
         <span class="reference-icon reference-icon-calendar" aria-hidden="true" />
-        {{ props.todayLabel }}
+        <span>{{ props.todayLabel }}</span>
+        <ChevronDown class="icon-xs pill-chevron" aria-hidden="true" />
       </button>
       <div ref="menuRoot" class="more-menu-wrap" @keydown.esc="closeMenu">
         <button class="round-button soft" type="button" aria-haspopup="menu" :aria-expanded="menuOpen" aria-label="Más opciones" @click="menuOpen = !menuOpen">
@@ -75,8 +76,10 @@ onBeforeUnmount(() => document.removeEventListener('click', handleDocumentClick)
           </button>
         </div>
       </div>
-      <NuxtLink class="change-group-pill" :to="`/asistencia/${props.plantel}?cambiar=grupo`">
-        <Shuffle class="icon-sm" /> Cambiar grupo
+      <NuxtLink class="change-group-pill" :to="`/asistencia/${props.plantel}?cambiar=grupo`" aria-label="Cambiar lista">
+        <Shuffle class="icon-sm" />
+        <span>Cambiar lista</span>
+        <ChevronDown class="icon-xs pill-chevron" aria-hidden="true" />
       </NuxtLink>
     </div>
   </header>
