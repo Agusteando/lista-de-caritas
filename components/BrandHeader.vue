@@ -20,11 +20,7 @@ const homeTarget = computed(() => {
     <div class="brand-strip" aria-hidden="true" />
     <header class="app-header">
       <NuxtLink class="logo-lockup" :to="homeTarget">
-        <span class="logo-mark caritas-mark" aria-hidden="true">
-          <span class="face-dot face-dot-left" />
-          <span class="face-dot face-dot-right" />
-          <span class="face-smile" />
-        </span>
+        <AnimatedLogo />
         <span class="brand-title">
           <h1>Pase de lista</h1>
           <p>lista-de-caritas app</p>

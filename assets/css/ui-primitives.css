@@ -71,23 +71,35 @@
   margin-bottom: 18px;
 }
 .logo-lockup { display: flex; align-items: center; gap: 12px; min-width: 0; }
-.logo-mark {
-  width: 50px;
-  height: 50px;
-  flex: none;
-  border-radius: 18px;
-  display: grid;
+.animated-logo {
+  position: relative;
+  display: inline-grid;
   place-items: center;
-  background: linear-gradient(140deg, #eaf7dc, #d6f1dc 48%, #fff1bf);
-  box-shadow: 0 14px 32px rgba(82, 117, 62, 0.22), inset 0 0 0 1px rgba(31, 89, 72, 0.08);
+  flex: none;
+  overflow: hidden;
+  isolation: isolate;
 }
-.caritas-mark { position: relative; }
-.face-dot,
-.face-smile { position: absolute; background: #166f4a; }
-.face-dot { width: 6px; height: 6px; border-radius: 999px; top: 19px; }
-.face-dot-left { left: 17px; }
-.face-dot-right { right: 17px; }
-.face-smile { width: 18px; height: 9px; left: 16px; top: 29px; border-radius: 0 0 999px 999px; background: transparent; border: 3px solid #166f4a; border-top: 0; }
+.animated-logo picture,
+.animated-logo img { display: block; width: 100%; height: 100%; }
+.animated-logo img { object-fit: contain; pointer-events: none; user-select: none; }
+.animated-logo-mark {
+  width: 56px;
+  height: 56px;
+  border-radius: 19px;
+  background: linear-gradient(145deg, rgba(255,254,248,.98), rgba(236,250,230,.9));
+  border: 1px solid rgba(31, 89, 72, .08);
+  box-shadow: 0 14px 32px rgba(82, 117, 62, 0.18), inset 0 1px 0 rgba(255,255,255,.88);
+}
+.animated-logo-mark img { transform: scale(1.55); transform-origin: center 43%; }
+.animated-logo-hero {
+  width: clamp(116px, 13vw, 166px);
+  height: clamp(116px, 13vw, 166px);
+  border-radius: clamp(26px, 3vw, 38px);
+  background: radial-gradient(circle at 50% 28%, rgba(255,255,255,.96), rgba(239,251,231,.76) 68%, rgba(255,245,217,.88));
+  border: 1px solid rgba(45, 139, 75, .12);
+  box-shadow: 0 24px 48px rgba(64, 118, 72, .16), inset 0 1px 0 rgba(255,255,255,.9);
+}
+.animated-logo-hero img { transform: scale(1.08); }
 .brand-title { min-width: 0; }
 .brand-title h1 { margin: 0; font-size: clamp(1.35rem, 4.8vw, 2rem); line-height: 1; letter-spacing: -.055em; }
 .brand-title p { margin: 4px 0 0; color: #7e8c84; font-size: .86rem; font-weight: 760; }

@@ -3,8 +3,8 @@ export const PLANTELES: Record<string, string> = {
   PT: 'Primaria Toluca',
   SM: 'Secundaria Metepec',
   ST: 'Secundaria Toluca',
-  PREEM: 'Preescolar ISSSTE Metepec',
-  PREET: 'Preescolar ISSSTE Toluca'
+  PREEM: 'Preescolar Metepec',
+  PREET: 'Preescolar Toluca'
 }
 
 export const GRADE_ORDER = ['primero', 'segundo', 'tercero', 'cuarto', 'quinto', 'sexto']

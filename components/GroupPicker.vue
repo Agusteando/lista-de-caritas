@@ -50,6 +50,10 @@ const target = computed(() => selectedGrado.value && selectedGrupo.value
     </div>
 
     <section class="group-hero selection-hero-card">
+      <div class="group-hero-brand">
+        <AnimatedLogo variant="hero" />
+      </div>
+
       <div class="selection-hero-copy">
         <span class="hero-eyebrow">{{ plantel }}</span>
         <h2>{{ plantelTitle }}</h2>
@@ -59,6 +63,14 @@ const target = computed(() => selectedGrado.value && selectedGrupo.value
       <div class="group-hero-summary" aria-label="Resumen del plantel">
         <article><ClipboardList class="icon-sm" /><strong>{{ grados.length }}</strong><span>grados</span></article>
         <article><UsersRound class="icon-sm" /><strong>{{ totalGroups }}</strong><span>grupos</span></article>
+      </div>
+
+      <div v-if="selectedGrado && selectedGrupo" class="group-selection-preview">
+        <CheckCircle2 class="icon-sm" />
+        <span>
+          <strong>{{ selectedGrado }} {{ selectedGrupo }}</strong>
+          <small>{{ selectedRosterLabel }}</small>
+        </span>
       </div>
 
       <div v-if="remembered?.grado && remembered?.grupo" class="remembered-chip">
