@@ -9,6 +9,7 @@ const grado = computed(() => decodeURIComponent(String(route.params.grado || '')
 const grupo = computed(() => decodeURIComponent(String(route.params.grupo || '')).toUpperCase())
 const mode = ref<'attendance' | 'logros'>('attendance')
 const viewMode = ref<'exceptions' | 'one' | 'compact'>('exceptions')
+const viewModeStorageKey = computed(() => `lista-de-caritas:view-mode:${plantel.value}:${grado.value}:${grupo.value}`)
 const searchTerm = ref('')
 const selectedDate = ref(dayjs().format('YYYY-MM-DD'))
 
@@ -191,8 +192,36 @@ const visibleStudents = computed(() => {
   const needle = searchTerm.value.trim().toLowerCase()
   let list = students.value
   if (needle) list = list.filter((student) => student.nombre.toLowerCase().includes(needle) || String(student.matricula || '').includes(needle))
+
+  if (viewMode.value === 'exceptions' && !needle) {
+    const exceptions = list.filter((student) => {
+      const current = attendance.value[student.id] || 'unmarked'
+      return current === 'absent' || current === 'sick'
+    })
+    if (exceptions.length) {
+      const exceptionIds = new Set(exceptions.map((student) => student.id))
+      const nearby = list.filter((student, index) => {
+        if (exceptionIds.has(student.id)) return true
+        const previous = list[index - 1]
+        const next = list[index + 1]
+        return (previous && exceptionIds.has(previous.id)) || (next && exceptionIds.has(next.id))
+      })
+      return nearby.length ? nearby : exceptions
+    }
+  }
+
   return list
 })
+
+const setViewMode = (nextMode: 'exceptions' | 'one' | 'compact') => {
+  viewMode.value = nextMode
+  if (import.meta.client) localStorage.setItem(viewModeStorageKey.value, nextMode)
+
+  if (nextMode === 'exceptions' && students.value.length) {
+    const hasMarkedAttendance = Object.values(attendance.value).some((value) => value !== 'unmarked')
+    if (!hasMarkedAttendance) markAllPresent()
+  }
+}
 
 const setStatus = (studentId: string, nextStatus: AttendanceStatus) => {
   attendance.value = { ...attendance.value, [studentId]: nextStatus }
@@ -389,6 +418,8 @@ watch(attendance, () => writeAttendanceDraft(), { deep: true })
 
 onMounted(() => {
   draftHydrated.value = true
+  const rememberedViewMode = localStorage.getItem(viewModeStorageKey.value)
+  if (rememberedViewMode === 'exceptions' || rememberedViewMode === 'one' || rememberedViewMode === 'compact') viewMode.value = rememberedViewMode
   loadCachedRoster()
   if (students.value.length) initialRosterLoad.value = false
   void flush()
@@ -454,9 +485,9 @@ onMounted(() => {
 
         <section v-if="mode === 'attendance'" class="attendance-controls" aria-label="Herramientas de asistencia">
           <div class="mode-segments">
-            <button :class="{ active: viewMode === 'exceptions' }" type="button" @click="viewMode = 'exceptions'"><Star class="icon-sm" /> Solo excepciones</button>
-            <button :class="{ active: viewMode === 'one' }" type="button" @click="viewMode = 'one'"><Pencil class="icon-sm" /> Uno por uno</button>
-            <button :class="{ active: viewMode === 'compact' }" type="button" @click="viewMode = 'compact'"><List class="icon-sm" /> Compacta</button>
+            <button :class="{ active: viewMode === 'exceptions' }" type="button" @click="setViewMode('exceptions')" :aria-pressed="viewMode === 'exceptions'"><Star class="icon-sm" /> Solo excepciones</button>
+            <button :class="{ active: viewMode === 'one' }" type="button" @click="setViewMode('one')" :aria-pressed="viewMode === 'one'"><Pencil class="icon-sm" /> Uno por uno</button>
+            <button :class="{ active: viewMode === 'compact' }" type="button" @click="setViewMode('compact')" :aria-pressed="viewMode === 'compact'"><List class="icon-sm" /> Compacta</button>
           </div>
           <div class="search-row">
             <label class="search-box"><Search class="icon" /><input v-model="searchTerm" type="search" placeholder="Buscar alumno..."></label>
@@ -480,6 +511,7 @@ onMounted(() => {
             :status="attendance[student.id] || 'unmarked'"
             :highlighted="recentlyChangedStudentId === student.id || recentlyChangedStudentId === 'all'"
             :retardo="retardos[student.id]"
+            :interaction-mode="viewMode"
             @set-status="setStatus"
           />
           <template v-if="showRosterSkeleton">

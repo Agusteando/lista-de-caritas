@@ -1347,3 +1347,146 @@ img { display: block; max-width: 100%; }
   box-shadow: 0 8px 18px rgba(146, 96, 16, .08);
 }
 .retardo-chip .icon-xs { color: #d68112; }
+
+/* Attendance mode segment behavior */
+.mode-segments button {
+  position: relative;
+  isolation: isolate;
+  transition: color 150ms ease, background 150ms ease, box-shadow 150ms ease, transform 120ms ease;
+}
+.mode-segments button::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 8px;
+  height: 3px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0;
+  transform: scaleX(.42);
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+.mode-segments button.active::after {
+  opacity: .42;
+  transform: scaleX(1);
+}
+.mode-segments button:active { transform: scale(.985); }
+
+.reference-density.view-exceptions .student-card.status-absent,
+.reference-density.view-exceptions .student-card.status-sick {
+  box-shadow: 0 0 0 3px rgba(255, 184, 63, .15), var(--shadow-card);
+}
+.reference-density.view-one {
+  grid-template-columns: 1fr;
+}
+.reference-density.view-one .student-card,
+.reference-density.view-one .student-main-button {
+  min-height: 138px;
+}
+.reference-density.view-one .student-main-button {
+  grid-template-columns: 98px minmax(0, 1fr);
+  padding: 16px 18px;
+}
+.reference-density.view-one .student-avatar-ring {
+  width: 92px;
+  height: 92px;
+}
+.reference-density.view-one .student-name {
+  font-size: 1.02rem;
+}
+.reference-density.view-one .student-line .group-icon {
+  width: 24px;
+  height: 24px;
+}
+.reference-density.view-one .status-control {
+  min-height: 38px;
+  width: min(100%, 190px);
+  font-size: .86rem;
+}
+.reference-density.view-compact {
+  gap: 8px;
+}
+.reference-density.view-compact .student-card,
+.reference-density.view-compact .student-main-button {
+  min-height: 92px;
+}
+.reference-density.view-compact .student-main-button {
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 8px;
+  padding: 9px 8px 8px 10px;
+}
+.reference-density.view-compact .student-avatar-ring {
+  width: 54px;
+  height: 54px;
+  padding: 3px;
+}
+.reference-density.view-compact .rank-bubble {
+  width: 28px;
+  height: 28px;
+  font-size: .82rem;
+}
+.reference-density.view-compact .student-info {
+  gap: 3px;
+}
+.reference-density.view-compact .student-name {
+  font-size: .72rem;
+  line-height: 1.1;
+}
+.reference-density.view-compact .student-line {
+  min-height: 14px;
+}
+.reference-density.view-compact .student-line .group-icon {
+  width: 14px;
+  height: 14px;
+}
+.reference-density.view-compact .status-control {
+  min-height: 25px;
+  width: min(100%, 122px);
+  font-size: .6rem;
+  padding: 0 6px;
+  gap: 3px;
+}
+.reference-density.view-compact .status-control .icon-sm {
+  width: 12px;
+  height: 12px;
+}
+.reference-density.view-compact .status-control .chevron {
+  width: 11px;
+  height: 11px;
+}
+.reference-density.view-compact .retardo-chip {
+  max-width: 86px;
+  font-size: .54rem;
+  padding-inline: 5px;
+}
+
+@media (min-width: 760px) {
+  .reference-density.view-one { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .reference-density.view-compact { grid-template-columns: repeat(auto-fit, minmax(236px, 1fr)); }
+}
+
+@media (min-width: 1280px) {
+  .reference-density.view-one { grid-template-columns: repeat(2, minmax(360px, 1fr)); }
+  .reference-density.view-compact { grid-template-columns: repeat(auto-fit, minmax(232px, 1fr)); gap: 12px; }
+  .reference-density.view-compact .student-card,
+  .reference-density.view-compact .student-main-button { min-height: 104px; }
+  .reference-density.view-compact .student-main-button { grid-template-columns: 68px minmax(0, 1fr); padding: 11px 10px 9px 12px; }
+  .reference-density.view-compact .student-avatar-ring { width: 64px; height: 64px; }
+  .reference-density.view-compact .student-name { font-size: .8rem; }
+  .reference-density.view-compact .status-control { min-height: 28px; width: min(100%, 138px); font-size: .66rem; }
+}
+
+@media (min-width: 1480px) {
+  .reference-density.view-compact { grid-template-columns: repeat(4, minmax(232px, 1fr)); }
+}
+
+@media (max-width: 560px) {
+  .reference-density.view-one .student-card,
+  .reference-density.view-one .student-main-button { min-height: 118px; }
+  .reference-density.view-one .student-main-button { grid-template-columns: 74px minmax(0, 1fr); padding: 12px 10px 10px 12px; }
+  .reference-density.view-one .student-avatar-ring { width: 68px; height: 68px; }
+  .reference-density.view-one .student-name { font-size: .86rem; }
+  .reference-density.view-one .student-line .group-icon { width: 18px; height: 18px; }
+  .reference-density.view-one .status-control { min-height: 32px; font-size: .72rem; }
+}

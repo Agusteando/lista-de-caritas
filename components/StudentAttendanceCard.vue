@@ -8,6 +8,7 @@ const props = defineProps<{
   highlighted?: boolean
   index?: number
   retardo?: RetardoRecord
+  interactionMode?: 'exceptions' | 'one' | 'compact'
 }>()
 
 const emit = defineEmits<{ setStatus: [studentId: string, status: AttendanceStatus] }>()
@@ -35,12 +36,19 @@ const tone = computed(() => {
 })
 
 const cycle = () => {
-  const next: Record<AttendanceStatus, AttendanceStatus> = {
-    unmarked: 'present',
+  const exceptionFlow: Record<AttendanceStatus, AttendanceStatus> = {
+    unmarked: 'absent',
     present: 'absent',
     absent: 'sick',
     sick: 'present'
   }
+  const oneByOneFlow: Record<AttendanceStatus, AttendanceStatus> = {
+    unmarked: 'present',
+    present: 'absent',
+    absent: 'sick',
+    sick: 'unmarked'
+  }
+  const next = props.interactionMode === 'exceptions' ? exceptionFlow : oneByOneFlow
   emit('setStatus', props.student.id, next[props.status])
 }
 </script>
