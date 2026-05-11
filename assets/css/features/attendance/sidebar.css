@@ -1,34 +1,62 @@
 .attendance-sidebar { display: none; }
-.side-card { border-radius: 24px; padding: clamp(16px, 1.35vw, 20px); background: rgba(255,253,248,.86); border: 1px solid rgba(226,216,194,.72); box-shadow: var(--shadow-card); }
-.side-card h3 { margin: 0 0 12px; color: var(--ink); letter-spacing: -.025em; }
-.side-card p { margin: 8px 0 0; color: #405348; font-weight: 720; display: flex; align-items: center; gap: 10px; }
-.save-side-card { display: grid; grid-template-columns: 54px 1fr; gap: 10px 14px; align-items: center; }
-.save-side-card .save-button { grid-column: 1 / -1; margin-top: 10px; }
+.side-card {
+  border-radius: 22px;
+  padding: clamp(14px, 1.1vw, 18px);
+  background: rgba(255,254,250,.9);
+  border: 1px solid rgba(226,216,194,.66);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(16px);
+}
+.side-card h3 { margin: 0 0 10px; color: var(--ink); letter-spacing: -.025em; font-size: clamp(.98rem, .9vw, 1.08rem); }
+.side-card p { margin: 7px 0 0; color: #405348; font-weight: 720; display: flex; align-items: center; gap: 9px; }
+.save-side-card {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 8px 12px;
+  align-items: center;
+  background: linear-gradient(145deg, rgba(255,254,250,.94), rgba(255,249,238,.92));
+}
+.pending-badge { width: 46px; height: 46px; border-width: 3px; }
+.save-side-card .save-button { grid-column: 1 / -1; margin-top: 8px; min-height: 48px; border-radius: 17px; }
 .ready-line { grid-column: 1 / -1; color: #2f9a55; font-weight: 820; text-align: center; }
-.weekly-real-card,
-.restored-logros-card { border-radius: 24px; padding: clamp(17px, 1.35vw, 20px) clamp(18px, 1.45vw, 22px); background: rgba(255, 253, 248, .9); border: 1px solid rgba(226, 216, 194, .7); }
+.save-status-line { grid-column: 1 / -1; min-height: 20px; color: #2f9a55; font-weight: 820; text-align: center; }
+.save-status-line:empty { display: none; }
+.group-info-card { display: grid; gap: 8px; }
+.group-info-card h3,
 .weekly-real-card h3,
-.logros-real-card h3 { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; font-size: 1.08rem; }
+.logros-real-card h3 { display: flex; align-items: center; gap: 9px; }
+.group-info-card h3 .icon-sm,
 .weekly-real-card h3 .icon-sm,
-.logros-real-card h3 .icon-sm { width: 21px; height: 21px; color: #5caa67; }
-.weekly-grid { display: grid; grid-template-columns: 34px repeat(5, minmax(0, 1fr)); align-items: center; gap: 10px; font-variant-numeric: tabular-nums; }
+.logros-real-card h3 .icon-sm { width: 20px; height: 20px; color: #5caa67; }
+.weekly-real-card,
+.restored-logros-card { border-radius: 22px; padding: clamp(15px, 1.15vw, 18px) clamp(16px, 1.25vw, 20px); background: rgba(255, 254, 250, .9); border: 1px solid rgba(226, 216, 194, .66); }
+.weekly-real-card h3,
+.logros-real-card h3 { margin-bottom: 14px; font-size: 1rem; }
+.weekly-grid { display: grid; grid-template-columns: 30px repeat(5, minmax(0, 1fr)); align-items: center; gap: 7px; font-variant-numeric: tabular-nums; }
 .weekly-grid strong,
-.weekly-grid b { min-height: 30px; display: grid; place-items: center; border-radius: 11px; color: #283544; font-size: .98rem; line-height: 1; font-weight: 860; }
-.weekly-grid strong { color: #7b827d; font-size: .72rem; font-weight: 950; letter-spacing: .05em; }
-.weekly-grid strong small { display: block; margin-top: 5px; color: #9aa19b; font-size: .84rem; letter-spacing: 0; }
+.weekly-grid b { min-height: 27px; display: grid; place-items: center; border-radius: 10px; color: #283544; font-size: .92rem; line-height: 1; font-weight: 860; }
+.weekly-grid strong { color: #7b827d; font-size: .68rem; font-weight: 950; letter-spacing: .05em; }
+.weekly-grid strong small { display: block; margin-top: 4px; color: #9aa19b; font-size: .78rem; letter-spacing: 0; }
 .weekly-grid .today { background: rgba(223, 245, 212, .92); color: #126829; box-shadow: inset 0 0 0 1px rgba(30, 133, 55, .28); }
-.week-status-icon { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 999px; color: white; box-shadow: 0 7px 14px rgba(44, 61, 48, .14), inset 0 1px 0 rgba(255,255,255,.42); }
-.week-status-icon .icon-sm { width: 17px; height: 17px; stroke-width: 3; }
+.week-status-icon { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 999px; color: white; box-shadow: 0 6px 12px rgba(44, 61, 48, .12), inset 0 1px 0 rgba(255,255,255,.42); }
+.week-status-icon .icon-sm { width: 16px; height: 16px; stroke-width: 3; }
 .week-status-icon.present { background: linear-gradient(145deg, #78c869, #248a3a); }
 .week-status-icon.absent { background: linear-gradient(145deg, #ff6964, #e02020); }
 .week-status-icon.sick { background: linear-gradient(145deg, #62b9f5, #0d76c9); }
-.logros-real-card { position: relative; overflow: hidden; min-height: clamp(148px, 12vw, 168px); background: radial-gradient(circle at 86% 75%, rgba(132, 190, 139, .18), transparent 38%), linear-gradient(145deg, rgba(255,253,248,.94), rgba(244, 252, 239, .84)); }
-.logros-celebration-body { position: relative; min-height: 88px; display: grid; grid-template-columns: 62px minmax(0, 1fr) 90px; align-items: center; gap: 14px; }
-.logros-star-medal { width: clamp(54px, 4vw, 60px); height: clamp(54px, 4vw, 60px); display: grid; place-items: center; border-radius: 999px; color: white; background: linear-gradient(145deg, #8cd06e, #4cae4f 62%, #358d43); border: 7px solid rgba(214, 244, 201, .9); box-shadow: 0 10px 22px rgba(59, 132, 66, .18), inset 0 2px 0 rgba(255,255,255,.42); }
-.logros-star-medal .icon { width: 32px; height: 32px; fill: currentColor; stroke-width: 2.4; }
+.logros-real-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 138px;
+  background: radial-gradient(circle at 88% 78%, rgba(132, 190, 139, .15), transparent 38%), linear-gradient(145deg, rgba(255,254,250,.94), rgba(246, 252, 241, .88));
+}
+.logros-celebration-body { position: relative; min-height: 76px; display: grid; grid-template-columns: 54px minmax(0, 1fr) 74px; align-items: center; gap: 12px; }
+.logros-star-medal { width: 52px; height: 52px; display: grid; place-items: center; border-radius: 999px; color: white; background: linear-gradient(145deg, #8cd06e, #4cae4f 62%, #358d43); border: 6px solid rgba(214, 244, 201, .9); box-shadow: 0 9px 20px rgba(59, 132, 66, .16), inset 0 2px 0 rgba(255,255,255,.42); }
+.logros-star-medal .icon { width: 28px; height: 28px; fill: currentColor; stroke-width: 2.4; }
 .logros-celebration-copy { position: relative; z-index: 2; min-width: 0; }
-.logros-celebration-copy strong { display: block; color: #1a2a3c; font-size: 1.12rem; line-height: 1.1; letter-spacing: -.03em; }
-.logros-celebration-copy p { display: block; margin: 8px 0 0; max-width: 210px; color: #4d5e67; font-size: .88rem; line-height: 1.32; font-weight: 740; }
-.logros-group-mascot { position: absolute; right: -16px; bottom: -28px; width: 134px; height: 134px; opacity: .46; display: grid; place-items: center; filter: drop-shadow(0 12px 18px rgba(50, 98, 70, .1)); }
-.logros-group-mascot .group-icon.decorative { position: static; width: 124px; height: 124px; opacity: 1; }
-.open-logros-button { margin-top: 10px; min-height: 34px; padding: 0 12px; border-radius: 999px; background: #fff1c9; color: #8b5b00; font-weight: 900; }
+.logros-celebration-copy strong { display: block; color: #1a2a3c; font-size: 1.02rem; line-height: 1.1; letter-spacing: -.03em; }
+.logros-celebration-copy p { display: block; margin: 6px 0 0; max-width: 210px; color: #4d5e67; font-size: .8rem; line-height: 1.25; font-weight: 740; }
+.logros-mini-stats { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.logros-mini-stats span { min-height: 24px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 999px; color: #7a5510; background: #fff1c9; font-size: .72rem; font-weight: 880; }
+.logros-group-mascot { position: absolute; right: -16px; bottom: -26px; width: 116px; height: 116px; opacity: .4; display: grid; place-items: center; filter: drop-shadow(0 12px 18px rgba(50, 98, 70, .1)); }
+.logros-group-mascot .group-icon.decorative { position: static; width: 106px; height: 106px; opacity: 1; }
+.open-logros-button { margin-top: 9px; min-height: 32px; padding: 0 12px; border-radius: 999px; background: #fff1c9; color: #8b5b00; font-weight: 900; }

@@ -10,7 +10,7 @@ Teachers can start at `/` and choose their plantel from large selection cards. T
 
 After choosing a plantel, the teacher selects grado and grupo once. That context is stored locally on the device. The next time the same teacher opens the app, the landing page offers a one-tap continue card, and `/asistencia/:plantel` redirects straight to the remembered `/asistencia/:plantel/:grado/:grupo` route when possible. The attendance screen also exposes a deliberate `Cambiar grupo` path that returns to group selection without clearing the remembered context.
 
-The attendance route renders cached roster data immediately when available, then refreshes the roster and today’s saved attendance in the background. The UI shows calm teacher-facing states such as “Preparando,” “Listo,” and “Pendiente de guardar.” Technical failures are logged internally and are not shown to teachers.
+The attendance route renders cached roster data immediately when available, then refreshes the roster and today’s saved attendance in the background. The UI shows calm teacher-facing states such as “Guardando,” “Guardado,” and “Pendiente de guardar.” Technical failures are logged internally and are not shown to teachers.
 
 ## Routes
 

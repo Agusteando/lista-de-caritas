@@ -13,6 +13,7 @@ const {
   logros,
   logrosClassHeadline,
   logrosClassLine,
+  logroSummary,
   markAllPresent,
   mode,
   pendingCount,
@@ -43,7 +44,16 @@ const {
 
 <template>
   <main class="attendance-shell">
-    <AttendanceTopbar :plantel="plantel" :today-label="todayLabel" />
+    <AttendanceTopbar
+      :plantel="plantel"
+      :today-label="todayLabel"
+      :roster-ready="rosterReady"
+      :refreshing="refreshing"
+      :sound-enabled="sounds.enabled.value"
+      @refresh-roster="refreshRoster"
+      @mark-all-present="markAllPresent"
+      @toggle-sound="sounds.setEnabled(!sounds.enabled.value)"
+    />
 
     <div class="attendance-layout">
       <section class="attendance-main">
@@ -119,6 +129,8 @@ const {
         :weekly-days="displayWeeklyDays"
         :logros-headline="logrosClassHeadline"
         :logros-line="logrosClassLine"
+        :logros-total-points="logroSummary.totalPoints"
+        :logros-active-students="logroSummary.activeStudents"
         @save="saveAttendance"
         @open-logros="setMode('logros')"
       />

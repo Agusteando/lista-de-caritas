@@ -365,6 +365,7 @@ export const useAttendanceScreen = () => {
     logros,
     logrosClassHeadline,
     logrosClassLine,
+    logroSummary,
     markAllPresent,
     mode,
     pendingCount,

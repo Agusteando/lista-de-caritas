@@ -5,9 +5,9 @@ export function useTeacherSafeStatus() {
 
   const label = computed(() => {
     if (saveState.value === 'saving') return 'Guardando'
-    if (saveState.value === 'ready') return 'Listo'
+    if (saveState.value === 'ready') return 'Guardado'
     if (saveState.value === 'pending') return 'Pendiente de guardar'
-    return 'Listo'
+    return ''
   })
 
   const setSaving = () => { saveState.value = 'saving' }

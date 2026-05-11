@@ -20,6 +20,6 @@ const emit = defineEmits<{ save: [] }>()
       <p><b class="danger">{{ props.faltas }} faltas</b> <i>•</i> <b class="info">{{ props.enfermedad }} enfermo</b></p>
     </div>
     <button class="primary-button save-button desktop" type="button" :disabled="props.total === 0" @click="emit('save')">Guardar pase de lista</button>
-    <small class="ready-line">{{ props.label }}</small>
+    <small v-if="props.label" class="save-status-line">{{ props.label }}</small>
   </section>
 </template>

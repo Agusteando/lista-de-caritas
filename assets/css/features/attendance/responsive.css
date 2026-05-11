@@ -11,62 +11,85 @@
     min-height: 0;
     overflow: hidden;
     grid-template-columns: minmax(0, 1fr) var(--rail-width);
-    padding-top: clamp(12px, 1.2vw, 20px);
+    padding-top: clamp(9px, .9vw, 15px);
   }
   .attendance-main,
   .attendance-sidebar {
     min-height: 0;
+    max-height: 100%;
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: thin;
   }
   .attendance-main { padding-right: 2px; }
-  .attendance-sidebar { display: grid; align-content: start; gap: clamp(13px, 1.05vw, 18px); }
+  .attendance-sidebar { display: grid; align-content: start; gap: clamp(11px, .9vw, 15px); }
   .quick-actions { display: none; }
   .fixed-save-area { display: none; }
   .bottom-nav { display: none; }
-  .reference-density.roster-grid { grid-template-columns: repeat(3, minmax(210px, 1fr)); gap: clamp(10px, .95vw, 15px); }
-  .reference-density.view-compact.roster-grid { gap: clamp(10px, .85vw, 13px); }
+  .reference-density.roster-grid { grid-template-columns: repeat(3, minmax(190px, 1fr)); gap: clamp(8px, .75vw, 12px); }
+  .reference-density.view-compact.roster-grid { gap: clamp(8px, .65vw, 11px); }
   .reference-density.view-compact .student-card,
-  .reference-density.view-compact .student-main-button { min-height: calc(var(--student-h) - 10px); }
-  .reference-density.view-compact .student-avatar-ring { width: calc(var(--student-avatar) - 8px); height: calc(var(--student-avatar) - 8px); }
+  .reference-density.view-compact .student-main-button { min-height: calc(var(--student-h) - 8px); }
+  .reference-density.view-compact .student-avatar-ring { width: calc(var(--student-avatar) - 7px); height: calc(var(--student-avatar) - 7px); }
 }
 @media (min-width: 1280px) {
-  .side-card { border-radius: 28px; }
+  .side-card { border-radius: 26px; }
 }
 @media (min-width: 1480px) {
   .attendance-shell {
-    --hero-min: 218px;
-    --metrics-h: 86px;
-    --student-h: 116px;
-    --student-avatar: 72px;
-    --rail-width: 400px;
-    --shell-pad: clamp(26px, 2.1vw, 32px);
+    --hero-min: 174px;
+    --hero-badge: 122px;
+    --metrics-h: 74px;
+    --student-h: 96px;
+    --student-avatar: 62px;
+    --rail-width: 384px;
+    --shell-pad: clamp(22px, 1.75vw, 28px);
   }
+}
+@media (max-height: 820px) and (min-width: 980px) {
+  .attendance-shell {
+    --hero-min: 132px;
+    --hero-badge: 92px;
+    --metrics-h: 58px;
+    --segment-h: 34px;
+    --search-h: 37px;
+    --student-h: 78px;
+    --student-avatar: 45px;
+    --topbar-control: 38px;
+    --shell-pad: 14px;
+  }
+  .class-mode-switcher { margin-bottom: 6px; padding: 4px; }
+  .class-mode-switcher button { min-height: 30px; }
+  .hero-copy p { margin-bottom: 5px; }
+  .attendance-controls { gap: 6px; margin-bottom: 8px; }
+  .student-line { display: none; }
+  .status-control { min-height: 24px; }
+  .attendance-title small { display: none; }
 }
 @media (max-width: 979px) {
   .attendance-topbar { grid-template-columns: 1fr; }
   .topbar-actions { overflow-x: auto; justify-content: flex-start; padding-bottom: 2px; }
+  .topbar-menu { left: 0; right: auto; }
   .change-group-pill { display: inline-flex; }
   .reference-density.roster-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 760px) {
   .attendance-shell {
     --shell-pad: clamp(12px, 4vw, 18px);
-    --hero-min: 174px;
-    --hero-badge: 112px;
-    --metrics-h: 78px;
-    --segment-h: 44px;
-    --search-h: 50px;
-    --student-h: 116px;
-    --student-avatar: 60px;
+    --hero-min: 160px;
+    --hero-badge: 104px;
+    --metrics-h: 72px;
+    --segment-h: 42px;
+    --search-h: 48px;
+    --student-h: 112px;
+    --student-avatar: 58px;
   }
   .attendance-title h1 { font-size: clamp(1.42rem, 6.4vw, 1.9rem); white-space: nowrap; }
   .attendance-title small { display: none; }
   .topbar-left { gap: 9px; }
   .round-button.asset-button { display: none; }
-  .class-hero-card { grid-template-columns: var(--hero-badge) minmax(0, 1fr); gap: 13px; padding: 16px 14px 58px; }
-  .group-icon.decorative { width: 150px; height: 150px; right: -16px; bottom: 10px; }
+  .class-hero-card { grid-template-columns: var(--hero-badge) minmax(0, 1fr); gap: 13px; padding: 16px 14px 52px; }
+  .group-icon.decorative { width: 140px; height: 140px; right: -16px; bottom: 10px; }
   .hero-copy h2 { font-size: clamp(1.26rem, 6vw, 1.72rem); }
   .hero-copy p { font-size: .86rem; margin-bottom: 7px; }
   .attendance-metrics { width: calc(100% - 18px); }

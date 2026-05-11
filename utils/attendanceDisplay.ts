@@ -143,13 +143,13 @@ export const getLogrosClassCopy = (
 
   if (weeklySummary?.hasAnyAttendanceData) {
     return {
-      headline: 'Clase en movimiento',
-      line: 'El resumen refleja los registros guardados de la semana.'
+      headline: 'Clase activa',
+      line: 'Asistencia semanal registrada.'
     }
   }
 
   return {
-    headline: 'Semana en curso',
-    line: 'Los avances aparecerán conforme se guarden asistencia y logros.'
+    headline: 'Sin logros aún',
+    line: ''
   }
 }

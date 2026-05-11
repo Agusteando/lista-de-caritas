@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Users } from 'lucide-vue-next'
+import { BadgeInfo, Users } from 'lucide-vue-next'
 
 const props = defineProps<{
   grupo: string
@@ -12,7 +12,7 @@ const props = defineProps<{
 
 <template>
   <section class="side-card group-info-card">
-    <h3>Información del grupo</h3>
+    <h3><BadgeInfo class="icon-sm" /> Información del grupo</h3>
     <p><GroupIcon :label="props.grupo" tone="green" /> {{ props.title }}</p>
     <p><span>{{ props.classCode }}</span><template v-if="props.detail"><i>•</i>{{ props.detail }}</template></p>
     <p><Users class="icon-sm" /> {{ props.studentCountLabel }} alumnos</p>

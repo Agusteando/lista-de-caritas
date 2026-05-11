@@ -21,6 +21,8 @@ const props = defineProps<{
   }>
   logrosHeadline: string
   logrosLine: string
+  logrosTotalPoints: number
+  logrosActiveStudents: number
 }>()
 
 const emit = defineEmits<{ save: []; openLogros: [] }>()
@@ -44,6 +46,13 @@ const emit = defineEmits<{ save: []; openLogros: [] }>()
       :student-count-label="props.studentCountLabel"
     />
     <WeeklySummaryCard :days="props.weeklyDays" />
-    <ClassLogrosCard :grupo="props.grupo" :headline="props.logrosHeadline" :line="props.logrosLine" @open="emit('openLogros')" />
+    <ClassLogrosCard
+      :grupo="props.grupo"
+      :headline="props.logrosHeadline"
+      :line="props.logrosLine"
+      :total-points="props.logrosTotalPoints"
+      :active-students="props.logrosActiveStudents"
+      @open="emit('openLogros')"
+    />
   </aside>
 </template>
