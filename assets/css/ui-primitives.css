@@ -66,11 +66,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  padding-top: 10px;
-  margin-bottom: 18px;
+  gap: 18px;
+  padding: 18px 22px;
+  margin-bottom: 22px;
+  border-radius: 28px;
+  background: rgba(255,255,255,.84);
+  border: 1px solid rgba(226,216,194,.7);
+  box-shadow: 0 12px 28px rgba(52,48,38,.08), inset 0 1px 0 rgba(255,255,255,.92);
+  backdrop-filter: blur(18px);
 }
-.logo-lockup { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.logo-lockup { display: flex; align-items: center; gap: 14px; min-width: 0; }
 .brand-logo {
   position: relative;
   display: inline-grid;
@@ -100,25 +105,25 @@
 }
 .brand-logo-hero img { transform: scale(1.08); }
 .brand-title { min-width: 0; }
-.brand-title h1 { margin: 0; font-size: clamp(1.35rem, 4.8vw, 2rem); line-height: 1; letter-spacing: -.055em; }
+.brand-title h1 { margin: 0; font-size: clamp(1.25rem, 3vw, 1.9rem); line-height: 1; letter-spacing: -.055em; }
 .brand-title p { margin: 4px 0 0; color: #7e8c84; font-size: .86rem; font-weight: 760; }
-.header-context { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.header-context { display: flex; align-items: center; gap: 10px; min-width: 0; flex-wrap: wrap; justify-content: flex-end; }
 .context-chip,
 .context-change {
-  min-height: 40px;
+  min-height: 42px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.76);
-  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(248,251,246,.96);
+  border: 1px solid rgba(212, 220, 212, .9);
   color: #166f4a;
   font-weight: 820;
-  padding: 8px 13px;
-  box-shadow: 0 8px 22px rgba(40, 58, 47, 0.08);
+  padding: 8px 14px;
+  box-shadow: 0 8px 22px rgba(40, 58, 47, 0.06);
   white-space: nowrap;
 }
-.context-change { display: none; }
+.context-change { display: inline-flex; }
 .group-icon {
   --sprite-x: 0%;
   --sprite-y: 0%;
@@ -162,3 +167,39 @@
   background-size: contain;
 }
 .reference-icon-calendar { background-image: url('/reference-assets/calendar.png'); }
+
+@media (max-width: 760px) {
+  .app-header {
+    padding: 14px 16px;
+    border-radius: 22px;
+  }
+
+  .logo-lockup {
+    gap: 12px;
+  }
+
+  .brand-logo-mark {
+    width: 50px;
+    height: 50px;
+    border-radius: 17px;
+  }
+
+  .header-context {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 620px) {
+  .app-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .context-chip,
+  .context-change {
+    min-height: 38px;
+    border-radius: 14px;
+  }
+}
