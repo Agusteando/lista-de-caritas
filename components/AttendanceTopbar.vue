@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ArrowLeft, CheckSquare, MoreHorizontal, RefreshCcw, Shuffle, Volume2, VolumeX } from 'lucide-vue-next'
 
+const clipboardSrc = '/reference-assets/clipboard.png'
+
 const props = defineProps<{
   plantel: string
   todayLabel: string
@@ -42,7 +44,7 @@ onBeforeUnmount(() => document.removeEventListener('click', handleDocumentClick)
         <ArrowLeft class="icon" />
       </NuxtLink>
       <span class="round-button soft asset-button clipboard-asset" aria-hidden="true">
-        <img class="reference-topbar-image" src="/reference-assets/clipboard.png" alt="" draggable="false">
+        <img class="reference-topbar-image" :src="clipboardSrc" alt="" draggable="false">
       </span>
       <div class="attendance-title">
         <h1>Pase de lista <span aria-hidden="true">🌿</span></h1>
