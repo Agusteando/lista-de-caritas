@@ -15,7 +15,6 @@
   backdrop-filter: blur(22px);
   pointer-events: auto;
 }
-.fixed-save-inner .pending-badge { width: 58px; height: 58px; }
 .save-copy { min-width: 0; display: grid; gap: 4px; }
 .save-copy strong { color: var(--ink); font-size: 1.08rem; letter-spacing: -.03em; }
 .save-copy span { display: inline-flex; align-items: center; gap: 8px; color: #5f6f65; font-size: .95rem; font-weight: 760; }
@@ -36,5 +35,6 @@
 .save-button::after { content: "✦"; position: absolute; top: 50%; color: rgba(255,255,255,.86); transform: translateY(-50%); }
 .save-button::before { left: 17px; }
 .save-button::after { right: 17px; }
-.save-button .icon { margin-left: 12px; }
+.save-button > .icon { width: 24px; height: 24px; margin-left: 0; stroke-width: 2.4; }
+.save-button .sparkle-end { display: none; }
 

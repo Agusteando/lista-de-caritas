@@ -4,7 +4,7 @@
   --ink: #142033;
   --ink-soft: #26353f;
   --muted: #718072;
-  --bg: #fbf7ef;
+  --bg: #fffaf2;
   --paper: #fffefa;
   --paper-strong: #fffdf6;
   --line: rgba(52, 74, 58, 0.12);
@@ -22,7 +22,7 @@
   --orange: #ff7a16;
   --orange-deep: #ef5b10;
   --shadow-soft: 0 18px 45px rgba(54, 48, 37, 0.12);
-  --shadow-card: 0 10px 24px rgba(52, 48, 38, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --shadow-card: 0 11px 26px rgba(52, 48, 38, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.88);
   --tap: 52px;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --shell-max: 1586px;

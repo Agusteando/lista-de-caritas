@@ -6,8 +6,8 @@
   --metrics-h: clamp(60px, 4.6vw, 74px);
   --segment-h: clamp(36px, 2.65vw, 42px);
   --search-h: clamp(38px, 2.85vw, 46px);
-  --student-h: clamp(82px, 6vw, 96px);
-  --student-avatar: clamp(48px, 3.8vw, 62px);
+  --student-h: clamp(104px, 7.5vw, 116px);
+  --student-avatar: clamp(58px, 4.9vw, 72px);
   position: relative;
   width: min(var(--shell-max), 100%);
   min-height: 100vh;

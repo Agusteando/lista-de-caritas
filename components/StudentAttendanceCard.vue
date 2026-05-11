@@ -2,16 +2,13 @@
 import { Check, ChevronDown, Circle, Clock3, Thermometer, UserMinus } from 'lucide-vue-next'
 import type { AttendanceStatus, RetardoRecord, Student } from '~/types/domain'
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
   student: Student
   status: AttendanceStatus
   highlighted?: boolean
   index?: number
   retardo?: RetardoRecord
-  interactionMode?: 'exceptions' | 'one'
-}>(), {
-  interactionMode: 'one'
-})
+}>()
 
 const emit = defineEmits<{ setStatus: [studentId: string, status: AttendanceStatus] }>()
 
@@ -37,23 +34,15 @@ const tone = computed(() => {
   return 'green'
 })
 
-const nextStatusByMode: Record<'exceptions' | 'one', Record<AttendanceStatus, AttendanceStatus>> = {
-  exceptions: {
-    unmarked: 'absent',
-    present: 'absent',
-    absent: 'sick',
-    sick: 'present'
-  },
-  one: {
-    unmarked: 'present',
-    present: 'absent',
-    absent: 'sick',
-    sick: 'unmarked'
-  }
+const nextStatus: Record<AttendanceStatus, AttendanceStatus> = {
+  unmarked: 'present',
+  present: 'absent',
+  absent: 'sick',
+  sick: 'unmarked'
 }
 
 const cycle = () => {
-  emit('setStatus', props.student.id, nextStatusByMode[props.interactionMode][props.status])
+  emit('setStatus', props.student.id, nextStatus[props.status])
 }
 </script>
 

@@ -3,7 +3,6 @@ const {
   activeLogrosStudents,
   attendance,
   awardLogro,
-  cardInteractionMode,
   classCode,
   classDetail,
   displayWeeklyDays,
@@ -28,7 +27,6 @@ const {
   searchTerm,
   setMode,
   setStatus,
-  setViewMode,
   showRosterSkeleton,
   sounds,
   status,
@@ -37,7 +35,6 @@ const {
   summaryVisible,
   todayLabel,
   totals,
-  viewMode,
   visibleStudents
 } = useAttendanceScreen()
 </script>
@@ -79,24 +76,11 @@ const {
         />
 
         <template v-if="mode === 'attendance'">
-          <AttendanceViewControls
-            v-model:search-term="searchTerm"
-            :view-mode="viewMode"
-            :roster-ready="rosterReady"
-            :pending-count="pendingCount"
-            :refreshing="refreshing"
-            :sound-enabled="sounds.enabled.value"
-            @set-view-mode="setViewMode"
-            @mark-all-present="markAllPresent"
-            @refresh-roster="refreshRoster"
-            @toggle-sound="sounds.setEnabled(!sounds.enabled.value)"
-          />
+          <AttendanceViewControls v-model:search-term="searchTerm" />
 
           <AttendanceRoster
             :students="visibleStudents"
             :attendance="attendance"
-            :view-mode="viewMode"
-            :interaction-mode="cardInteractionMode"
             :show-skeleton="showRosterSkeleton"
             :recently-changed-student-id="recentlyChangedStudentId"
             :retardos="retardos"

@@ -1,21 +1,21 @@
 .class-mode-switcher {
+  min-height: var(--segment-h);
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
-  margin: 0 0 8px;
+  margin-bottom: clamp(8px, .72vw, 12px);
   padding: 5px;
-  border-radius: 18px;
-  background: rgba(255, 252, 244, .74);
-  border: 1px solid rgba(231, 205, 160, .44);
-  box-shadow: 0 8px 19px rgba(58, 49, 33, .06), inset 0 1px 0 rgba(255,255,255,.84);
+  border-radius: clamp(18px, 1.35vw, 22px);
+  background: rgba(255, 252, 246, .82);
+  border: 1px solid var(--line-warm);
+  box-shadow: 0 9px 20px rgba(58, 49, 33, .06);
 }
 .class-mode-switcher button {
-  min-height: clamp(32px, 2.45vw, 38px);
+  min-height: calc(var(--segment-h) - 10px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border-radius: 13px;
+  border-radius: clamp(14px, 1vw, 18px);
   background: transparent;
   color: #526258;
   font-weight: 900;
@@ -25,33 +25,8 @@
 .class-mode-switcher .logros-tab.active { color: #8b5b00; background: linear-gradient(145deg, #fff3cc, #fffaf0 64%, #effce8); }
 .mode-count { min-width: 21px; height: 21px; display: grid; place-items: center; border-radius: 999px; color: white; background: linear-gradient(#ffba4d, #f28c1b); font-size: .7rem; }
 
-.attendance-controls { display: grid; gap: 8px; margin-bottom: 10px; }
-.mode-segments {
-  min-height: var(--segment-h);
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  overflow: hidden;
-  border-radius: clamp(16px, 1.35vw, 21px);
-  background: rgba(255, 252, 246, .86);
-  border: 1px solid var(--line-warm);
-  box-shadow: 0 8px 19px rgba(58, 49, 33, .06);
-}
-.mode-segments button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(7px, .75vw, 10px);
-  background: transparent;
-  color: #202728;
-  font-weight: 850;
-  border-right: 1px solid var(--line-warm);
-  transition: color 150ms ease, background 150ms ease, box-shadow 150ms ease, transform 120ms ease;
-}
-.mode-segments button:last-child { border-right: 0; }
-.mode-segments button.active { color: #126829; background: linear-gradient(145deg, rgba(236,250,230,.96), rgba(255,255,255,.72)); box-shadow: inset 0 0 0 2px rgba(54, 148, 70, .2); }
-.mode-segments button:active { transform: scale(.985); }
-.mode-segments .icon-sm { width: clamp(16px, 1.05vw, 18px); height: clamp(16px, 1.05vw, 18px); stroke-width: 2.45; }
-.search-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(9px, .9vw, 14px); }
+.attendance-controls { display: grid; gap: 0; margin-bottom: clamp(10px, .85vw, 14px); }
+.search-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(10px, .9vw, 14px); }
 .search-box,
 .filter-button {
   min-height: var(--search-h);
@@ -59,9 +34,9 @@
   align-items: center;
   gap: 11px;
   border-radius: clamp(17px, 1.35vw, 22px);
-  background: rgba(255,255,255,.86);
+  background: rgba(255,255,255,.88);
   border: 1px solid rgba(31, 89, 72, .08);
-  box-shadow: 0 8px 19px rgba(58, 49, 33, .06), inset 0 1px 0 rgba(255,255,255,.84);
+  box-shadow: 0 8px 19px rgba(58, 49, 33, .06), inset 0 1px 0 rgba(255,255,255,.86);
 }
 .search-box { padding: 0 clamp(15px, 1.3vw, 22px); color: #6d7ca9; }
 .search-box input { width: 100%; border: 0; outline: 0; background: transparent; color: var(--ink); font-weight: 760; }
@@ -69,23 +44,3 @@
 .search-box .icon { width: clamp(20px, 1.3vw, 22px); height: clamp(20px, 1.3vw, 22px); color: #667ab0; }
 .filter-button { min-width: clamp(104px, 7.3vw, 128px); padding: 0 clamp(15px, 1.3vw, 22px); color: #196e55; font-weight: 840; }
 .filter-button .icon { width: clamp(21px, 1.4vw, 24px); height: clamp(21px, 1.4vw, 24px); stroke-width: 2.25; }
-.quick-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-.mark-all-button,
-.quiet-button {
-  min-height: 38px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 0 13px;
-  border-radius: 14px;
-  background: rgba(255, 254, 250, .82);
-  border: 1px solid var(--line);
-  color: #166f4a;
-  font-weight: 850;
-  box-shadow: 0 8px 18px rgba(43, 55, 44, .06), inset 0 1px 0 rgba(255,255,255,.78);
-}
-.quiet-button { width: 38px; padding: 0; color: #526258; }
-.safe-note.compact,
-.sync-strip { min-height: 28px; display: inline-flex; align-items: center; gap: 8px; color: #536158; font-weight: 780; font-size: .78rem; }
-.sync-dot { width: 8px; height: 8px; border-radius: 999px; background: var(--green); box-shadow: 0 0 0 4px rgba(57,168,117,.15); }

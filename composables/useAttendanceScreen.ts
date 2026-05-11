@@ -27,8 +27,6 @@ export const useAttendanceScreen = () => {
   const grado = computed(() => decodeURIComponent(String(route.params.grado || '')).toLowerCase())
   const grupo = computed(() => decodeURIComponent(String(route.params.grupo || '')).toUpperCase())
   const mode = ref<'attendance' | 'logros'>('attendance')
-  const viewMode = ref<'exceptions' | 'one' | 'compact'>('exceptions')
-  const viewModeStorageKey = computed(() => `lista-de-caritas:view-mode:${plantel.value}:${grado.value}:${grupo.value}`)
   const searchTerm = ref('')
   const selectedDate = ref(dayjs().format('YYYY-MM-DD'))
 
@@ -125,13 +123,6 @@ export const useAttendanceScreen = () => {
     })
   })
 
-  const cardInteractionMode = computed<'exceptions' | 'one'>(() => viewMode.value === 'exceptions' ? 'exceptions' : 'one')
-
-  const setViewMode = (nextMode: 'exceptions' | 'one' | 'compact') => {
-    if (viewMode.value === nextMode) return
-    viewMode.value = nextMode
-    if (import.meta.client) localStorage.setItem(viewModeStorageKey.value, nextMode)
-  }
 
   const clearSelectionTimer = () => {
     if (!selectionTimer) return
@@ -336,8 +327,6 @@ export const useAttendanceScreen = () => {
 
   onMounted(() => {
     draftHydrated.value = true
-    const rememberedViewMode = localStorage.getItem(viewModeStorageKey.value)
-    if (rememberedViewMode === 'exceptions' || rememberedViewMode === 'one' || rememberedViewMode === 'compact') viewMode.value = rememberedViewMode
     loadCachedRoster()
     if (students.value.length) initialRosterLoad.value = false
     void flush()
@@ -355,7 +344,6 @@ export const useAttendanceScreen = () => {
     activeLogrosStudents,
     attendance,
     awardLogro,
-    cardInteractionMode,
     classCode,
     classDetail,
     displayWeeklyDays,
@@ -380,7 +368,6 @@ export const useAttendanceScreen = () => {
     searchTerm,
     setMode,
     setStatus,
-    setViewMode,
     showRosterSkeleton,
     sounds,
     status,
@@ -389,7 +376,6 @@ export const useAttendanceScreen = () => {
     summaryVisible,
     todayLabel,
     totals,
-    viewMode,
     visibleStudents
   }
 }
