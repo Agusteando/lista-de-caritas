@@ -68,6 +68,7 @@ export default defineEventHandler(async (event) => {
       totalPoints: Number(summary.total_points || 0),
       totalEvents: Number(summary.total_events || 0),
       activeStudents: Number(summary.active_students || 0),
+      attendanceDate: today.format('YYYY-MM-DD'),
       topCategory: categoryRows[0]?.category || null,
       weekStart: weekStart.format('YYYY-MM-DD'),
       weekEnd: weekEnd.format('YYYY-MM-DD')

@@ -103,20 +103,32 @@
 .week-status-icon.present { background: linear-gradient(145deg, #78c869, #248a3a); }
 .week-status-icon.absent { background: linear-gradient(145deg, #ff6964, #e02020); }
 .week-status-icon.sick { background: linear-gradient(145deg, #62b9f5, #0d76c9); }
-.logros-real-card {
+.class-logros-card {
   position: relative;
   overflow: hidden;
-  min-height: 138px;
-  background: radial-gradient(circle at 88% 78%, rgba(132, 190, 139, .15), transparent 38%), linear-gradient(145deg, rgba(255,253,248,.94), rgba(246, 252, 241, .88));
+  min-height: 154px;
+  display: grid;
+  gap: 11px;
+  background:
+    radial-gradient(circle at 91% 12%, rgba(255, 209, 102, .16), transparent 7rem),
+    radial-gradient(circle at 8% 92%, rgba(92, 170, 103, .15), transparent 8rem),
+    linear-gradient(145deg, rgba(255,253,248,.96), rgba(248,253,244,.9));
 }
-.logros-celebration-body { position: relative; min-height: 76px; display: grid; grid-template-columns: 54px minmax(0, 1fr) 74px; align-items: center; gap: 12px; }
-.logros-star-medal { width: 52px; height: 52px; display: grid; place-items: center; border-radius: 999px; color: white; background: linear-gradient(145deg, #8cd06e, #4cae4f 62%, #358d43); border: 6px solid rgba(214, 244, 201, .9); box-shadow: 0 9px 20px rgba(59, 132, 66, .16), inset 0 2px 0 rgba(255,255,255,.42); }
-.logros-star-medal .icon { width: 28px; height: 28px; fill: currentColor; stroke-width: 2.4; }
-.logros-celebration-copy { position: relative; z-index: 2; min-width: 0; }
-.logros-celebration-copy strong { display: block; color: #1a2a3c; font-size: 1.02rem; line-height: 1.1; letter-spacing: -.03em; }
-.logros-celebration-copy p { display: block; margin: 6px 0 0; max-width: 210px; color: #4d5e67; font-size: .8rem; line-height: 1.25; font-weight: 740; }
-.logros-mini-stats { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
-.logros-mini-stats span { min-height: 24px; display: inline-flex; align-items: center; gap: 4px; padding: 0 8px; border-radius: 999px; color: #7a5510; background: #fff1c9; font-size: .72rem; font-weight: 880; }
-.logros-group-mascot { position: absolute; right: -16px; bottom: -26px; width: 116px; height: 116px; opacity: .4; display: grid; place-items: center; filter: drop-shadow(0 12px 18px rgba(50, 98, 70, .1)); }
-.logros-group-mascot .group-icon.decorative { position: static; width: 106px; height: 106px; opacity: 1; }
-.open-logros-button { margin-top: 9px; min-height: 32px; padding: 0 12px; border-radius: 999px; background: #fff1c9; color: #8b5b00; font-weight: 900; }
+.class-logros-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.class-logros-head h3 { margin: 0; display: flex; align-items: center; gap: 9px; font-size: 1.02rem; }
+.class-logros-head h3 .icon-sm { width: 20px; height: 20px; color: #5caa67; }
+.class-logros-open { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 999px; color: #4a7d4d; background: rgba(239, 252, 232, .86); border: 1px solid rgba(92,170,103,.22); }
+.class-logros-body { width: 100%; display: grid; grid-template-columns: 58px minmax(0, 1fr); align-items: center; gap: 12px; color: inherit; text-align: left; background: transparent; padding: 0; }
+.class-logros-medal { width: 56px; height: 56px; display: grid; place-items: center; border-radius: 999px; color: white; background: linear-gradient(145deg, #8cd06e, #4cae4f 62%, #358d43); border: 6px solid rgba(214, 244, 201, .9); box-shadow: 0 9px 20px rgba(59, 132, 66, .16), inset 0 2px 0 rgba(255,255,255,.42); }
+.class-logros-medal .icon { width: 30px; height: 30px; fill: currentColor; stroke-width: 2.4; }
+.class-logros-copy { min-width: 0; display: grid; gap: 5px; }
+.class-logros-copy strong { color: #1a2a3c; font-size: 1.08rem; line-height: 1.05; letter-spacing: -.035em; font-weight: 930; }
+.class-logros-copy small,
+.class-logros-empty { color: #4d5e67; font-size: .78rem; line-height: 1.24; font-weight: 760; }
+.class-logros-empty { color: #6f766f; }
+.class-logros-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+.class-logros-metrics span { min-height: 32px; display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 0 7px; border-radius: 12px; color: #7a5510; background: #fff1c9; font-size: .69rem; line-height: 1; font-weight: 880; white-space: nowrap; }
+.class-logros-metrics.empty span { color: #5f7165; background: rgba(239,252,232,.9); }
+.class-logros-category { min-height: 34px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 11px; border-radius: 14px; background: rgba(255,255,255,.7); border: 1px solid rgba(226,216,194,.55); }
+.class-logros-category span { color: #778078; font-size: .68rem; font-weight: 840; }
+.class-logros-category strong { color: #126829; font-size: .78rem; font-weight: 920; }

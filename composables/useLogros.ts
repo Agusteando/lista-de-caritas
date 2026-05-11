@@ -22,6 +22,7 @@ const streakCategories: Partial<Record<LogroCategory, string>> = {
 export function useLogrosContext(plantel: Ref<string> | ComputedRef<string>, grado: Ref<string> | ComputedRef<string>, grupo: Ref<string> | ComputedRef<string>, students: Ref<Student[]>) {
   const states = ref<Record<string, StudentLogrosState>>({})
   const syncing = ref(false)
+  const pendingEvents = ref(0)
   const featuredCategory = computed<LogroCategory>(() => logroCategories[dayjs().day() % logroCategories.length])
 
   const key = computed(() => `lista-de-caritas:logros:${plantel.value}:${grado.value}:${grupo.value}:${dayjs().startOf('week').format('YYYY-MM-DD')}`)
@@ -176,15 +177,20 @@ export function useLogrosContext(plantel: Ref<string> | ComputedRef<string>, gra
     if (!import.meta.client) return [] as LogroEvent[]
     try {
       const raw = localStorage.getItem(queueKey)
-      return raw ? JSON.parse(raw) as LogroEvent[] : []
+      const events = raw ? JSON.parse(raw) as LogroEvent[] : []
+      pendingEvents.value = events.length
+      return events
     } catch {
+      pendingEvents.value = 0
       return [] as LogroEvent[]
     }
   }
 
   const writePending = (events: LogroEvent[]) => {
+    pendingEvents.value = events.length
     if (!import.meta.client) return
-    localStorage.setItem(queueKey, JSON.stringify(events))
+    if (!events.length) localStorage.removeItem(queueKey)
+    else localStorage.setItem(queueKey, JSON.stringify(events))
   }
 
   const flushPending = async () => {
@@ -216,15 +222,16 @@ export function useLogrosContext(plantel: Ref<string> | ComputedRef<string>, gra
   const rankings = computed(() => {
     const list = students.value.map((student) => ({ student, state: states.value[student.id] || defaultState(student.id) }))
     const maxStreak = (state: StudentLogrosState) => Math.max(0, ...Object.values(state.streaks || {}).map((value) => Number(value || 0)))
-    const topLogros = [...list].sort((a, b) => b.state.pointsThisWeek - a.state.pointsThisWeek).slice(0, 5)
-    const bestStreak = [...list].sort((a, b) => maxStreak(b.state) - maxStreak(a.state)).slice(0, 5)
-    const masParticipativo = [...list].sort((a, b) => (b.state.categoryPoints['Participación'] || 0) - (a.state.categoryPoints['Participación'] || 0)).slice(0, 5)
-    const mejorActitud = [...list].sort((a, b) => (b.state.categoryPoints['Buena actitud'] || 0) - (a.state.categoryPoints['Buena actitud'] || 0)).slice(0, 5)
-    const mayorAvance = [...list].sort((a, b) => b.state.recent.length - a.state.recent.length).slice(0, 5)
+    const topLogros = [...list].filter((entry) => entry.state.pointsThisWeek > 0).sort((a, b) => b.state.pointsThisWeek - a.state.pointsThisWeek).slice(0, 5)
+    const bestStreak = [...list].filter((entry) => maxStreak(entry.state) > 0).sort((a, b) => maxStreak(b.state) - maxStreak(a.state)).slice(0, 5)
+    const masParticipativo = [...list].filter((entry) => (entry.state.categoryPoints['Participación'] || 0) > 0).sort((a, b) => (b.state.categoryPoints['Participación'] || 0) - (a.state.categoryPoints['Participación'] || 0)).slice(0, 5)
+    const mejorActitud = [...list].filter((entry) => (entry.state.categoryPoints['Buena actitud'] || 0) > 0).sort((a, b) => (b.state.categoryPoints['Buena actitud'] || 0) - (a.state.categoryPoints['Buena actitud'] || 0)).slice(0, 5)
+    const mayorAvance = [...list].filter((entry) => entry.state.recent.length > 0).sort((a, b) => b.state.recent.length - a.state.recent.length).slice(0, 5)
     return { topLogros, bestStreak, masParticipativo, mejorActitud, mayorAvance }
   })
 
   watch([students, key], load, { immediate: true, deep: true })
+  watch(key, () => { readPending() }, { immediate: true })
 
   if (import.meta.client) {
     window.addEventListener('online', () => { void flushPending() })
@@ -233,5 +240,5 @@ export function useLogrosContext(plantel: Ref<string> | ComputedRef<string>, gra
     })
   }
 
-  return { states, syncing, featuredCategory, award, rankings, logroCategories, refreshFromServer, mergeServerStates }
+  return { states, syncing, pendingEvents, featuredCategory, award, rankings, logroCategories, refreshFromServer, mergeServerStates, flushPending }
 }

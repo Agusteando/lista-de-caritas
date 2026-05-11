@@ -363,6 +363,7 @@ export const useAttendanceScreen = () => {
     pendingExceptionCount,
     plantel,
     recentlyChangedStudentId,
+    refreshLogrosState,
     refreshRoster,
     refreshing,
     retardos,

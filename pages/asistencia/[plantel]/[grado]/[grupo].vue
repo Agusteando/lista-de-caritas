@@ -19,6 +19,7 @@ const {
   pendingExceptionCount,
   plantel,
   recentlyChangedStudentId,
+  refreshLogrosState,
   refreshRoster,
   refreshing,
   retardos,
@@ -97,7 +98,13 @@ const {
           :rankings="logros.rankings.value"
           :group-label="grupo"
           :syncing="logros.syncing.value"
+          :pending-events="logros.pendingEvents.value"
+          :total-points="logroSummary.totalPoints"
+          :total-events="logroSummary.totalEvents"
+          :active-students="logroSummary.activeStudents"
+          :top-category="logroSummary.topCategory"
           @award="awardLogro"
+          @refresh="refreshLogrosState"
         />
       </section>
 
@@ -115,7 +122,9 @@ const {
         :logros-headline="logrosClassHeadline"
         :logros-line="logrosClassLine"
         :logros-total-points="logroSummary.totalPoints"
+        :logros-total-events="logroSummary.totalEvents"
         :logros-active-students="logroSummary.activeStudents"
+        :logros-top-category="logroSummary.topCategory"
         @save="saveAttendance"
         @open-logros="setMode('logros')"
       />

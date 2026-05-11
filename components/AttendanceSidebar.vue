@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { LogroCategory } from '~/types/domain'
 const props = defineProps<{
   pendingChanges: number
   pendingCount: number
@@ -22,7 +23,9 @@ const props = defineProps<{
   logrosHeadline: string
   logrosLine: string
   logrosTotalPoints: number
+  logrosTotalEvents: number
   logrosActiveStudents: number
+  logrosTopCategory?: LogroCategory | null
 }>()
 
 const emit = defineEmits<{ save: []; openLogros: [] }>()
@@ -47,11 +50,12 @@ const emit = defineEmits<{ save: []; openLogros: [] }>()
     />
     <WeeklySummaryCard :days="props.weeklyDays" />
     <ClassLogrosCard
-      :grupo="props.grupo"
       :headline="props.logrosHeadline"
       :line="props.logrosLine"
       :total-points="props.logrosTotalPoints"
+      :total-events="props.logrosTotalEvents"
       :active-students="props.logrosActiveStudents"
+      :top-category="props.logrosTopCategory"
       @open="emit('openLogros')"
     />
   </aside>

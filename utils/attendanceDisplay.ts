@@ -93,11 +93,23 @@ export const buildWeeklyDisplayDays = (
 }
 
 export const summarizeLogroState = (
-  states: Record<string, { pointsThisWeek?: number; recent?: unknown[] }>,
+  states: Record<string, { pointsThisWeek?: number; recent?: unknown[]; categoryPoints?: Partial<Record<LogroCategory, number>> }>,
   server: ClassLogrosSummary | null,
   featuredCategory: LogroCategory
 ) => {
   const stateList = Object.values(states || {})
+  const categoryTotals = new Map<LogroCategory, number>()
+
+  for (const state of stateList) {
+    for (const [category, value] of Object.entries(state.categoryPoints || {}) as Array<[LogroCategory, number]>) {
+      categoryTotals.set(category, (categoryTotals.get(category) || 0) + Number(value || 0))
+    }
+  }
+
+  const localTopCategory = [...categoryTotals.entries()]
+    .filter(([, points]) => points > 0)
+    .sort((a, b) => b[1] - a[1])[0]?.[0]
+
   const local = {
     totalPoints: stateList.reduce((sum, state) => sum + (state.pointsThisWeek || 0), 0),
     totalEvents: stateList.reduce((sum, state) => sum + (state.recent?.length || 0), 0),
@@ -108,48 +120,27 @@ export const summarizeLogroState = (
     totalPoints: Math.max(local.totalPoints, server?.totalPoints || 0),
     totalEvents: Math.max(local.totalEvents, server?.totalEvents || 0),
     activeStudents: Math.max(local.activeStudents, server?.activeStudents || 0),
-    topCategory: server?.topCategory || featuredCategory
+    topCategory: server?.topCategory || localTopCategory || featuredCategory
   }
 }
 
 export const getLogrosClassCopy = (
-  weeklySummary: WeeklyAttendanceSummary | null,
-  logroSummary: { totalEvents: number; totalPoints: number }
+  _weeklySummary: WeeklyAttendanceSummary | null,
+  logroSummary: { totalEvents: number; totalPoints: number; activeStudents?: number }
 ) => {
-  const weeks = weeklySummary?.positiveWeekStreak || 0
+  const events = logroSummary.totalEvents
+  const points = logroSummary.totalPoints
+  const activeStudents = logroSummary.activeStudents || 0
 
-  if (weeks > 1) {
+  if (events > 0) {
     return {
-      headline: '¡Sigan así!',
-      line: `Van ${weeks} semanas con más presentes que faltas.`
-    }
-  }
-
-  if (weeks === 1) {
-    return {
-      headline: '¡Sigan así!',
-      line: 'Esta semana va con más presentes que faltas.'
-    }
-  }
-
-  if (logroSummary.totalEvents > 0) {
-    const events = logroSummary.totalEvents
-    const points = logroSummary.totalPoints
-    return {
-      headline: '¡Buen avance!',
-      line: `${events} ${events === 1 ? 'logro registrado' : 'logros registrados'} · ${points} ${points === 1 ? 'punto' : 'puntos'} esta semana.`
-    }
-  }
-
-  if (weeklySummary?.hasAnyAttendanceData) {
-    return {
-      headline: 'Clase activa',
-      line: 'Asistencia semanal registrada.'
+      headline: `${events} ${events === 1 ? 'logro' : 'logros'}`,
+      line: `${points} ${points === 1 ? 'punto' : 'puntos'} · ${activeStudents} ${activeStudents === 1 ? 'alumno activo' : 'alumnos activos'}`
     }
   }
 
   return {
-    headline: 'Sin logros aún',
-    line: ''
+    headline: '0 logros',
+    line: 'Registra reconocimientos desde aquí.'
   }
 }
