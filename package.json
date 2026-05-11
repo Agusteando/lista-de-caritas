@@ -11,14 +11,20 @@
     "lint:types": "nuxi typecheck"
   },
   "dependencies": {
-    "dayjs": "^1.11.20",
-    "lucide-vue-next": "^0.577.0",
-    "mysql2": "^3.20.0",
-    "nuxt": "^3.21.2",
-    "vue": "^3.5.30"
+    "dayjs": "1.11.13",
+    "lucide-vue-next": "0.468.0",
+    "mysql2": "3.12.0",
+    "nuxt": "3.16.0",
+    "vue": "3.5.13"
   },
   "devDependencies": {
-    "@nuxt/eslint": "^1.9.0",
-    "typescript": "^5.9.3"
+    "@types/node": "22.10.2",
+    "typescript": "5.7.3"
+  },
+  "engines": {
+    "node": ">=18.20.0"
+  },
+  "overrides": {
+    "@nuxt/cli": "3.22.5"
   }
 }
