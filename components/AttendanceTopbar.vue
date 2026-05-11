@@ -14,7 +14,7 @@ const props = defineProps<{
         <ArrowLeft class="icon" />
       </NuxtLink>
       <span class="round-button soft asset-button clipboard-asset" aria-hidden="true">
-        <span class="reference-icon reference-icon-clipboard" />
+        <img class="reference-topbar-image" src="/reference-assets/clipboard.png" alt="" draggable="false">
       </span>
       <div class="attendance-title">
         <h1>Pase de lista <span aria-hidden="true">🌿</span></h1>

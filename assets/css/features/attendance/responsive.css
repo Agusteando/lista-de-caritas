@@ -1,0 +1,91 @@
+@media (min-width: 980px) {
+  .attendance-shell {
+    height: 100dvh;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    overflow: hidden;
+    padding-bottom: var(--shell-pad);
+  }
+  .attendance-topbar { margin-bottom: 0; }
+  .attendance-layout {
+    min-height: 0;
+    overflow: hidden;
+    grid-template-columns: minmax(0, 1fr) var(--rail-width);
+    padding-top: clamp(12px, 1.2vw, 20px);
+  }
+  .attendance-main,
+  .attendance-sidebar {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  .attendance-main { padding-right: 2px; }
+  .attendance-sidebar { display: grid; align-content: start; gap: clamp(13px, 1.05vw, 18px); }
+  .quick-actions { display: none; }
+  .fixed-save-area { display: none; }
+  .bottom-nav { display: none; }
+  .reference-density.roster-grid { grid-template-columns: repeat(3, minmax(210px, 1fr)); gap: clamp(10px, .95vw, 15px); }
+  .reference-density.view-compact.roster-grid { gap: clamp(10px, .85vw, 13px); }
+  .reference-density.view-compact .student-card,
+  .reference-density.view-compact .student-main-button { min-height: calc(var(--student-h) - 10px); }
+  .reference-density.view-compact .student-avatar-ring { width: calc(var(--student-avatar) - 8px); height: calc(var(--student-avatar) - 8px); }
+}
+@media (min-width: 1280px) {
+  .side-card { border-radius: 28px; }
+}
+@media (min-width: 1480px) {
+  .attendance-shell {
+    --hero-min: 218px;
+    --metrics-h: 86px;
+    --student-h: 116px;
+    --student-avatar: 72px;
+    --rail-width: 400px;
+    --shell-pad: clamp(26px, 2.1vw, 32px);
+  }
+}
+@media (max-width: 979px) {
+  .attendance-topbar { grid-template-columns: 1fr; }
+  .topbar-actions { overflow-x: auto; justify-content: flex-start; padding-bottom: 2px; }
+  .change-group-pill { display: inline-flex; }
+  .reference-density.roster-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .attendance-shell {
+    --shell-pad: clamp(12px, 4vw, 18px);
+    --hero-min: 174px;
+    --hero-badge: 112px;
+    --metrics-h: 78px;
+    --segment-h: 44px;
+    --search-h: 50px;
+    --student-h: 116px;
+    --student-avatar: 60px;
+  }
+  .attendance-title h1 { font-size: clamp(1.42rem, 6.4vw, 1.9rem); white-space: nowrap; }
+  .attendance-title small { display: none; }
+  .topbar-left { gap: 9px; }
+  .round-button.asset-button { display: none; }
+  .class-hero-card { grid-template-columns: var(--hero-badge) minmax(0, 1fr); gap: 13px; padding: 16px 14px 58px; }
+  .group-icon.decorative { width: 150px; height: 150px; right: -16px; bottom: 10px; }
+  .hero-copy h2 { font-size: clamp(1.26rem, 6vw, 1.72rem); }
+  .hero-copy p { font-size: .86rem; margin-bottom: 7px; }
+  .attendance-metrics { width: calc(100% - 18px); }
+  .metric-cell { column-gap: 8px; padding-inline: 3px; }
+  .metric-icon { width: 44px; height: 44px; }
+  .metric-cell strong { font-size: 1.88rem; }
+  .metric-cell small { font-size: .62rem; }
+  .mode-segments button { font-size: .8rem; gap: 6px; }
+  .search-row { grid-template-columns: minmax(0, 1fr) 56px; }
+  .filter-button { min-width: 56px; padding: 0; font-size: 0; }
+  .student-main-button { grid-template-columns: calc(var(--student-avatar) + 6px) minmax(0, 1fr); }
+  .reference-density .student-name { font-size: .8rem; }
+  .status-control { width: min(100%, 130px); }
+}
+@media (max-width: 430px) {
+  .reference-density.roster-grid { gap: 8px; }
+  .student-main-button { padding: 10px 8px; }
+  .attendance-shell { --student-avatar: 56px; }
+  .rank-bubble { width: 30px; height: 30px; }
+  .status-control { min-height: 29px; font-size: .7rem; }
+  .hero-copy .hero-meta { display: none; }
+}

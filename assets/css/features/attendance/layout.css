@@ -1,0 +1,98 @@
+.attendance-shell {
+  --topbar-control: clamp(42px, 3.05vw, 52px);
+  --topbar-gap: clamp(10px, 1vw, 14px);
+  --hero-min: clamp(170px, 13.7vw, 218px);
+  --hero-badge: clamp(108px, 8.9vw, 154px);
+  --metrics-h: clamp(68px, 5.45vw, 86px);
+  --segment-h: clamp(38px, 3.15vw, 46px);
+  --search-h: clamp(42px, 3.25vw, 50px);
+  --student-h: clamp(92px, 7vw, 116px);
+  --student-avatar: clamp(52px, 4.4vw, 72px);
+  position: relative;
+  width: min(var(--shell-max), 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: var(--shell-pad) var(--shell-pad) calc(112px + var(--safe-bottom));
+}
+
+.attendance-topbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 1.35vw, 22px);
+  margin-bottom: clamp(12px, 1.2vw, 20px);
+}
+.topbar-left,
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: var(--topbar-gap);
+}
+.topbar-actions { justify-content: flex-end; }
+.round-button,
+.date-pill,
+.change-group-pill {
+  min-height: var(--topbar-control);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: clamp(15px, 1.25vw, 20px);
+  color: var(--ink);
+  background: rgba(255, 253, 248, .9);
+  border: 1px solid rgba(31, 89, 72, .1);
+  box-shadow: 0 10px 24px rgba(43, 55, 44, .1), inset 0 1px 0 rgba(255,255,255,.84);
+  font-weight: 850;
+  white-space: nowrap;
+}
+.round-button { width: var(--topbar-control); flex: none; }
+.round-button.back {
+  color: white;
+  background: linear-gradient(140deg, #3b9d65, #78c88f);
+  border-color: rgba(255,255,255,.48);
+  box-shadow: 0 15px 26px rgba(50, 135, 83, .24), inset 0 2px 0 rgba(255,255,255,.28);
+}
+.round-button.soft { color: #17784b; background: linear-gradient(145deg, #fffdf8, #eef7e9); }
+.round-button.asset-button {
+  width: var(--topbar-control);
+  min-height: var(--topbar-control);
+  padding: 0;
+  background: rgba(255, 253, 248, .92);
+  border-color: rgba(31, 89, 72, .09);
+  box-shadow: 0 10px 22px rgba(43, 55, 44, .1), inset 0 1px 0 rgba(255,255,255,.84);
+}
+.reference-topbar-image { width: 86%; height: 86%; object-fit: contain; pointer-events: none; user-select: none; }
+.reference-icon-calendar { width: clamp(20px, 1.5vw, 25px); height: clamp(20px, 1.5vw, 25px); }
+.reference-date-pill { gap: 12px; padding-left: clamp(15px, 1.2vw, 20px); }
+.date-pill { padding: 0 clamp(16px, 1.45vw, 24px); }
+.change-group-pill { padding: 0 clamp(16px, 1.45vw, 24px); }
+.attendance-title {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: clamp(10px, 1vw, 14px);
+}
+.attendance-title h1 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.36rem, 1.55vw, 1.86rem);
+  letter-spacing: -.055em;
+  line-height: .98;
+  white-space: nowrap;
+}
+.attendance-title small {
+  color: #89968e;
+  font-size: clamp(.72rem, .68vw, .82rem);
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.attendance-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--workspace-gap);
+  align-items: start;
+}
+.attendance-main { min-width: 0; }
+

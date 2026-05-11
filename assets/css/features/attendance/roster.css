@@ -1,0 +1,96 @@
+.reference-density.roster-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(9px, .9vw, 14px); align-items: start; }
+.reference-density .student-card {
+  position: relative;
+  min-height: var(--student-h);
+  overflow: hidden;
+  contain: layout paint;
+  border-radius: clamp(18px, 1.45vw, 22px);
+  background: radial-gradient(circle at 92% 24%, rgba(255, 220, 137, .15), transparent 20%), linear-gradient(145deg, rgba(255,253,248,.96), rgba(255,250,241,.9));
+  border: 1px solid rgba(226, 216, 194, .72);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(14px);
+}
+.reference-density .student-card.status-absent { background: radial-gradient(circle at 92% 24%, rgba(255, 126, 106, .14), transparent 20%), linear-gradient(145deg, rgba(255,253,248,.96), rgba(255,245,242,.9)); }
+.reference-density .student-card.status-sick { background: radial-gradient(circle at 92% 24%, rgba(98, 178, 245, .14), transparent 20%), linear-gradient(145deg, rgba(255,253,248,.96), rgba(242,248,255,.9)); }
+.reference-density .student-card.status-unmarked { background: radial-gradient(circle at 92% 24%, rgba(142, 148, 144, .1), transparent 20%), linear-gradient(145deg, rgba(255,253,248,.94), rgba(249,249,246,.86)); }
+.reference-density .student-card.selection-pop { animation: card-pop 520ms ease; }
+.student-main-button {
+  position: relative;
+  width: 100%;
+  min-height: var(--student-h);
+  display: grid;
+  grid-template-columns: calc(var(--student-avatar) + 8px) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(8px, .8vw, 12px);
+  padding: clamp(9px, .82vw, 13px) clamp(9px, .9vw, 14px) clamp(8px, .78vw, 12px) clamp(11px, .95vw, 15px);
+  color: inherit;
+  background: transparent;
+  text-align: left;
+}
+.rank-bubble {
+  position: absolute;
+  left: -4px;
+  top: -5px;
+  z-index: 3;
+  width: clamp(28px, 2.2vw, 34px);
+  height: clamp(28px, 2.2vw, 34px);
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: white;
+  background: linear-gradient(#67bd5d, #278235);
+  border: 2px solid rgba(255,255,255,.92);
+  box-shadow: 0 5px 12px rgba(39, 130, 53, .24);
+  font-weight: 950;
+  line-height: 1;
+}
+.status-absent .rank-bubble { background: linear-gradient(#ff7270, #df2826); box-shadow: 0 5px 12px rgba(223, 40, 38, .22); }
+.status-sick .rank-bubble { background: linear-gradient(#68b9f5, #1579cf); box-shadow: 0 5px 12px rgba(21, 121, 207, .22); }
+.status-unmarked .rank-bubble { background: linear-gradient(#b8beb8, #848b86); box-shadow: 0 5px 12px rgba(80, 90, 84, .18); }
+.student-avatar-ring {
+  position: relative;
+  width: var(--student-avatar);
+  height: var(--student-avatar);
+  display: grid;
+  place-items: center;
+  padding: 3px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #b7dea1, #f7f3c8);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.82), 0 8px 17px rgba(42, 70, 45, .12);
+}
+.status-absent .student-avatar-ring { background: linear-gradient(135deg, #ffa69f, #fff4e0); }
+.status-sick .student-avatar-ring { background: linear-gradient(135deg, #93cdf8, #ebf6ff); }
+.status-unmarked .student-avatar-ring { background: linear-gradient(135deg, #d8dcd7, #fbf7ee); }
+.processed-photo-frame { position: relative; width: 100%; height: 100%; display: grid; place-items: center; overflow: hidden; border-radius: 999px; }
+.processed-photo-frame .avatar { width: 100%; height: 100%; object-fit: cover; border-radius: 999px; background: radial-gradient(circle at 35% 18%, #fff9cf, #e4f4dc 48%, #d9f4ef); border: 2px solid rgba(255,255,255,.92); }
+.processed-photo-frame.is-processed .avatar { object-fit: contain; padding: 2px; }
+.photo-processing-indicator { position: absolute; right: 2px; bottom: 2px; width: 11px; height: 11px; border-radius: 999px; background: #ffd166; border: 2px solid #fffaf2; box-shadow: 0 0 0 4px rgba(255, 209, 102, .22); }
+.avatar-css-fallback { display: grid; place-items: center; color: #176b42; text-align: center; }
+.avatar-css-fallback .group-icon { width: 25px; height: 25px; opacity: .72; margin-bottom: -3px; }
+.avatar-css-fallback strong { font-size: .9rem; line-height: 1; letter-spacing: -.04em; }
+.student-info { min-width: 0; display: grid; align-content: center; gap: 4px; position: relative; z-index: 2; }
+.reference-density .student-name { max-width: 100%; color: var(--ink); font-size: clamp(.78rem, .64vw, .9rem); line-height: 1.16; letter-spacing: -.025em; font-weight: 900; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.student-line { min-height: 17px; display: flex; align-items: center; gap: 6px; }
+.student-line .group-icon { width: clamp(17px, 1.1vw, 19px); height: clamp(17px, 1.1vw, 19px); }
+.retardo-chip { display: inline-flex; align-items: center; gap: 4px; min-height: 20px; padding: 0 7px; border-radius: 999px; color: #8b5b00; background: #fff1c9; font-size: .68rem; font-weight: 860; }
+.status-control { min-height: clamp(27px, 2.05vw, 32px); width: min(100%, clamp(124px, 9.7vw, 154px)); display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0 10px; border-radius: 999px; font-size: clamp(.72rem, .58vw, .78rem); font-weight: 900; white-space: nowrap; box-shadow: inset 0 1px 0 rgba(255,255,255,.72); border: 1px solid currentColor; }
+.status-control.green { color: #126829; background: linear-gradient(180deg, #f1fde8, #e1f6d6); }
+.status-control.red { color: var(--red-strong); background: linear-gradient(180deg, #fff7f5, #ffe9e6); }
+.status-control.blue { color: #116ebd; background: linear-gradient(180deg, #f5fbff, #e5f3ff); }
+.status-control.neutral { color: #657067; background: linear-gradient(180deg, #fffdfa, #f2f4f2); }
+.status-control .icon-sm { width: 14px; height: 14px; flex: none; }
+.status-control .chevron { margin-left: auto; width: 12px; height: 12px; }
+.card-sparkles { position: absolute; inset: 0; pointer-events: none; border-radius: inherit; overflow: hidden; }
+.card-sparkles::before,
+.card-sparkles::after { content: ""; position: absolute; border-radius: 999px; opacity: .68; }
+.card-sparkles::before { width: 6px; height: 6px; right: 38px; top: 26px; background: #b9e9d6; box-shadow: 23px 18px 0 -1px #f2d58a, -18px 31px 0 -2px #f2a89b; }
+.card-sparkles::after { width: 12px; height: 12px; right: 16px; bottom: 24px; background: radial-gradient(circle, #ffd66b 0 16%, transparent 19% 100%); clip-path: polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%); }
+.skeleton-card { opacity: .74; }
+.skeleton-avatar,
+.skeleton-line,
+.skeleton-pill { background: linear-gradient(100deg, rgba(255,255,255,.62), rgba(229,239,225,.88), rgba(255,255,255,.62)); background-size: 220% 100%; animation: shimmer-bg 1.4s linear infinite; }
+.skeleton-line { display: block; height: 13px; border-radius: 999px; }
+.skeleton-line.wide { width: 70%; }
+.skeleton-line.short { width: 48%; }
+.skeleton-pill { width: 120px; height: 28px; border-radius: 999px; }
+

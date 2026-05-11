@@ -173,9 +173,16 @@ Weekly ranking types:
 - `sql/schema.sql` for the manual Logros table creation SQL.
 - `assets/css/main.css` for the visual system.
 
+
+## Presentation architecture
+
+The attendance route is kept as orchestration only. Page-level state, fetch orchestration, draft persistence, weekly projection, save flow, and Logros refresh behavior live in `composables/useAttendanceScreen.ts`. Pure display mapping and formatting live in `utils/attendanceDisplay.ts`.
+
+Attendance styling is split by responsibility under `assets/css/features/attendance/`: layout, hero, metrics, controls, roster, save actions, sidebar, overlays, and responsive contracts. The desktop density uses fluid component tokens rather than one-off breakpoint patches so the workspace, rail, and roster cards scale against the available viewport.
+
 ## Validation status
 
-This is a complete project scaffold with production-oriented routes, state flow, UI, and schema. It has not run against your production database in this environment. Smoke-test all six planteles from physical devices before replacing the legacy system.
+This project was refactored for presentation architecture and density without changing API routes, data bindings, workflows, permissions, validations, or save behavior. Build validation could not be completed in this environment because dependency installation was unavailable/offline. It has not run against your production database here. Smoke-test all six planteles from physical devices before replacing the legacy system.
 
 ## Client-side Vision photo pipeline
 

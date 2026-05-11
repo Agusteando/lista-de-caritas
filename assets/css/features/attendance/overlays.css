@@ -1,0 +1,20 @@
+.bottom-nav { position: fixed; left: 50%; bottom: calc(92px + var(--safe-bottom)); z-index: 36; width: min(360px, calc(100% - 32px)); transform: translateX(-50%); pointer-events: none; }
+.bottom-nav-inner { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 6px; border-radius: 22px; background: rgba(255, 251, 242, .78); border: 1px solid rgba(231, 205, 160, .54); box-shadow: 0 16px 32px rgba(48, 42, 32, .12), inset 0 1px 0 rgba(255,255,255,.84); backdrop-filter: blur(20px); pointer-events: auto; }
+.nav-item { position: relative; min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 17px; background: transparent; color: #526258; font-weight: 880; }
+.nav-item.active { color: var(--green-strong); background: linear-gradient(145deg, #effce8, #fffaf0); }
+.nav-item.logros { color: #8b5b00; }
+.nav-item.logros::after { content: ""; position: absolute; inset: 7px; border-radius: 14px; opacity: .42; box-shadow: 0 0 22px rgba(255, 184, 63, .28); pointer-events: none; }
+.micro-dot { width: 8px; height: 8px; border-radius: 999px; background: #ffd166; box-shadow: 0 0 0 4px rgba(255, 209, 102, 0.2); }
+.summary-sheet { position: fixed; left: 50%; bottom: calc(154px + var(--safe-bottom)); z-index: 50; width: min(420px, calc(100% - 32px)); transform: translateX(-50%); border-radius: 28px; padding: 18px; }
+.summary-sheet-header { display: flex; align-items: center; gap: 10px; position: relative; }
+.status-orb { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 999px; color: white; }
+.completion-orb { background: var(--green); border: 2px solid white; }
+.summary-sheet h3 { margin: 0; }
+.summary-sheet p { margin: 4px 0 0; color: var(--muted); }
+.summary-sheet-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 16px 0; }
+.summary-metric { border-radius: 16px; padding: 11px; background: rgba(255,250,241,.78); border: 1px solid var(--line); }
+.summary-metric span { display: block; color: var(--muted); font-size: .74rem; font-weight: 850; }
+.summary-metric strong { display: block; margin-top: 4px; font-size: 1.25rem; }
+.summary-sheet-action { width: 100%; }
+.celebration-burst,
+.summary-sparkle { display: none; }

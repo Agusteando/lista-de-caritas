@@ -3,5 +3,5 @@
 @import './ui-primitives.css';
 @import './features/landing.css';
 @import './features/group-selection.css';
-@import './features/attendance.css';
+@import './features/attendance/index.css';
 @import './features/logros.css';
