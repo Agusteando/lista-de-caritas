@@ -368,7 +368,7 @@ img { display: block; max-width: 100%; }
 }
 .round-button.soft { color: #17784b; background: linear-gradient(145deg, #fffdf8, #eef7e9); }
 .topbar-left .round-button.soft { position: relative; }
-.topbar-left .round-button.soft::before {
+.topbar-left .round-button.soft:not(.asset-button)::before {
   content: "";
   position: absolute;
   top: 12px;
@@ -382,6 +382,23 @@ img { display: block; max-width: 100%; }
 }
 .date-pill { padding: 0 18px; }
 .change-group-pill { padding: 0 18px; }
+.reference-icon {
+  display: inline-block;
+  flex: none;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.round-button.asset-button {
+  width: clamp(46px, 4vw, 62px);
+  min-height: clamp(46px, 4vw, 62px);
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+.round-button.asset-button .reference-icon-clipboard { width: calc(100% - 4px); height: calc(100% - 4px); background-image: url('/reference-assets/clipboard.png'); }
+.reference-icon-calendar { width: 26px; height: 26px; background-image: url('/reference-assets/calendar.png'); }
+.reference-date-pill { gap: 12px; padding-left: 18px; }
 .attendance-title { min-width: 0; display: flex; align-items: baseline; gap: 12px; }
 .attendance-title h1 {
   margin: 0;
@@ -407,27 +424,12 @@ img { display: block; max-width: 100%; }
   padding: 24px 34px 74px;
   border-radius: 32px;
   background:
-    radial-gradient(circle at 88% 22%, rgba(185, 240, 186, .84), transparent 30%),
-    radial-gradient(circle at 18% 94%, rgba(127, 216, 244, .48), transparent 38%),
-    radial-gradient(circle at 66% 120%, rgba(255, 246, 184, .28), transparent 34%),
-    linear-gradient(128deg, rgba(194, 249, 248, .96) 0%, rgba(231, 255, 229, .94) 57%, rgba(218, 249, 208, .94) 100%);
+    linear-gradient(90deg, rgba(216, 253, 255, .12), rgba(238, 255, 229, .18)),
+    url('/reference-assets/hero-bg.png') center / cover no-repeat;
   border: 1px solid rgba(48, 166, 138, .18);
   box-shadow: 0 20px 48px rgba(54, 84, 76, .13), inset 0 1px 0 rgba(255,255,255,.82);
 }
-.class-hero-card::before,
-.class-hero-card::after,
-.hero-sparkles::before,
-.hero-sparkles::after {
-  content: "✦";
-  position: absolute;
-  z-index: 2;
-  color: rgba(255, 207, 82, .88);
-  filter: drop-shadow(0 2px 2px rgba(255,255,255,.72));
-}
-.class-hero-card::before { left: 28px; top: 34px; color: rgba(255,255,255,.94); font-size: 21px; }
-.class-hero-card::after { right: 38px; top: 48px; font-size: 20px; }
-.hero-sparkles::before { right: 45%; bottom: 31%; color: rgba(255,255,255,.92); }
-.hero-sparkles::after { right: 22px; bottom: 36px; }
+.hero-sparkles { display: none; }
 .hero-badge {
   position: relative;
   z-index: 4;
@@ -447,88 +449,42 @@ img { display: block; max-width: 100%; }
 }
 .laurel {
   position: absolute;
-  bottom: 16px;
-  z-index: 3;
-  width: 46px;
-  height: 88px;
-  border-bottom: 4px solid rgba(22, 111, 51, .7);
-  border-radius: 0 0 999px 999px;
+  bottom: 6px;
+  z-index: 4;
+  width: 74px;
+  height: 82px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
 }
-.laurel-left { left: 4px; transform: rotate(-15deg); }
-.laurel-right { right: 4px; transform: scaleX(-1) rotate(-15deg); }
-.laurel::before {
-  content: "";
-  position: absolute;
-  left: 17px;
-  bottom: 18px;
-  width: 10px;
-  height: 20px;
-  border-radius: 999px 0 999px 0;
-  background: linear-gradient(145deg, #4ca75c, #176d38);
-  box-shadow:
-    -10px -3px 0 -1px #2f8a44,
-    -17px 8px 0 -1px #3ea050,
-    -20px 22px 0 -1px #297d3f,
-    4px -12px 0 -1px #6fba63,
-    8px 2px 0 -1px #459a4c,
-    10px 16px 0 -1px #2d8a44;
-}
+.laurel-left { left: 0; background-image: url('/reference-assets/laurel-left.png'); transform: rotate(-5deg); }
+.laurel-right { right: 0; background-image: url('/reference-assets/laurel-right.png'); transform: rotate(5deg); }
 .shield {
   position: relative;
   z-index: 5;
   width: 130px;
-  height: 140px;
+  height: 168px;
   display: grid;
   place-items: center;
   overflow: visible;
-  background: linear-gradient(155deg, #f7ffcf 0%, #3f9d4c 17%, #1f7435 34%, #5fb64f 100%);
-  clip-path: polygon(50% 1%, 91% 16%, 86% 65%, 50% 97%, 14% 65%, 9% 16%);
-  filter: drop-shadow(0 17px 18px rgba(37, 104, 49, .23));
+  background: url('/reference-assets/shield.png') center / contain no-repeat;
+  filter: drop-shadow(0 16px 18px rgba(37, 104, 49, .18));
 }
 .shield::before,
-.shield::after {
-  content: "";
-  position: absolute;
-  clip-path: polygon(50% 2%, 90% 16%, 84% 64%, 50% 94%, 16% 64%, 10% 16%);
-  pointer-events: none;
-}
-.shield::before {
-  inset: 9px;
-  background:
-    radial-gradient(circle at 27% 20%, rgba(255,255,255,.8), transparent 24%),
-    conic-gradient(from 198deg at 50% 38%, rgba(255,255,255,.56), rgba(193,231,105,.4), rgba(113,191,76,.3), rgba(248,255,210,.48), rgba(255,255,255,.56)),
-    linear-gradient(145deg, rgba(239,251,191,.92), rgba(157,218,84,.78) 58%, rgba(88,178,70,.64));
-  box-shadow:
-    inset 0 0 0 4px rgba(255,255,255,.78),
-    inset 0 0 0 10px rgba(28,116,50,.16),
-    inset 0 -18px 24px rgba(38,132,45,.12);
-}
-.shield::after {
-  inset: 19px;
-  background:
-    linear-gradient(116deg, rgba(255,255,255,.24), transparent 45%),
-    linear-gradient(150deg, rgba(246,255,206,.4), rgba(74,169,69,.18));
-  box-shadow: inset 0 0 0 1px rgba(23,113,50,.08);
-}
-.shield-shine {
-  position: absolute;
-  z-index: 4;
-  inset: 10px 17px auto auto;
-  width: 54px;
-  height: 104px;
-  border-radius: 999px;
-  background: linear-gradient(110deg, rgba(255,255,255,.42), rgba(255,255,255,.08));
-  transform: rotate(18deg);
-  pointer-events: none;
-}
+.shield::after,
+.shield-shine { display: none; }
 .shield .group-icon {
-  position: relative;
+  position: absolute;
   z-index: 5;
-  width: 82px;
-  height: 82px;
+  top: 49%;
+  left: 50%;
+  width: 66px;
+  height: 66px;
   color: transparent;
   background: linear-gradient(150deg, #0e753a 0%, #1d8e53 52%, #0a5c35 100%);
-  filter: drop-shadow(0 3px 1px rgba(255,255,255,.55)) drop-shadow(0 9px 10px rgba(19, 91, 49, .12));
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 3px 1px rgba(255,255,255,.5)) drop-shadow(0 8px 10px rgba(19, 91, 49, .12));
 }
 .medal,
 .pending-badge {
@@ -543,6 +499,10 @@ img { display: block; max-width: 100%; }
   box-shadow: 0 8px 20px rgba(247, 136, 18, .22), inset 0 1px 0 rgba(255,255,255,.75);
 }
 .medal { position: absolute; z-index: 6; left: 50%; bottom: -3px; transform: translateX(-50%); width: 42px; height: 42px; border-width: 3px; }
+.medal .icon,
+.pending-badge .icon { opacity: 0; }
+.medal::before,
+.pending-badge::before { content: ''; width: 72%; height: 72%; background: url('/reference-assets/star.png') center / contain no-repeat; }
 .hero-copy { z-index: 4; min-width: 0; }
 .hero-copy h2 { margin: 0 0 16px; color: #126529; font-size: clamp(1.62rem, 2.4vw, 2.12rem); line-height: 1.03; letter-spacing: -.045em; text-shadow: 0 1px 0 rgba(255,255,255,.55); }
 .hero-copy p { margin: 0 0 14px; display: flex; align-items: center; gap: 12px; color: #213137; font-size: 1.05rem; font-weight: 720; }
@@ -1152,7 +1112,7 @@ img { display: block; max-width: 100%; }
   .hero-badge { width: 116px; height: 124px; }
   .badge-aura { inset: 12px 6px 0; }
   .laurel { width: 31px; height: 58px; bottom: 11px; }
-  .shield { width: 96px; height: 104px; }
+  .shield { width: 96px; height: 124px; }
   .shield .group-icon { width: 60px; height: 60px; }
   .medal { width: 31px; height: 31px; border-width: 3px; bottom: -2px; }
   .hero-copy h2 { font-size: 1.52rem; margin-bottom: 9px; }
@@ -1245,7 +1205,7 @@ img { display: block; max-width: 100%; }
   .hero-badge { width: 138px; height: 146px; }
   .badge-aura { inset: 14px 7px -1px; }
   .laurel { width: 36px; height: 68px; bottom: 12px; }
-  .shield { width: 112px; height: 122px; }
+  .shield { width: 112px; height: 145px; }
   .shield .group-icon { width: 70px; height: 70px; }
   .medal { bottom: -3px; width: 36px; height: 36px; }
   .hero-copy h2 { font-size: 1.82rem; margin-bottom: 11px; }
@@ -1296,7 +1256,7 @@ img { display: block; max-width: 100%; }
   .attendance-layout { grid-template-columns: minmax(0, 1fr) 348px; gap: 26px; }
   .class-hero-card { min-height: 188px; grid-template-columns: 158px minmax(0, 1fr); padding: 22px 38px 62px; }
   .hero-badge { width: 150px; height: 158px; }
-  .shield { width: 124px; height: 134px; }
+  .shield { width: 124px; height: 160px; }
   .shield .group-icon { width: 78px; height: 78px; }
   .group-icon.decorative { width: 236px; height: 236px; right: 4%; }
   .attendance-metrics { min-height: 70px; margin-top: -50px; }
@@ -1331,8 +1291,7 @@ img { display: block; max-width: 100%; }
   .hero-badge { width: 106px; height: 128px; }
   .badge-aura { inset: 14px 6px 0; }
   .laurel { width: 30px; height: 58px; bottom: 11px; }
-  .laurel::before { transform: scale(.7); transform-origin: bottom center; }
-  .shield { width: 92px; height: 104px; }
+  .shield { width: 92px; height: 119px; }
   .shield .group-icon { width: 56px; height: 56px; }
   .medal { width: 35px; height: 35px; }
   .hero-copy h2 { font-size: clamp(1.35rem, 5.5vw, 1.66rem); margin-bottom: 12px; }
@@ -1367,7 +1326,7 @@ img { display: block; max-width: 100%; }
   .attendance-topbar { margin-bottom: 11px; }
   .class-hero-card { min-height: 158px; padding-bottom: 52px; }
   .hero-badge { width: 124px; height: 132px; }
-  .shield { width: 100px; height: 110px; }
+  .shield { width: 100px; height: 129px; }
   .shield .group-icon { width: 62px; height: 62px; }
   .group-icon.decorative { width: 190px; height: 190px; }
   .attendance-metrics { min-height: 60px; margin-top: -42px; margin-bottom: 10px; }
@@ -1399,7 +1358,7 @@ img { display: block; max-width: 100%; }
   .attendance-title small { font-size: .64rem; }
   .class-hero-card { min-height: 142px; grid-template-columns: 108px minmax(0, 1fr); gap: 17px; padding: 15px 22px 46px; }
   .hero-badge { width: 106px; height: 114px; }
-  .shield { width: 88px; height: 96px; }
+  .shield { width: 88px; height: 114px; }
   .shield .group-icon { width: 54px; height: 54px; }
   .medal { width: 30px; height: 30px; }
   .hero-copy h2 { font-size: 1.42rem; margin-bottom: 8px; }
@@ -1440,8 +1399,7 @@ img { display: block; max-width: 100%; }
   .hero-badge { width: 92px; height: 112px; }
   .badge-aura { inset: 11px 5px 0; }
   .laurel { width: 26px; height: 52px; bottom: 10px; }
-  .laurel::before { transform: scale(.62); transform-origin: bottom center; }
-  .shield { width: 82px; height: 94px; }
+  .shield { width: 82px; height: 106px; }
   .shield .group-icon { width: 50px; height: 50px; }
   .hero-copy h2 { font-size: clamp(1.16rem, 5.4vw, 1.46rem); }
   .hero-copy p { font-size: .82rem; }
@@ -1481,8 +1439,7 @@ img { display: block; max-width: 100%; }
   .hero-badge { width: 80px; height: 96px; }
   .badge-aura { inset: 10px 4px 0; }
   .laurel { width: 23px; height: 44px; bottom: 8px; }
-  .laurel::before { transform: scale(.54); transform-origin: bottom center; }
-  .shield { width: 72px; height: 82px; }
+  .shield { width: 72px; height: 93px; }
   .shield .group-icon { width: 44px; height: 44px; }
   .hero-copy h2 { font-size: 1.12rem; margin-bottom: 9px; }
   .hero-copy p { font-size: .74rem; margin-bottom: 7px; }

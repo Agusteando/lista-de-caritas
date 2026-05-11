@@ -422,14 +422,14 @@ onMounted(() => {
         <NuxtLink class="round-button back" :to="`/asistencia/${plantel}?cambiar=grupo`" aria-label="Cambiar grupo">
           <ArrowLeft class="icon" />
         </NuxtLink>
-        <span class="round-button soft"><ClipboardCheck class="icon" /></span>
+        <span class="round-button soft asset-button clipboard-asset" aria-hidden="true"><span class="reference-icon reference-icon-clipboard" /></span>
         <div class="attendance-title">
           <h1>Pase de lista <span aria-hidden="true">🌿</span></h1>
           <small>lista-de-caritas app</small>
         </div>
       </div>
       <div class="topbar-actions">
-        <button class="date-pill" type="button"><CalendarDays class="icon-sm" /> {{ todayLabel }}</button>
+        <button class="date-pill reference-date-pill" type="button"><span class="reference-icon reference-icon-calendar" aria-hidden="true" /> {{ todayLabel }}</button>
         <button class="round-button soft" type="button" aria-label="Más"><MoreHorizontal class="icon" /></button>
         <NuxtLink class="change-group-pill" :to="`/asistencia/${plantel}?cambiar=grupo`"><Shuffle class="icon-sm" /> Cambiar grupo</NuxtLink>
       </div>
