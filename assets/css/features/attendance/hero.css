@@ -98,7 +98,7 @@
 .medal .icon,
 .pending-badge .icon { opacity: 0; }
 .medal::before,
-.pending-badge::before { content: ''; width: 72%; height: 72%; background: url('/reference-assets/star.png') center / contain no-repeat; }
+.pending-badge::before { content: ''; width: 72%; height: 72%; background: url('/reference-assets/star-centered.png') center / contain no-repeat; }
 .hero-copy { z-index: 4; min-width: 0; }
 .hero-copy h2 {
   margin: 0 0 clamp(8px, .85vw, 13px);

@@ -114,7 +114,9 @@ export const summarizeLogroState = (
     totalPoints: stateList.reduce((sum, state) => sum + (state.pointsThisWeek || 0), 0),
     totalEvents: stateList.reduce((sum, state) => sum + (state.recent?.length || 0), 0),
     activeStudents: stateList.filter((state) => (state.pointsThisWeek || 0) > 0).length,
-    topStreak: stateList.reduce((max, state) => Math.max(max, ...Object.values(state.streaks || {}).map((value) => Number(value || 0))), 0)
+    topStreak: stateList.reduce((max, state) => Math.max(max, ...Object.entries(state.streaks || {})
+      .filter(([name]) => name !== 'Racha de asistencia')
+      .map(([, value]) => Number(value || 0))), 0)
   }
 
   return {

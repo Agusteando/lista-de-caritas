@@ -32,8 +32,8 @@
 .save-side-card .pending-badge,
 .fixed-save-inner .pending-badge {
   position: relative;
-  width: 62px;
-  height: 62px;
+  width: 64px;
+  height: 64px;
   display: grid;
   place-items: center;
   border-radius: 999px;
@@ -41,6 +41,8 @@
   color: #ff8a00;
   background: #fff9ef;
   border: 2px dashed #ff8a25;
+  justify-self: center;
+  align-self: center;
   box-shadow: 0 0 0 6px rgba(255, 241, 218, .92), 0 9px 20px rgba(247, 136, 18, .18), inset 0 1px 0 rgba(255,255,255,.82);
 }
 .save-side-card .pending-badge::before,
@@ -49,10 +51,10 @@
   position: absolute;
   inset: 0;
   z-index: 2;
-  width: 58%;
-  height: 58%;
+  width: 52%;
+  height: 52%;
   margin: auto;
-  background: url('/reference-assets/star.png') center / contain no-repeat;
+  background: url('/reference-assets/star-centered.png') center / contain no-repeat;
 }
 .save-side-card .pending-badge::after,
 .fixed-save-inner .pending-badge::after {

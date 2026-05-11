@@ -72,15 +72,19 @@ const stateFor = (studentId: string) => props.states[studentId] || defaultState(
 const categoryPoints = (state: StudentLogrosState, category: LogroCategory) => state.categoryPoints?.[category] || 0
 const badgeCount = (state: StudentLogrosState) => state.badges?.length || 0
 const recentCount = (state: StudentLogrosState) => state.recent?.length || 0
-const streakEntries = (state: StudentLogrosState) => Object.entries(state.streaks || {})
+const attendanceStreakName = 'Racha de asistencia'
+const streakEntries = (state: StudentLogrosState, includeAttendance = true) => Object.entries(state.streaks || {})
+  .filter(([name]) => includeAttendance || name !== attendanceStreakName)
   .map(([name, value]) => ({ name, value: Number(value || 0) }))
   .filter((entry) => entry.value > 0)
   .sort((a, b) => b.value - a.value)
-const maxStreak = (state: StudentLogrosState) => streakEntries(state)[0]?.value || 0
-const topStreakLabel = (state: StudentLogrosState) => streakEntries(state)[0]?.name.replace('Racha de ', '') || ''
+const recognitionStreakEntries = (state: StudentLogrosState) => streakEntries(state, false)
+const maxRecognitionStreak = (state: StudentLogrosState) => recognitionStreakEntries(state)[0]?.value || 0
+const attendanceStreak = (state: StudentLogrosState) => Number(state.streaks?.[attendanceStreakName] || 0)
+const topRecognitionStreakLabel = (state: StudentLogrosState) => recognitionStreakEntries(state)[0]?.name.replace('Racha de ', '') || ''
 const bestCategoryLabel = (state: StudentLogrosState) => {
   if (state.bestCategory && categoryPoints(state, state.bestCategory) > 0) return state.bestCategory
-  if (maxStreak(state) > 0) return `Racha de ${topStreakLabel(state)}`
+  if (maxRecognitionStreak(state) > 0) return `Racha de ${topRecognitionStreakLabel(state)}`
   if (state.pointsThisWeek > 0) return 'Semana activa'
   return 'Sin logros'
 }
@@ -89,7 +93,7 @@ const filteredStudents = computed(() => {
   const needle = normalize(searchTerm.value)
   return props.students.filter((student) => {
     const state = stateFor(student.id)
-    if (onlyWithLogros.value && state.pointsThisWeek <= 0 && maxStreak(state) <= 0) return false
+    if (onlyWithLogros.value && state.pointsThisWeek <= 0 && recentCount(state) <= 0 && badgeCount(state) <= 0 && maxRecognitionStreak(state) <= 0) return false
     if (!needle) return true
     return normalize(student.nombre).includes(needle) || String(student.matricula || '').toLowerCase().includes(needle)
   })
@@ -104,7 +108,8 @@ const selectedStudent = computed(() => {
 })
 const selectedState = computed(() => selectedStudent.value ? stateFor(selectedStudent.value.id) : null)
 const selectedRecent = computed(() => selectedState.value?.recent?.slice(0, 5) || [])
-const selectedStreaks = computed(() => selectedState.value ? streakEntries(selectedState.value).slice(0, 4) : [])
+const selectedStreaks = computed(() => selectedState.value ? recognitionStreakEntries(selectedState.value).slice(0, 4) : [])
+const selectedAttendanceStreak = computed(() => selectedState.value ? attendanceStreak(selectedState.value) : 0)
 const selectedTopCategories = computed(() => {
   if (!selectedState.value) return [] as Array<{ category: LogroCategory; points: number }>
   return logroCategories
@@ -117,7 +122,7 @@ const currentRanking = computed(() => props.rankings[rankingMode.value] || [])
 const hasLogros = computed(() => props.totalEvents > 0 || props.totalPoints > 0 || Boolean(props.classPositiveWeekStreak))
 
 const rankingScore = (entry: RankingEntry) => {
-  if (rankingMode.value === 'bestStreak') return maxStreak(entry.state)
+  if (rankingMode.value === 'bestStreak') return maxRecognitionStreak(entry.state)
   if (rankingMode.value === 'masParticipativo') return categoryPoints(entry.state, 'Participación')
   if (rankingMode.value === 'mejorActitud') return categoryPoints(entry.state, 'Buena actitud')
   if (rankingMode.value === 'mayorAvance') return recentCount(entry.state)
@@ -200,7 +205,7 @@ const clearSearch = () => { searchTerm.value = '' }
           </button>
 
           <div class="logro-activity-strip">
-            <span v-if="maxStreak(stateFor(student.id))"><Flame class="icon-sm" /> {{ maxStreak(stateFor(student.id)) }} racha</span>
+            <span v-if="maxRecognitionStreak(stateFor(student.id))"><Flame class="icon-sm" /> {{ maxRecognitionStreak(stateFor(student.id)) }} racha</span>
             <span><Star class="icon-sm" /> {{ recentCount(stateFor(student.id)) }} registros</span>
             <span><Award class="icon-sm" /> {{ badgeCount(stateFor(student.id)) }} insignias</span>
           </div>
@@ -241,7 +246,8 @@ const clearSearch = () => { searchTerm.value = '' }
           </div>
 
           <div class="selected-metrics" aria-label="Resumen del alumno seleccionado">
-            <span v-if="maxStreak(selectedState)"><Flame class="icon-sm" /> {{ maxStreak(selectedState) }} racha</span>
+            <span v-if="maxRecognitionStreak(selectedState)"><Flame class="icon-sm" /> {{ maxRecognitionStreak(selectedState) }} racha</span>
+            <span v-else-if="selectedAttendanceStreak"><Flame class="icon-sm" /> {{ selectedAttendanceStreak }} días asistencia</span>
             <span><Star class="icon-sm" /> {{ selectedState.pointsThisWeek }} pts</span>
             <span><Award class="icon-sm" /> {{ badgeCount(selectedState) }} insignias</span>
             <span><Trophy class="icon-sm" /> {{ bestCategoryLabel(selectedState) }}</span>
@@ -260,8 +266,9 @@ const clearSearch = () => { searchTerm.value = '' }
             </button>
           </div>
 
-          <div class="profile-streaks" v-if="selectedStreaks.length">
+          <div class="profile-streaks" v-if="selectedStreaks.length || selectedAttendanceStreak">
             <span v-for="entry in selectedStreaks" :key="entry.name"><Flame class="icon-sm" /> {{ entry.name }} · {{ entry.value }}</span>
+            <span v-if="selectedAttendanceStreak"><Flame class="icon-sm" /> Asistencia · {{ selectedAttendanceStreak }} días</span>
           </div>
 
           <div class="profile-badges" v-if="selectedTopCategories.length">

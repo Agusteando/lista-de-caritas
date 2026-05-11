@@ -33,7 +33,11 @@ const defaultStreaks = () => ({
   [logroStreakNames.completedWork]: 0
 })
 
-const maxStreakValue = (state: StudentLogrosState) => Math.max(0, ...Object.values(state.streaks || {}).map((value) => Number(value || 0)))
+const recognitionStreakEntries = (state: StudentLogrosState) => Object.entries(state.streaks || {})
+  .filter(([name]) => name !== logroStreakNames.attendance)
+  .map(([, value]) => Number(value || 0))
+
+const maxRecognitionStreakValue = (state: StudentLogrosState) => Math.max(0, ...recognitionStreakEntries(state))
 
 const consecutiveCalendarDaysFromLatest = (dates: Iterable<string>) => {
   const sorted = [...new Set(dates)]
@@ -272,7 +276,7 @@ export function useLogrosContext(plantel: Ref<string> | ComputedRef<string>, gra
   const rankings = computed(() => {
     const list = students.value.map((student) => ({ student, state: states.value[student.id] || defaultState(student.id) }))
     const topLogros = [...list].filter((entry) => entry.state.pointsThisWeek > 0).sort((a, b) => b.state.pointsThisWeek - a.state.pointsThisWeek).slice(0, 5)
-    const bestStreak = [...list].filter((entry) => maxStreakValue(entry.state) > 0).sort((a, b) => maxStreakValue(b.state) - maxStreakValue(a.state)).slice(0, 5)
+    const bestStreak = [...list].filter((entry) => maxRecognitionStreakValue(entry.state) > 0).sort((a, b) => maxRecognitionStreakValue(b.state) - maxRecognitionStreakValue(a.state)).slice(0, 5)
     const masParticipativo = [...list].filter((entry) => (entry.state.categoryPoints['Participación'] || 0) > 0).sort((a, b) => (b.state.categoryPoints['Participación'] || 0) - (a.state.categoryPoints['Participación'] || 0)).slice(0, 5)
     const mejorActitud = [...list].filter((entry) => (entry.state.categoryPoints['Buena actitud'] || 0) > 0).sort((a, b) => (b.state.categoryPoints['Buena actitud'] || 0) - (a.state.categoryPoints['Buena actitud'] || 0)).slice(0, 5)
     const mayorAvance = [...list].filter((entry) => entry.state.recent.length > 0).sort((a, b) => b.state.recent.length - a.state.recent.length).slice(0, 5)
