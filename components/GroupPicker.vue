@@ -122,33 +122,19 @@ const target = computed(() => selectedGrado.value && selectedGrupo.value
         </div>
       </section>
 
-      <section class="selection-panel quick-access-panel" aria-labelledby="remembered-heading">
-        <template v-if="rememberedTarget">
-          <div class="quick-access-copy">
-            <span class="quick-access-icon"><Clock3 class="icon-sm" /></span>
-            <div>
-              <strong id="remembered-heading">Continuar último grupo</strong>
-              <p>Retoma tu último grupo de forma rápida.</p>
-            </div>
+      <section v-if="rememberedTarget" class="selection-panel quick-access-panel" aria-labelledby="remembered-heading">
+        <div class="quick-access-copy">
+          <span class="quick-access-icon"><Clock3 class="icon-sm" /></span>
+          <div>
+            <strong id="remembered-heading">Continuar último grupo</strong>
+            <p>Retoma tu último grupo de forma rápida.</p>
           </div>
+        </div>
 
-          <NuxtLink class="quick-access-action" :to="rememberedTarget">
-            <span>{{ remembered?.grado }} · {{ remembered?.grupo }}</span>
-            <ArrowRight class="icon-sm" />
-          </NuxtLink>
-        </template>
-
-        <template v-else>
-          <div class="quick-access-copy">
-            <span class="quick-access-icon"><Clock3 class="icon-sm" /></span>
-            <div>
-              <strong id="remembered-heading">Continuar último grupo</strong>
-              <p>Retoma tu último grupo de forma rápida.</p>
-            </div>
-          </div>
-
-          <div class="quick-access-placeholder"><span>Sin grupo reciente</span></div>
-        </template>
+        <NuxtLink class="quick-access-action" :to="rememberedTarget">
+          <span>{{ remembered?.grado }} · {{ remembered?.grupo }}</span>
+          <ArrowRight class="icon-sm" />
+        </NuxtLink>
       </section>
     </div>
 

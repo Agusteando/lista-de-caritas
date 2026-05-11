@@ -171,8 +171,7 @@
   gap: 14px;
 }
 
-.campus-icon,
-.profile-badge {
+.campus-icon {
   width: clamp(42px, 4vw, 48px);
   height: clamp(42px, 4vw, 48px);
   display: grid;
@@ -184,23 +183,20 @@
   font-weight: 900;
 }
 
-.campus-copy,
-.profile-copy {
+.campus-copy {
   min-width: 0;
   display: grid;
   gap: 4px;
 }
 
-.campus-copy strong,
-.profile-copy strong {
+.campus-copy strong {
   color: #17263b;
   font-size: clamp(1rem, 1.22vw, 1.22rem);
   line-height: 1.05;
   letter-spacing: -.04em;
 }
 
-.campus-copy small,
-.profile-copy small {
+.campus-copy small {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -209,8 +205,7 @@
   font-weight: 620;
 }
 
-.header-utility-button,
-.header-profile-block {
+.header-utility-button {
   min-height: clamp(42px, 5vh, 48px);
   display: inline-flex;
   align-items: center;
@@ -228,19 +223,6 @@
   padding-left: 16px;
 }
 
-.header-profile-block {
-  gap: 12px;
-}
-
-.profile-copy strong {
-  font-size: .98rem;
-}
-
-.profile-copy small {
-  font-size: .78rem;
-  font-weight: 760;
-  color: #5b6767;
-}
 
 .change-group-link {
   color: #17784b;
@@ -306,14 +288,12 @@
 
   .brand-wordmark { font-size: 1.48rem; }
 
-  .campus-icon,
-  .profile-badge {
+  .campus-icon {
     width: 40px;
     height: 40px;
   }
 
-  .header-utility-button,
-  .header-profile-block {
+  .header-utility-button {
     min-height: 40px;
   }
 }
@@ -350,7 +330,6 @@
 
   .header-divider,
   .header-utility-button span,
-  .profile-copy,
   .change-group-link { display: none; }
 
   .header-left-cluster,
@@ -363,8 +342,7 @@
     gap: 10px;
   }
 
-  .campus-icon,
-  .profile-badge {
+  .campus-icon {
     width: 42px;
     height: 42px;
   }
@@ -386,8 +364,7 @@
     font-size: 1.22rem;
   }
 
-  .header-utility-button,
-  .header-profile-block {
+  .header-utility-button {
     min-height: 42px;
     min-width: 42px;
     padding: 0;
