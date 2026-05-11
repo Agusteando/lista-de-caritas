@@ -12,7 +12,7 @@
   width: min(var(--shell-max), 100%);
   min-height: 100vh;
   margin: 0 auto;
-  padding: var(--shell-pad) var(--shell-pad) calc(112px + var(--safe-bottom));
+  padding: var(--shell-pad) var(--shell-pad) calc(88px + var(--safe-bottom));
 }
 
 .attendance-topbar {

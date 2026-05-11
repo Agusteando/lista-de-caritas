@@ -73,13 +73,19 @@
   .change-group-pill { display: inline-flex; }
   .bottom-nav { display: none; }
   .reference-density.roster-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .attendance-shell { --metrics-h: 64px; }
+  .attendance-metrics { width: calc(100% - 16px); }
+  .metric-cell { column-gap: 6px; padding-inline: 2px; }
+  .metric-icon { width: 36px; height: 36px; }
+  .metric-cell strong { font-size: 1.54rem; }
+  .metric-cell small { font-size: .55rem; }
 }
 @media (max-width: 760px) {
   .attendance-shell {
     --shell-pad: clamp(12px, 4vw, 18px);
     --hero-min: 160px;
     --hero-badge: 104px;
-    --metrics-h: 72px;
+    --metrics-h: 66px;
     --segment-h: 42px;
     --search-h: 48px;
     --student-h: 126px;
@@ -117,11 +123,11 @@
   .group-icon.decorative { width: 140px; height: 140px; right: -16px; bottom: 10px; }
   .hero-copy h2 { font-size: clamp(1.26rem, 6vw, 1.72rem); }
   .hero-copy p { font-size: .86rem; margin-bottom: 7px; }
-  .attendance-metrics { width: calc(100% - 18px); }
-  .metric-cell { column-gap: 8px; padding-inline: 3px; }
-  .metric-icon { width: 44px; height: 44px; }
-  .metric-cell strong { font-size: 1.88rem; }
-  .metric-cell small { font-size: .62rem; }
+  .attendance-metrics { width: calc(100% - 14px); }
+  .metric-cell { column-gap: 6px; padding-inline: 2px; }
+  .metric-icon { width: 38px; height: 38px; }
+  .metric-cell strong { font-size: 1.62rem; }
+  .metric-cell small { font-size: .57rem; }
   .search-row { grid-template-columns: minmax(0, 1fr) 56px; }
   .filter-button { min-width: 56px; padding: 0; font-size: 0; }
   .student-main-button { grid-template-columns: calc(var(--student-avatar) + 10px) minmax(0, 1fr); }
@@ -134,7 +140,7 @@
 @media (max-width: 430px) {
   .reference-density.roster-grid { gap: 9px; }
   .student-main-button { padding: 11px 10px; }
-  .attendance-shell { --student-avatar: 68px; --student-h: 124px; }
+  .attendance-shell { --student-avatar: 68px; --student-h: 124px; --metrics-h: 62px; }
   .attendance-topbar { gap: 11px; margin-bottom: 14px; }
   .topbar-actions { gap: 8px; }
   .date-pill,
@@ -148,6 +154,10 @@
   .change-group-pill .icon-sm,
   .pill-chevron { width: 13px; height: 13px; }
   .rank-bubble { width: 31px; height: 31px; }
+  .metric-cell { column-gap: 5px; }
+  .metric-icon { width: 34px; height: 34px; }
+  .metric-cell strong { font-size: 1.46rem; }
+  .metric-cell small { font-size: .53rem; }
   .status-control { min-height: 30px; font-size: .74rem; }
   .hero-copy .hero-meta { display: none; }
 }
