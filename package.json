@@ -25,6 +25,7 @@
     "node": ">=18.20.0"
   },
   "overrides": {
-    "@nuxt/cli": "3.22.5"
+    "@nuxt/cli": "3.22.5",
+    "unplugin": "2.3.11"
   }
 }
