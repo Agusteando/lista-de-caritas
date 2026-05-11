@@ -25,6 +25,7 @@ const {
   rosterReady,
   saveAttendance,
   searchTerm,
+  statusFilter,
   setMode,
   setStatus,
   showRosterSkeleton,
@@ -76,7 +77,7 @@ const {
         />
 
         <template v-if="mode === 'attendance'">
-          <AttendanceViewControls v-model:search-term="searchTerm" />
+          <AttendanceViewControls v-model:search-term="searchTerm" v-model:status-filter="statusFilter" />
 
           <AttendanceRoster
             :students="visibleStudents"

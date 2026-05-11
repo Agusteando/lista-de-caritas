@@ -11,17 +11,17 @@ body {
   font-family: var(--font-sans);
   color: var(--ink);
   background:
-    radial-gradient(circle at 5% -12%, rgba(255, 221, 158, 0.12), transparent 31rem),
-    radial-gradient(circle at 76% -8%, rgba(183, 229, 168, 0.12), transparent 35rem),
-    radial-gradient(circle at 98% 42%, rgba(210, 243, 218, 0.18), transparent 30rem),
-    linear-gradient(145deg, #fffaf2 0%, #fffdf8 52%, #f8fcf4 100%);
+    radial-gradient(circle at 5% -12%, rgba(255, 221, 158, 0.07), transparent 31rem),
+    radial-gradient(circle at 76% -8%, rgba(183, 229, 168, 0.08), transparent 35rem),
+    radial-gradient(circle at 98% 42%, rgba(210, 243, 218, 0.11), transparent 30rem),
+    linear-gradient(145deg, #fffdf7 0%, #fffefa 54%, #fbfdf6 100%);
 }
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.14;
+  opacity: 0.09;
   background-image:
     linear-gradient(rgba(47, 117, 94, 0.028) 1px, transparent 1px),
     linear-gradient(90deg, rgba(47, 117, 94, 0.028) 1px, transparent 1px);

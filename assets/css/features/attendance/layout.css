@@ -1,13 +1,13 @@
 .attendance-shell {
   --topbar-control: clamp(40px, 2.7vw, 48px);
   --topbar-gap: clamp(9px, .85vw, 13px);
-  --hero-min: clamp(142px, 10.6vw, 176px);
+  --hero-min: clamp(146px, 11vw, 184px);
   --hero-badge: clamp(96px, 7.1vw, 124px);
-  --metrics-h: clamp(60px, 4.6vw, 74px);
+  --metrics-h: clamp(62px, 4.8vw, 78px);
   --segment-h: clamp(36px, 2.65vw, 42px);
   --search-h: clamp(38px, 2.85vw, 46px);
-  --student-h: clamp(104px, 7.5vw, 116px);
-  --student-avatar: clamp(58px, 4.9vw, 72px);
+  --student-h: clamp(120px, 8.6vw, 136px);
+  --student-avatar: clamp(72px, 5.9vw, 86px);
   position: relative;
   width: min(var(--shell-max), 100%);
   min-height: 100vh;

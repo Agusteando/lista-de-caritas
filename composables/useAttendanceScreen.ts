@@ -28,6 +28,7 @@ export const useAttendanceScreen = () => {
   const grupo = computed(() => decodeURIComponent(String(route.params.grupo || '')).toUpperCase())
   const mode = ref<'attendance' | 'logros'>('attendance')
   const searchTerm = ref('')
+  const statusFilter = ref<'all' | AttendanceStatus>('all')
   const selectedDate = ref(dayjs().format('YYYY-MM-DD'))
 
   const { rememberGroup } = usePlantelMemory()
@@ -115,10 +116,12 @@ export const useAttendanceScreen = () => {
 
   const visibleStudents = computed(() => {
     const needle = searchTerm.value.trim().toLowerCase()
-    if (!needle) return students.value
+    const normalizedNeedle = normalizeStudentName(needle)
     return students.value.filter((student) => {
+      const currentStatus = attendance.value[student.id] || 'unmarked'
+      if (statusFilter.value !== 'all' && currentStatus !== statusFilter.value) return false
+      if (!needle) return true
       const normalizedName = normalizeStudentName(student.nombre)
-      const normalizedNeedle = normalizeStudentName(needle)
       return normalizedName.includes(normalizedNeedle) || String(student.matricula || '').includes(needle)
     })
   })
@@ -366,6 +369,7 @@ export const useAttendanceScreen = () => {
     rosterReady,
     saveAttendance,
     searchTerm,
+    statusFilter,
     setMode,
     setStatus,
     showRosterSkeleton,

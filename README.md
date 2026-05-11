@@ -65,7 +65,7 @@ https://wweb.casitaapps.com/files/1724624551591-file.jpeg
 - Background roster refresh and silent merge.
 - Attendance Mode as the default and dominant mode.
 - Large student photo cards with fast status buttons.
-- “Marcar todos presentes” first, then exception handling.
+- “Marcar todos presentes” plus direct per-student status cycling.
 - Fixed bottom save action.
 - Teacher-safe save states.
 - Summary sheet with subtle completion motion.
