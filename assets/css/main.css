@@ -40,21 +40,22 @@ body {
   font-family: var(--font-sans);
   color: var(--ink);
   background:
-    radial-gradient(circle at 7% -8%, rgba(255, 209, 102, 0.28), transparent 32rem),
-    radial-gradient(circle at 93% 8%, rgba(137, 198, 111, 0.24), transparent 34rem),
-    linear-gradient(145deg, #f8f1e7 0%, #fffaf2 49%, #eef7ed 100%);
+    radial-gradient(circle at 4% -10%, rgba(255, 207, 129, 0.34), transparent 30rem),
+    radial-gradient(circle at 76% -6%, rgba(164, 220, 142, 0.24), transparent 34rem),
+    radial-gradient(circle at 98% 38%, rgba(199, 241, 211, 0.42), transparent 30rem),
+    linear-gradient(145deg, #fbf4e9 0%, #fffbf3 48%, #eff8ed 100%);
 }
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.46;
+  opacity: 0.38;
   background-image:
-    linear-gradient(rgba(31, 89, 72, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(31, 89, 72, 0.035) 1px, transparent 1px);
-  background-size: 42px 42px;
-  mask-image: linear-gradient(to bottom, black, transparent 78%);
+    linear-gradient(rgba(47, 117, 94, 0.032) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(47, 117, 94, 0.032) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: linear-gradient(to bottom, black, transparent 76%);
 }
 button, input, select, textarea { font: inherit; }
 button { border: 0; cursor: pointer; }
@@ -627,20 +628,7 @@ img { display: block; max-width: 100%; }
 }
 .mode-segments button:last-child { border-right: 0; }
 .mode-segments button.active { color: #126829; background: linear-gradient(145deg, rgba(236,250,230,.96), rgba(255,255,255,.72)); box-shadow: inset 0 0 0 2px rgba(54, 148, 70, .28); }
-.mode-segments button::after {
-  content: "";
-  position: absolute;
-  left: 18%;
-  right: 18%;
-  bottom: 8px;
-  height: 3px;
-  border-radius: 999px;
-  background: currentColor;
-  opacity: 0;
-  transform: scaleX(.42);
-  transition: opacity 150ms ease, transform 150ms ease;
-}
-.mode-segments button.active::after { opacity: .42; transform: scaleX(1); }
+.mode-segments button::after { content: none; }
 .mode-segments button:active { transform: scale(.985); }
 .search-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; }
 .search-box,
@@ -1141,62 +1129,61 @@ img { display: block; max-width: 100%; }
 }
 
 @media (min-width: 980px) and (max-width: 1279px) {
-  .attendance-shell { max-width: 1280px; padding: 12px 18px 26px; }
-  .attendance-layout { grid-template-columns: minmax(0, 1fr) 270px; gap: 16px; }
+  .attendance-shell { max-width: 1240px; padding: 14px 18px 26px; }
+  .attendance-layout { grid-template-columns: minmax(0, 1fr) 268px; gap: 16px; }
   .attendance-sidebar { display: grid; gap: 12px; position: sticky; top: 12px; }
-  .attendance-topbar { margin-bottom: 10px; gap: 12px; }
+  .attendance-topbar { margin-bottom: 12px; gap: 12px; }
   .topbar-left,
-  .topbar-actions { gap: 9px; }
+  .topbar-actions { gap: 10px; }
   .round-button,
   .date-pill,
-  .change-group-pill { min-height: 38px; border-radius: 16px; }
-  .round-button { width: 38px; }
+  .change-group-pill { min-height: 42px; border-radius: 17px; }
+  .round-button { width: 42px; }
   .round-button .icon,
   .date-pill .icon-sm,
-  .change-group-pill .icon-sm { width: 16px; height: 16px; stroke-width: 2.45; }
-  .topbar-left .round-button.soft .icon { width: 19px; height: 19px; }
-  .date-pill { min-width: 142px; padding: 0 12px; font-size: .8rem; }
-  .change-group-pill { min-width: 136px; padding: 0 12px; font-size: .78rem; }
+  .change-group-pill .icon-sm { width: 17px; height: 17px; stroke-width: 2.45; }
+  .topbar-left .round-button.soft .icon { width: 20px; height: 20px; }
+  .date-pill { min-width: 150px; padding: 0 13px; font-size: .82rem; }
+  .change-group-pill { min-width: 142px; padding: 0 13px; font-size: .78rem; }
   .attendance-title { gap: 8px; }
-  .attendance-title h1 { font-size: clamp(1.34rem, 1.65vw, 1.58rem); letter-spacing: -.052em; }
+  .attendance-title h1 { font-size: clamp(1.38rem, 1.7vw, 1.62rem); letter-spacing: -.052em; }
   .attendance-title small { font-size: .64rem; }
-  .class-hero-card { min-height: 150px; grid-template-columns: 112px minmax(0, 1fr); gap: 18px; padding: 16px 22px 50px; border-radius: 24px; }
-  .hero-badge { width: 112px; height: 120px; }
+  .class-hero-card { min-height: 158px; grid-template-columns: 118px minmax(0, 1fr); gap: 18px; padding: 17px 24px 52px; border-radius: 25px; }
+  .hero-badge { width: 116px; height: 124px; }
   .badge-aura { inset: 12px 6px 0; }
-  .laurel { width: 30px; height: 56px; bottom: 11px; }
-  .shield { width: 92px; height: 100px; }
-  .shield .group-icon { width: 58px; height: 58px; }
-  .medal { width: 30px; height: 30px; border-width: 3px; bottom: -2px; }
-  .hero-copy h2 { font-size: 1.48rem; margin-bottom: 9px; }
-  .hero-copy p { font-size: .78rem; margin-bottom: 7px; gap: 8px; }
+  .laurel { width: 31px; height: 58px; bottom: 11px; }
+  .shield { width: 96px; height: 104px; }
+  .shield .group-icon { width: 60px; height: 60px; }
+  .medal { width: 31px; height: 31px; border-width: 3px; bottom: -2px; }
+  .hero-copy h2 { font-size: 1.52rem; margin-bottom: 9px; }
+  .hero-copy p { font-size: .8rem; margin-bottom: 7px; gap: 8px; }
   .hero-copy .hero-meta span,
-  .group-info-card p span { min-height: 22px; padding: 1px 7px; border-radius: 8px; }
-  .group-icon.decorative { width: 170px; height: 170px; right: 2%; bottom: 0; opacity: .76; }
-  .attendance-metrics { width: calc(100% - 48px); min-height: 58px; margin: -42px auto 10px; border-radius: 20px; }
-  .metric-cell { column-gap: 8px; padding: 8px 5px 6px; }
+  .group-info-card p span { min-height: 23px; padding: 1px 8px; border-radius: 8px; }
+  .group-icon.decorative { width: 178px; height: 178px; right: 2%; bottom: 0; opacity: .76; }
+  .attendance-metrics { width: calc(100% - 50px); min-height: 60px; margin: -43px auto 10px; border-radius: 21px; }
+  .metric-cell { column-gap: 9px; padding: 8px 5px 6px; }
   .metric-cell + .metric-cell::before { top: 14px; bottom: 14px; }
-  .metric-icon { width: 38px; height: 38px; }
-  .metric-icon .icon { width: 20px; height: 20px; }
-  .metric-cell strong { font-size: 1.62rem; }
-  .metric-cell small { font-size: .52rem; }
-  .class-mode-switcher { min-height: 36px; margin-bottom: 8px; padding: 4px; border-radius: 17px; }
-  .class-mode-switcher button { min-height: 30px; border-radius: 12px; font-size: .72rem; }
-  .mode-segments { min-height: 38px; border-radius: 17px; }
-  .mode-segments button { gap: 7px; font-size: .72rem; }
-  .mode-segments .icon-sm { width: 14px; height: 14px; }
-  .mode-segments button::after { bottom: 5px; height: 2px; }
+  .metric-icon { width: 39px; height: 39px; }
+  .metric-icon .icon { width: 21px; height: 21px; }
+  .metric-cell strong { font-size: 1.66rem; }
+  .metric-cell small { font-size: .53rem; }
+  .class-mode-switcher { min-height: 34px; margin-bottom: 7px; padding: 3px; border-radius: 16px; }
+  .class-mode-switcher button { min-height: 28px; border-radius: 12px; font-size: .7rem; }
+  .mode-segments { min-height: 42px; border-radius: 18px; }
+  .mode-segments button { gap: 8px; font-size: .76rem; }
+  .mode-segments .icon-sm { width: 16px; height: 16px; }
   .search-row { gap: 10px; }
   .search-box,
-  .filter-button { min-height: 40px; border-radius: 17px; }
-  .search-box { padding: 0 14px; }
-  .search-box .icon { width: 17px; height: 17px; }
-  .filter-button { min-width: 100px; padding: 0 14px; font-size: .76rem; }
-  .filter-button .icon { width: 19px; height: 19px; }
-  .attendance-controls { gap: 8px; margin-bottom: 10px; }
+  .filter-button { min-height: 42px; border-radius: 18px; }
+  .search-box { padding: 0 16px; }
+  .search-box .icon { width: 20px; height: 20px; }
+  .filter-button { min-width: 106px; padding: 0 16px; font-size: .78rem; }
+  .filter-button .icon { width: 21px; height: 21px; }
+  .attendance-controls { gap: 9px; margin-bottom: 10px; }
   .quick-actions { display: none; }
-  .reference-density.roster-grid { grid-template-columns: repeat(3, minmax(182px, 1fr)); gap: 8px; }
+  .reference-density.roster-grid { grid-template-columns: repeat(3, minmax(184px, 1fr)); gap: 9px; }
   .reference-density .student-card,
-  .student-main-button { min-height: 84px; border-radius: 16px; }
+  .student-main-button { min-height: 84px; border-radius: 17px; }
   .student-main-button { grid-template-columns: 54px minmax(0, 1fr); padding: 8px 8px 7px 9px; gap: 8px; }
   .rank-bubble { width: 25px; height: 25px; font-size: .74rem; }
   .student-avatar-ring { width: 50px; height: 50px; padding: 3px; }
@@ -1234,86 +1221,96 @@ img { display: block; max-width: 100%; }
 }
 
 
+
 @media (min-width: 1280px) {
-  .attendance-shell { max-width: 1760px; padding: 16px clamp(22px, 2vw, 34px) 30px; }
+  .attendance-shell { max-width: 1760px; padding: 18px clamp(24px, 2vw, 34px) 30px; }
   .round-button,
   .date-pill,
-  .change-group-pill { min-height: 42px; border-radius: 17px; }
-  .round-button { width: 42px; }
+  .change-group-pill { min-height: 50px; border-radius: 19px; }
+  .round-button { width: 50px; }
   .round-button .icon,
   .date-pill .icon-sm,
-  .change-group-pill .icon-sm { width: 17px; height: 17px; stroke-width: 2.45; }
-  .topbar-left .round-button.soft .icon { width: 21px; height: 21px; stroke-width: 2.2; }
-  .date-pill { min-width: 160px; padding: 0 16px; font-size: .84rem; }
-  .change-group-pill { min-width: 152px; padding: 0 16px; font-size: .82rem; }
+  .change-group-pill .icon-sm { width: 19px; height: 19px; stroke-width: 2.45; }
+  .topbar-left .round-button.soft .icon { width: 22px; height: 22px; stroke-width: 2.2; }
+  .date-pill { min-width: 190px; padding: 0 18px; font-size: .92rem; }
+  .change-group-pill { min-width: 178px; padding: 0 18px; font-size: .88rem; }
   .date-pill .icon-sm,
   .change-group-pill .icon-sm { color: #126f43; }
-  .attendance-title h1 { font-size: clamp(1.52rem, 1.32vw, 1.82rem); }
-  .attendance-title small { font-size: .68rem; }
-  .attendance-topbar { margin-bottom: 12px; }
-  .attendance-layout { grid-template-columns: minmax(0, 1fr) 315px; gap: 20px; }
+  .attendance-title h1 { font-size: clamp(1.7rem, 1.45vw, 2rem); }
+  .attendance-title small { font-size: .74rem; }
+  .attendance-topbar { margin-bottom: 14px; }
+  .attendance-layout { grid-template-columns: minmax(0, 1fr) 326px; gap: 22px; }
   .attendance-sidebar { display: grid; gap: 14px; position: sticky; top: 14px; }
-  .class-hero-card { min-height: 184px; grid-template-columns: 142px minmax(0, 1fr); gap: 24px; padding: 20px 32px 62px; border-radius: 28px; }
-  .hero-badge { width: 132px; height: 142px; }
+  .class-hero-card { min-height: 176px; grid-template-columns: 148px minmax(0, 1fr); gap: 24px; padding: 20px 34px 58px; border-radius: 28px; }
+  .hero-badge { width: 138px; height: 146px; }
   .badge-aura { inset: 14px 7px -1px; }
-  .laurel { width: 34px; height: 66px; bottom: 12px; }
-  .shield { width: 108px; height: 118px; }
-  .shield .group-icon { width: 68px; height: 68px; }
-  .medal { bottom: -3px; width: 34px; height: 34px; }
-  .hero-copy h2 { font-size: 1.7rem; margin-bottom: 12px; }
-  .hero-copy p { font-size: .84rem; margin-bottom: 9px; }
-  .group-icon.decorative { width: 206px; height: 206px; right: 3%; bottom: 1%; }
-  .attendance-metrics { width: calc(100% - 56px); min-height: 66px; margin: -50px auto 12px; border-radius: 22px; }
-  .metric-icon { width: 42px; height: 42px; }
-  .metric-icon .icon { width: 22px; height: 22px; }
-  .metric-cell { column-gap: 10px; padding: 10px 6px 8px; }
-  .metric-cell strong { font-size: 1.86rem; }
-  .metric-cell small { font-size: .56rem; }
-  .class-mode-switcher { min-height: 38px; margin-bottom: 8px; padding: 4px; border-radius: 18px; }
-  .class-mode-switcher button { min-height: 31px; border-radius: 13px; font-size: .74rem; }
-  .mode-segments { min-height: 42px; border-radius: 18px; }
-  .mode-segments .icon-sm { width: 15px; height: 15px; }
-  .mode-segments button { font-size: .76rem; }
+  .laurel { width: 36px; height: 68px; bottom: 12px; }
+  .shield { width: 112px; height: 122px; }
+  .shield .group-icon { width: 70px; height: 70px; }
+  .medal { bottom: -3px; width: 36px; height: 36px; }
+  .hero-copy h2 { font-size: 1.82rem; margin-bottom: 11px; }
+  .hero-copy p { font-size: .9rem; margin-bottom: 8px; }
+  .group-icon.decorative { width: 218px; height: 218px; right: 3%; bottom: 0; opacity: .76; }
+  .attendance-metrics { width: calc(100% - 58px); min-height: 68px; margin: -48px auto 12px; border-radius: 23px; }
+  .metric-icon { width: 44px; height: 44px; }
+  .metric-icon .icon { width: 24px; height: 24px; }
+  .metric-cell { column-gap: 12px; padding: 10px 6px 8px; }
+  .metric-cell strong { font-size: 1.94rem; }
+  .metric-cell small { font-size: .58rem; }
+  .class-mode-switcher { min-height: 36px; margin-bottom: 8px; padding: 4px; border-radius: 17px; }
+  .class-mode-switcher button { min-height: 29px; border-radius: 13px; font-size: .72rem; }
+  .mode-segments { min-height: 48px; border-radius: 20px; }
+  .mode-segments .icon-sm { width: 19px; height: 19px; }
+  .mode-segments button { gap: 10px; font-size: .86rem; }
+  .mode-segments button.active { box-shadow: inset 0 0 0 2px rgba(94, 174, 107, .32); }
   .search-box,
-  .filter-button { min-height: 42px; border-radius: 18px; }
-  .search-row { gap: 10px; }
-  .filter-button { min-width: 104px; }
+  .filter-button { min-height: 48px; border-radius: 20px; }
+  .search-box { padding: 0 22px; }
+  .search-box .icon { width: 23px; height: 23px; }
+  .search-row { gap: 12px; }
+  .filter-button { min-width: 122px; padding: 0 20px; font-size: .88rem; }
+  .filter-button .icon { width: 25px; height: 25px; stroke-width: 2.25; }
+  .attendance-controls { gap: 12px; margin-bottom: 14px; }
   .quick-actions { display: none; }
-  .reference-density.roster-grid { grid-template-columns: repeat(3, minmax(212px, 1fr)); gap: 10px; }
+  .reference-density.roster-grid { grid-template-columns: repeat(3, minmax(224px, 1fr)); gap: 11px; }
   .reference-density .student-card,
-  .student-main-button { min-height: 90px; }
-  .student-main-button { grid-template-columns: 58px minmax(0, 1fr); padding: 9px 9px 8px 10px; gap: 8px; }
-  .student-avatar-ring { width: 54px; height: 54px; }
-  .reference-density .student-name { font-size: .7rem; line-height: 1.12; }
-  .student-line .group-icon { width: 14px; height: 14px; }
-  .status-control { min-height: 23px; width: min(100%, 116px); font-size: .58rem; }
-  .status-control .icon-sm { width: 12px; height: 12px; }
+  .student-main-button { min-height: 94px; }
+  .student-main-button { grid-template-columns: 62px minmax(0, 1fr); padding: 10px 10px 9px 11px; gap: 9px; }
+  .student-avatar-ring { width: 58px; height: 58px; }
+  .reference-density .student-name { font-size: .74rem; line-height: 1.12; }
+  .student-line .group-icon { width: 15px; height: 15px; }
+  .status-control { min-height: 25px; width: min(100%, 124px); font-size: .62rem; }
+  .status-control .icon-sm { width: 13px; height: 13px; }
   .logros-content-grid { grid-template-columns: minmax(0, 1fr) 320px; }
   .logros-roster { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-  .side-card { border-radius: 20px; padding: 14px; }
+  .side-card { border-radius: 22px; padding: 16px; }
   .weekly-real-card,
-  .restored-logros-card { padding: 15px 17px; }
+  .restored-logros-card { padding: 16px 18px; }
   .fixed-save-area { display: none; }
 }
 
 
+
 @media (min-width: 1480px) {
-  .attendance-shell { padding-inline: clamp(28px, 2.1vw, 42px); }
-  .attendance-layout { grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; }
-  .class-hero-card { min-height: 202px; grid-template-columns: 158px minmax(0, 1fr); padding: 22px 38px 68px; }
-  .hero-badge { width: 148px; height: 158px; }
-  .shield { width: 122px; height: 132px; }
-  .shield .group-icon { width: 76px; height: 76px; }
-  .group-icon.decorative { width: 226px; height: 226px; right: 4%; }
-  .attendance-metrics { min-height: 72px; margin-top: -58px; }
+  .attendance-shell { max-width: 1760px; padding-inline: clamp(30px, 2.1vw, 42px); }
+  .attendance-layout { grid-template-columns: minmax(0, 1fr) 348px; gap: 26px; }
+  .class-hero-card { min-height: 188px; grid-template-columns: 158px minmax(0, 1fr); padding: 22px 38px 62px; }
+  .hero-badge { width: 150px; height: 158px; }
+  .shield { width: 124px; height: 134px; }
+  .shield .group-icon { width: 78px; height: 78px; }
+  .group-icon.decorative { width: 236px; height: 236px; right: 4%; }
+  .attendance-metrics { min-height: 70px; margin-top: -50px; }
   .metric-icon { width: 46px; height: 46px; }
-  .metric-cell strong { font-size: 2.08rem; }
-  .reference-density.roster-grid { grid-template-columns: repeat(3, minmax(232px, 1fr)); gap: 11px; }
-  .reference-density .student-name { font-size: .74rem; }
-  .attendance-sidebar .icon-sm { width: 16px; height: 16px; }
+  .metric-cell strong { font-size: 2.04rem; }
+  .reference-density.roster-grid { grid-template-columns: repeat(3, minmax(236px, 1fr)); gap: 12px; }
+  .reference-density .student-card,
+  .student-main-button { min-height: 96px; }
+  .reference-density .student-name { font-size: .76rem; }
+  .attendance-sidebar .icon-sm { width: 17px; height: 17px; }
   .weekly-real-card h3 .icon-sm,
-  .logros-real-card h3 .icon-sm { width: 18px; height: 18px; }
+  .logros-real-card h3 .icon-sm { width: 19px; height: 19px; }
 }
+
 
 
 @media (max-width: 760px) {
@@ -1362,6 +1359,69 @@ img { display: block; max-width: 100%; }
   .student-main-button { grid-template-columns: 68px minmax(0, 1fr); }
   .student-avatar-ring { width: 64px; height: 64px; }
   .fixed-save-inner { width: 100%; }
+}
+
+
+@media (min-width: 980px) and (max-height: 940px) {
+  .attendance-shell { padding-top: 14px; }
+  .attendance-topbar { margin-bottom: 11px; }
+  .class-hero-card { min-height: 158px; padding-bottom: 52px; }
+  .hero-badge { width: 124px; height: 132px; }
+  .shield { width: 100px; height: 110px; }
+  .shield .group-icon { width: 62px; height: 62px; }
+  .group-icon.decorative { width: 190px; height: 190px; }
+  .attendance-metrics { min-height: 60px; margin-top: -42px; margin-bottom: 10px; }
+  .metric-icon { width: 39px; height: 39px; }
+  .metric-icon .icon { width: 21px; height: 21px; }
+  .metric-cell strong { font-size: 1.72rem; }
+  .class-mode-switcher { min-height: 32px; margin-bottom: 7px; padding: 3px; }
+  .class-mode-switcher button { min-height: 26px; font-size: .68rem; }
+  .mode-segments { min-height: 42px; }
+  .search-box,
+  .filter-button { min-height: 42px; }
+  .attendance-controls { gap: 9px; margin-bottom: 10px; }
+  .reference-density .student-card,
+  .student-main-button { min-height: 84px; }
+  .student-main-button { grid-template-columns: 54px minmax(0, 1fr); padding: 8px 8px 7px 9px; }
+  .student-avatar-ring { width: 50px; height: 50px; }
+  .reference-density .student-name { font-size: .68rem; }
+}
+
+@media (min-width: 980px) and (max-height: 820px) {
+  .attendance-shell { padding-top: 12px; }
+  .round-button,
+  .date-pill,
+  .change-group-pill { min-height: 40px; border-radius: 16px; }
+  .round-button { width: 40px; }
+  .date-pill { min-width: 150px; font-size: .8rem; }
+  .change-group-pill { min-width: 142px; font-size: .78rem; }
+  .attendance-title h1 { font-size: 1.44rem; }
+  .attendance-title small { font-size: .64rem; }
+  .class-hero-card { min-height: 142px; grid-template-columns: 108px minmax(0, 1fr); gap: 17px; padding: 15px 22px 46px; }
+  .hero-badge { width: 106px; height: 114px; }
+  .shield { width: 88px; height: 96px; }
+  .shield .group-icon { width: 54px; height: 54px; }
+  .medal { width: 30px; height: 30px; }
+  .hero-copy h2 { font-size: 1.42rem; margin-bottom: 8px; }
+  .hero-copy p { font-size: .78rem; margin-bottom: 6px; }
+  .group-icon.decorative { width: 168px; height: 168px; }
+  .attendance-metrics { min-height: 56px; margin-top: -38px; border-radius: 19px; }
+  .metric-icon { width: 36px; height: 36px; }
+  .metric-cell strong { font-size: 1.58rem; }
+  .metric-cell small { font-size: .5rem; }
+  .mode-segments,
+  .search-box,
+  .filter-button { min-height: 38px; border-radius: 16px; }
+  .mode-segments button { font-size: .72rem; }
+  .mode-segments .icon-sm { width: 15px; height: 15px; }
+  .search-box .icon { width: 18px; height: 18px; }
+  .filter-button .icon { width: 20px; height: 20px; }
+  .reference-density .student-card,
+  .student-main-button { min-height: 78px; }
+  .student-main-button { grid-template-columns: 50px minmax(0, 1fr); padding: 7px 8px 6px 8px; }
+  .student-avatar-ring { width: 46px; height: 46px; }
+  .reference-density .student-name { font-size: .63rem; }
+  .status-control { min-height: 21px; font-size: .54rem; }
 }
 
 
@@ -1579,17 +1639,17 @@ img { display: block; max-width: 100%; }
 
 @media (min-width: 1280px) {
   .reference-density.view-one { grid-template-columns: repeat(2, minmax(300px, 1fr)); }
-  .reference-density.view-compact { grid-template-columns: repeat(auto-fit, minmax(184px, 1fr)); gap: 8px; }
+  .reference-density.view-compact { grid-template-columns: repeat(3, minmax(224px, 1fr)); gap: 10px; }
   .reference-density.view-compact .student-card,
-  .reference-density.view-compact .student-main-button { min-height: 80px; }
-  .reference-density.view-compact .student-main-button { grid-template-columns: 50px minmax(0, 1fr); padding: 7px 8px 6px 8px; }
-  .reference-density.view-compact .student-avatar-ring { width: 46px; height: 46px; }
-  .reference-density.view-compact .student-name { font-size: .62rem; }
-  .reference-density.view-compact .status-control { min-height: 21px; width: min(100%, 106px); font-size: .54rem; }
+  .reference-density.view-compact .student-main-button { min-height: 82px; }
+  .reference-density.view-compact .student-main-button { grid-template-columns: 52px minmax(0, 1fr); padding: 7px 8px 6px 8px; }
+  .reference-density.view-compact .student-avatar-ring { width: 48px; height: 48px; }
+  .reference-density.view-compact .student-name { font-size: .64rem; }
+  .reference-density.view-compact .status-control { min-height: 22px; width: min(100%, 108px); font-size: .55rem; }
 }
 
 @media (min-width: 1480px) {
-  .reference-density.view-compact { grid-template-columns: repeat(4, minmax(184px, 1fr)); }
+  .reference-density.view-compact { grid-template-columns: repeat(3, minmax(236px, 1fr)); }
 }
 
 @media (max-width: 560px) {
