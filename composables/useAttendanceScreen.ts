@@ -74,8 +74,7 @@ export const useAttendanceScreen = () => {
   const activeLogrosStudents = computed(() => Object.values(logros.states.value || {}).filter((state) => (state.pointsThisWeek || 0) > 0).length)
   const logroSummary = computed(() => summarizeLogroState(logros.states.value || {}, serverLogrosSummary.value, logros.featuredCategory.value))
   const displayWeeklyDays = computed(() => buildWeeklyDisplayDays(selectedDate.value, weeklySummary.value, attendance.value))
-  const logrosClassCopy = computed(() => getLogrosClassCopy(weeklySummary.value, logroSummary.value))
-  const classPositiveWeekStreak = computed(() => weeklySummary.value?.positiveWeekStreak || 0)
+  const logrosClassCopy = computed(() => getLogrosClassCopy(logroSummary.value))
   const logrosClassHeadline = computed(() => logrosClassCopy.value.headline)
   const logrosClassLine = computed(() => logrosClassCopy.value.line)
 
@@ -315,11 +314,22 @@ export const useAttendanceScreen = () => {
     }
   }
 
+  const playLogroFeedback = (events: Array<{ streakBonus?: number; weeklyMilestoneBonus?: number }>) => {
+    if (events.some((event) => event.weeklyMilestoneBonus)) sounds.play('milestone')
+    else if (events.some((event) => event.streakBonus)) sounds.play('streak')
+    else sounds.play('logro')
+  }
+
   const awardLogro = async (studentId: string, category: LogroCategory) => {
     const event = await logros.award(studentId, category)
-    if (event.weeklyMilestoneBonus) sounds.play('milestone')
-    else if (event.streakBonus) sounds.play('streak')
-    else sounds.play('logro')
+    playLogroFeedback([event])
+    void refreshLogrosState()
+  }
+
+  const awardAllLogros = async (category: LogroCategory) => {
+    if (!students.value.length) return
+    const result = await logros.awardBatch(students.value.map((student) => student.id), category)
+    playLogroFeedback(result.events)
     void refreshLogrosState()
   }
 
@@ -347,9 +357,9 @@ export const useAttendanceScreen = () => {
   return {
     activeLogrosStudents,
     attendance,
+    awardAllLogros,
     awardLogro,
     classCode,
-    classPositiveWeekStreak,
     classDetail,
     displayWeeklyDays,
     grado,

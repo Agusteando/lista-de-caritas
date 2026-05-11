@@ -3,8 +3,6 @@ import { createError } from 'h3'
 import { routeGroup } from '../../../../../../utils/validation'
 import { useDbPool } from '../../../../../../utils/db'
 import { logTechnicalFailure } from '../../../../../../utils/logger'
-import { readPortableAttendanceRows, normalizeStudentName, statusFromLegacyFields } from '../../../../../../utils/attendanceSources'
-import { loadLegacyPlantelStudents } from '../../../../../../utils/legacyRoster'
 
 const LOGRO_CATEGORIES = [
   'Participación',
@@ -49,7 +47,6 @@ const emptyState = (studentId: string) => ({
   categoryPoints: {} as Record<string, number>,
   recent: [] as Array<{ category: string; points: number; awardedAt: string }>,
   streaks: {
-    'Racha de asistencia': 0,
     'Racha de participación': 0,
     'Racha de buena actitud': 0,
     'Racha de trabajo completo': 0
@@ -125,21 +122,6 @@ export default defineEventHandler(async (event) => {
       { plantel, grado, grupo }
     ) as unknown as [EventRow[], unknown]
 
-    const attendanceStart = today.subtract(120, 'day').format('YYYY-MM-DD')
-    const attendanceRows = await readPortableAttendanceRows(pool, {
-      plantel,
-      grado,
-      grupo,
-      startDate: attendanceStart,
-      endDate: today.format('YYYY-MM-DD')
-    })
-    const rosterStudents = await loadLegacyPlantelStudents(plantel, { includePhotos: false })
-    const studentIdByName = new Map(
-      rosterStudents
-        .filter((student) => student.grado === grado && student.grupo === grupo)
-        .map((student) => [normalizeStudentName(student.nombre), student.id])
-    )
-
     const states: Record<string, ReturnType<typeof emptyState>> = {}
     const stateFor = (studentId: string) => {
       states[studentId] ||= emptyState(studentId)
@@ -181,19 +163,6 @@ export default defineEventHandler(async (event) => {
       const [studentId, category] = key.split(':')
       const streakName = RECOGNITION_STREAKS[category]
       if (streakName) stateFor(studentId).streaks[streakName] = consecutiveCalendarDaysFromLatest(dates)
-    }
-
-    const attendanceDatesByStudent = new Map<string, Set<string>>()
-    for (const row of attendanceRows) {
-      const normalized = statusFromLegacyFields(row)
-      if (normalized.status !== 'present') continue
-      const studentId = studentIdByName.get(normalizeStudentName(row.nombre))
-      if (!studentId) continue
-      if (!attendanceDatesByStudent.has(studentId)) attendanceDatesByStudent.set(studentId, new Set())
-      attendanceDatesByStudent.get(studentId)?.add(row.date)
-    }
-    for (const [studentId, dates] of attendanceDatesByStudent.entries()) {
-      stateFor(studentId).streaks['Racha de asistencia'] = consecutiveCalendarDaysFromLatest(dates)
     }
 
     for (const [studentId, state] of Object.entries(states)) {

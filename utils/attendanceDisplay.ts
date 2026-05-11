@@ -114,9 +114,11 @@ export const summarizeLogroState = (
     totalPoints: stateList.reduce((sum, state) => sum + (state.pointsThisWeek || 0), 0),
     totalEvents: stateList.reduce((sum, state) => sum + (state.recent?.length || 0), 0),
     activeStudents: stateList.filter((state) => (state.pointsThisWeek || 0) > 0).length,
-    topStreak: stateList.reduce((max, state) => Math.max(max, ...Object.entries(state.streaks || {})
-      .filter(([name]) => name !== 'Racha de asistencia')
-      .map(([, value]) => Number(value || 0))), 0)
+    topStreak: stateList.reduce((max, state) => Math.max(max, ...[
+      'Racha de participación',
+      'Racha de buena actitud',
+      'Racha de trabajo completo'
+    ].map((name) => Number(state.streaks?.[name] || 0))), 0)
   }
 
   return {
@@ -129,32 +131,19 @@ export const summarizeLogroState = (
 }
 
 export const getLogrosClassCopy = (
-  weeklySummary: WeeklyAttendanceSummary | null,
   logroSummary: { totalEvents: number; totalPoints: number; activeStudents?: number }
 ) => {
   const events = logroSummary.totalEvents
   const points = logroSummary.totalPoints
   const activeStudents = logroSummary.activeStudents || 0
-  const positiveWeekStreak = weeklySummary?.positiveWeekStreak || 0
-  const streakCopy = positiveWeekStreak > 0
-    ? `${positiveWeekStreak} ${positiveWeekStreak === 1 ? 'semana positiva' : 'semanas positivas'}`
-    : ''
 
   if (events > 0) {
     return {
       headline: `${events} ${events === 1 ? 'logro' : 'logros'}`,
       line: [
         `${points} ${points === 1 ? 'punto' : 'puntos'}`,
-        `${activeStudents} ${activeStudents === 1 ? 'alumno activo' : 'alumnos activos'}`,
-        streakCopy
+        `${activeStudents} ${activeStudents === 1 ? 'alumno activo' : 'alumnos activos'}`
       ].filter(Boolean).join(' · ')
-    }
-  }
-
-  if (positiveWeekStreak > 0) {
-    return {
-      headline: `${positiveWeekStreak} ${positiveWeekStreak === 1 ? 'semana positiva' : 'semanas positivas'}`,
-      line: 'Más presentes que faltas con datos reales.'
     }
   }
 

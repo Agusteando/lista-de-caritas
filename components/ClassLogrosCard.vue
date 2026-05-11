@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Award, ChevronRight, Flame, Sparkles, Star, Trophy, UsersRound } from 'lucide-vue-next'
+import { Award, ChevronRight, Sparkles, Star, Trophy, UsersRound } from 'lucide-vue-next'
 import type { LogroCategory } from '~/types/domain'
 
 const props = defineProps<{
@@ -9,11 +9,10 @@ const props = defineProps<{
   totalEvents: number
   activeStudents: number
   topCategory?: LogroCategory | null
-  positiveWeekStreak?: number
 }>()
 
 const emit = defineEmits<{ open: [] }>()
-const hasLogros = computed(() => props.totalEvents > 0 || props.totalPoints > 0 || props.activeStudents > 0 || Boolean(props.positiveWeekStreak))
+const hasLogros = computed(() => props.totalEvents > 0 || props.totalPoints > 0 || props.activeStudents > 0)
 </script>
 
 <template>
@@ -38,7 +37,6 @@ const hasLogros = computed(() => props.totalEvents > 0 || props.totalPoints > 0 
       <span><Award class="icon-xs" /> {{ props.totalEvents }} logros</span>
       <span><Sparkles class="icon-xs" /> {{ props.totalPoints }} pts</span>
       <span><UsersRound class="icon-xs" /> {{ props.activeStudents }} activos</span>
-      <span v-if="props.positiveWeekStreak"><Flame class="icon-xs" /> {{ props.positiveWeekStreak }} semanas</span>
     </div>
 
     <div v-if="props.topCategory" class="class-logros-category">

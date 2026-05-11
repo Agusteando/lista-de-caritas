@@ -49,6 +49,26 @@
 .logros-filter-chip.active { color: var(--green-strong); background: linear-gradient(145deg, #effce8, #fffefa); border-color: rgba(42,145,75,.22); }
 .logros-refresh-button:disabled { opacity: .72; cursor: progress; }
 .logros-command-card .sync-strip { grid-column: 1 / -1; margin-top: -2px; }
+
+.logros-bulk-card {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(150px, .34fr) minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 11px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.66);
+  border: 1px solid rgba(226,216,194,.62);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.86);
+}
+.logros-bulk-copy { display: grid; gap: 2px; min-width: 0; }
+.logros-bulk-copy strong { color: var(--ink); font-size: .88rem; font-weight: 930; letter-spacing: -.025em; }
+.logros-bulk-copy small { color: #6f786f; font-size: .68rem; font-weight: 800; }
+.logros-bulk-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.logro-choice.bulk { min-height: 32px; padding: 0 11px; background: linear-gradient(145deg, #fffefa, #f7fbf2); }
+.logro-choice.bulk.active { transform: translateY(-1px); box-shadow: 0 7px 16px rgba(240,146,45,.16); }
+.logro-choice:disabled { opacity: .58; cursor: not-allowed; }
 .logros-content-grid { display: grid; gap: 12px; }
 .logros-roster { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-items: start; }
 .logro-student-card {
@@ -71,11 +91,16 @@
 .logro-student-name small { color: #6d756d; font-size: .7rem; font-weight: 800; }
 .points-bubble,
 .ranking-rank { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 999px; color: white; background: linear-gradient(#ffca66, #f0922d); font-weight: 950; box-shadow: 0 8px 18px rgba(240,146,45,.2); }
+.logro-streak-strip,
 .logro-activity-strip,
 .selected-metrics { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; }
+.logro-streak-strip { min-height: 25px; }
 .logro-activity-strip span,
 .selected-metrics span,
-.badge-token { display: inline-flex; align-items: center; gap: 5px; border-radius: 999px; color: #246444; background: rgba(239,252,232,.92); padding: 5px 8px; font-weight: 850; font-size: .7rem; }
+.badge-token,
+.streak-chip { display: inline-flex; align-items: center; gap: 5px; border-radius: 999px; color: #246444; background: rgba(239,252,232,.92); padding: 5px 8px; font-weight: 850; font-size: .7rem; }
+.streak-chip { color: #9b5f00; background: #fff1c9; border: 1px solid rgba(240,184,62,.24); }
+.streak-chip.muted { color: #7a7468; background: rgba(255,255,255,.62); border-color: rgba(226,216,194,.54); }
 .quick-logros,
 .selected-awards { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
 .logro-choice { min-height: 30px; display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 0 10px; background: rgba(255,255,255,.82); border: 1px solid var(--line); color: #225240; font-size: .68rem; font-weight: 860; }
@@ -119,12 +144,16 @@
 @media (max-width: 760px) {
   .logros-command-card { grid-template-columns: 1fr; }
   .logros-command-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .logros-toolbar { grid-template-columns: 1fr; }
+  .logros-toolbar,
+  .logros-bulk-card { grid-template-columns: 1fr; }
+  .logros-bulk-actions { justify-content: stretch; }
+  .logro-choice.bulk { flex: 1 1 calc(50% - 6px); justify-content: center; }
   .logros-filter-chip,
   .logros-refresh-button { justify-content: center; }
 }
 @media (max-width: 560px) {
   .logros-roster { grid-template-columns: 1fr; }
   .quick-logros .logro-choice,
-  .selected-awards .logro-choice { flex: 1 1 calc(50% - 6px); justify-content: center; }
+  .selected-awards .logro-choice,
+  .logros-bulk-actions .logro-choice { flex: 1 1 calc(50% - 6px); justify-content: center; }
 }

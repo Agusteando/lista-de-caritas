@@ -26,7 +26,6 @@ const props = defineProps<{
   logrosTotalEvents: number
   logrosActiveStudents: number
   logrosTopCategory?: LogroCategory | null
-  logrosPositiveWeekStreak?: number
 }>()
 
 const emit = defineEmits<{ save: []; openLogros: [] }>()
@@ -57,7 +56,6 @@ const emit = defineEmits<{ save: []; openLogros: [] }>()
       :total-events="props.logrosTotalEvents"
       :active-students="props.logrosActiveStudents"
       :top-category="props.logrosTopCategory"
-      :positive-week-streak="props.logrosPositiveWeekStreak"
       @open="emit('openLogros')"
     />
   </aside>

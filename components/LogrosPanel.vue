@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Award, CheckCircle2, Flame, Medal, RefreshCw, Search, Sparkles, Star, Trophy, UserRound, UsersRound, X } from 'lucide-vue-next'
-import { logroCategories } from '~/composables/useLogros'
+import { Award, CheckCircle2, Medal, RefreshCw, Search, Sparkles, Star, Trophy, UserRound, UsersRound, X } from 'lucide-vue-next'
+import { logroCategories, logroStreakNameList } from '~/composables/useLogros'
 import type { LogroCategory, Student, StudentLogrosState } from '~/types/domain'
 
 type RankingMode = 'topLogros' | 'bestStreak' | 'masParticipativo' | 'mejorActitud' | 'mayorAvance'
@@ -19,11 +19,11 @@ const props = defineProps<{
   totalEvents: number
   activeStudents: number
   topCategory?: LogroCategory | null
-  classPositiveWeekStreak?: number
 }>()
 
 const emit = defineEmits<{
   award: [studentId: string, category: LogroCategory]
+  awardAll: [category: LogroCategory]
   refresh: []
 }>()
 
@@ -32,7 +32,9 @@ const selectedStudentId = ref<string | null>(null)
 const searchTerm = ref('')
 const onlyWithLogros = ref(false)
 const cardClass = ref<Record<string, boolean>>({})
+const bulkAwardingCategory = ref<LogroCategory | null>(null)
 
+const validStreakNames = new Set<string>(logroStreakNameList)
 const categories = computed(() => [
   props.featuredCategory,
   ...logroCategories.filter((category) => category !== props.featuredCategory)
@@ -52,12 +54,7 @@ const defaultState = (studentId: string): StudentLogrosState => ({
   pointsThisWeek: 0,
   categoryPoints: {},
   recent: [],
-  streaks: {
-    'Racha de asistencia': 0,
-    'Racha de participación': 0,
-    'Racha de buena actitud': 0,
-    'Racha de trabajo completo': 0
-  },
+  streaks: Object.fromEntries(logroStreakNameList.map((name) => [name, 0])),
   badges: []
 })
 
@@ -72,19 +69,16 @@ const stateFor = (studentId: string) => props.states[studentId] || defaultState(
 const categoryPoints = (state: StudentLogrosState, category: LogroCategory) => state.categoryPoints?.[category] || 0
 const badgeCount = (state: StudentLogrosState) => state.badges?.length || 0
 const recentCount = (state: StudentLogrosState) => state.recent?.length || 0
-const attendanceStreakName = 'Racha de asistencia'
-const streakEntries = (state: StudentLogrosState, includeAttendance = true) => Object.entries(state.streaks || {})
-  .filter(([name]) => includeAttendance || name !== attendanceStreakName)
-  .map(([name, value]) => ({ name, value: Number(value || 0) }))
-  .filter((entry) => entry.value > 0)
+const streakLabel = (name: string) => name.replace('Racha de ', '')
+const studentStreaks = (state: StudentLogrosState) => Object.entries(state.streaks || {})
+  .filter(([name, value]) => validStreakNames.has(name) && Number(value || 0) > 0)
+  .map(([name, value]) => ({ name, label: streakLabel(name), value: Number(value || 0) }))
   .sort((a, b) => b.value - a.value)
-const recognitionStreakEntries = (state: StudentLogrosState) => streakEntries(state, false)
-const maxRecognitionStreak = (state: StudentLogrosState) => recognitionStreakEntries(state)[0]?.value || 0
-const attendanceStreak = (state: StudentLogrosState) => Number(state.streaks?.[attendanceStreakName] || 0)
-const topRecognitionStreakLabel = (state: StudentLogrosState) => recognitionStreakEntries(state)[0]?.name.replace('Racha de ', '') || ''
+const maxRecognitionStreak = (state: StudentLogrosState) => studentStreaks(state)[0]?.value || 0
+const topRecognitionStreakLabel = (state: StudentLogrosState) => studentStreaks(state)[0]?.label || ''
 const bestCategoryLabel = (state: StudentLogrosState) => {
   if (state.bestCategory && categoryPoints(state, state.bestCategory) > 0) return state.bestCategory
-  if (maxRecognitionStreak(state) > 0) return `Racha de ${topRecognitionStreakLabel(state)}`
+  if (maxRecognitionStreak(state) > 0) return `Racha: ${topRecognitionStreakLabel(state)}`
   if (state.pointsThisWeek > 0) return 'Semana activa'
   return 'Sin logros'
 }
@@ -108,8 +102,7 @@ const selectedStudent = computed(() => {
 })
 const selectedState = computed(() => selectedStudent.value ? stateFor(selectedStudent.value.id) : null)
 const selectedRecent = computed(() => selectedState.value?.recent?.slice(0, 5) || [])
-const selectedStreaks = computed(() => selectedState.value ? recognitionStreakEntries(selectedState.value).slice(0, 4) : [])
-const selectedAttendanceStreak = computed(() => selectedState.value ? attendanceStreak(selectedState.value) : 0)
+const selectedStreaks = computed(() => selectedState.value ? studentStreaks(selectedState.value).slice(0, 4) : [])
 const selectedTopCategories = computed(() => {
   if (!selectedState.value) return [] as Array<{ category: LogroCategory; points: number }>
   return logroCategories
@@ -119,7 +112,7 @@ const selectedTopCategories = computed(() => {
     .slice(0, 3)
 })
 const currentRanking = computed(() => props.rankings[rankingMode.value] || [])
-const hasLogros = computed(() => props.totalEvents > 0 || props.totalPoints > 0 || Boolean(props.classPositiveWeekStreak))
+const hasLogros = computed(() => props.totalEvents > 0 || props.totalPoints > 0 || props.activeStudents > 0)
 
 const rankingScore = (entry: RankingEntry) => {
   if (rankingMode.value === 'bestStreak') return maxRecognitionStreak(entry.state)
@@ -135,13 +128,30 @@ watch(filteredStudents, () => {
   }
 }, { immediate: true })
 
-const award = async (studentId: string, category: LogroCategory) => {
-  selectedStudentId.value = studentId
-  cardClass.value = { ...cardClass.value, [studentId]: true }
+const flashCards = (studentIds: string[]) => {
+  cardClass.value = {
+    ...cardClass.value,
+    ...Object.fromEntries(studentIds.map((studentId) => [studentId, true]))
+  }
   window.setTimeout(() => {
-    cardClass.value = { ...cardClass.value, [studentId]: false }
+    const next = { ...cardClass.value }
+    for (const studentId of studentIds) next[studentId] = false
+    cardClass.value = next
   }, 700)
+}
+
+const award = (studentId: string, category: LogroCategory) => {
+  selectedStudentId.value = studentId
+  flashCards([studentId])
   emit('award', studentId, category)
+}
+
+const awardAll = (category: LogroCategory) => {
+  if (!props.students.length) return
+  bulkAwardingCategory.value = category
+  flashCards(props.students.map((student) => student.id))
+  emit('awardAll', category)
+  window.setTimeout(() => { bulkAwardingCategory.value = null }, 900)
 }
 
 const clearSearch = () => { searchTerm.value = '' }
@@ -161,7 +171,6 @@ const clearSearch = () => { searchTerm.value = '' }
         <article><strong>{{ totalEvents }}</strong><span>logros</span></article>
         <article><strong>{{ totalPoints }}</strong><span>puntos</span></article>
         <article><strong>{{ activeStudents }}</strong><span>activos</span></article>
-        <article v-if="classPositiveWeekStreak"><strong>{{ classPositiveWeekStreak }}</strong><span>semanas</span></article>
       </div>
 
       <div class="logros-toolbar">
@@ -177,6 +186,26 @@ const clearSearch = () => { searchTerm.value = '' }
           <RefreshCw class="icon-sm" :class="{ 'spin-soft': syncing }" /> Actualizar
         </button>
       </div>
+
+      <section class="logros-bulk-card" aria-label="Premiar a todo el grupo">
+        <div class="logros-bulk-copy">
+          <strong>Premiar a todos</strong>
+          <small>{{ students.length }} alumnos · atajo tipo ClassDojo</small>
+        </div>
+        <div class="logros-bulk-actions">
+          <button
+            v-for="category in categories"
+            :key="category"
+            class="logro-choice bulk"
+            :class="{ featured: category === featuredCategory, active: bulkAwardingCategory === category }"
+            type="button"
+            :disabled="!students.length || syncing"
+            @click="awardAll(category)"
+          >
+            <span>{{ category }}</span>
+          </button>
+        </div>
+      </section>
 
       <div v-if="syncing || pendingEvents" class="sync-strip">
         <span class="sync-dot" />
@@ -204,8 +233,12 @@ const clearSearch = () => { searchTerm.value = '' }
             <span class="points-bubble">{{ stateFor(student.id).pointsThisWeek }}</span>
           </button>
 
+          <div class="logro-streak-strip" aria-label="Rachas de logros">
+            <span v-for="entry in studentStreaks(stateFor(student.id)).slice(0, 3)" :key="entry.name" class="streak-chip">🔥 {{ entry.label }} {{ entry.value }}</span>
+            <span v-if="!studentStreaks(stateFor(student.id)).length" class="streak-chip muted">🔥 Sin racha de logro</span>
+          </div>
+
           <div class="logro-activity-strip">
-            <span v-if="maxRecognitionStreak(stateFor(student.id))"><Flame class="icon-sm" /> {{ maxRecognitionStreak(stateFor(student.id)) }} racha</span>
             <span><Star class="icon-sm" /> {{ recentCount(stateFor(student.id)) }} registros</span>
             <span><Award class="icon-sm" /> {{ badgeCount(stateFor(student.id)) }} insignias</span>
           </div>
@@ -246,8 +279,7 @@ const clearSearch = () => { searchTerm.value = '' }
           </div>
 
           <div class="selected-metrics" aria-label="Resumen del alumno seleccionado">
-            <span v-if="maxRecognitionStreak(selectedState)"><Flame class="icon-sm" /> {{ maxRecognitionStreak(selectedState) }} racha</span>
-            <span v-else-if="selectedAttendanceStreak"><Flame class="icon-sm" /> {{ selectedAttendanceStreak }} días asistencia</span>
+            <span v-if="maxRecognitionStreak(selectedState)">🔥 {{ topRecognitionStreakLabel(selectedState) }} {{ maxRecognitionStreak(selectedState) }}</span>
             <span><Star class="icon-sm" /> {{ selectedState.pointsThisWeek }} pts</span>
             <span><Award class="icon-sm" /> {{ badgeCount(selectedState) }} insignias</span>
             <span><Trophy class="icon-sm" /> {{ bestCategoryLabel(selectedState) }}</span>
@@ -266,9 +298,8 @@ const clearSearch = () => { searchTerm.value = '' }
             </button>
           </div>
 
-          <div class="profile-streaks" v-if="selectedStreaks.length || selectedAttendanceStreak">
-            <span v-for="entry in selectedStreaks" :key="entry.name"><Flame class="icon-sm" /> {{ entry.name }} · {{ entry.value }}</span>
-            <span v-if="selectedAttendanceStreak"><Flame class="icon-sm" /> Asistencia · {{ selectedAttendanceStreak }} días</span>
+          <div class="profile-streaks" v-if="selectedStreaks.length">
+            <span v-for="entry in selectedStreaks" :key="entry.name">🔥 {{ entry.label }} · {{ entry.value }}</span>
           </div>
 
           <div class="profile-badges" v-if="selectedTopCategories.length">

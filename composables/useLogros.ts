@@ -14,11 +14,12 @@ export const logroCategories: LogroCategory[] = [
 ]
 
 export const logroStreakNames = {
-  attendance: 'Racha de asistencia',
   participation: 'Racha de participación',
   attitude: 'Racha de buena actitud',
   completedWork: 'Racha de trabajo completo'
 } as const
+
+export const logroStreakNameList = Object.values(logroStreakNames)
 
 const streakCategories: Partial<Record<LogroCategory, string>> = {
   'Participación': logroStreakNames.participation,
@@ -26,16 +27,22 @@ const streakCategories: Partial<Record<LogroCategory, string>> = {
   'Trabajo completo': logroStreakNames.completedWork
 }
 
-const defaultStreaks = () => ({
-  [logroStreakNames.attendance]: 0,
-  [logroStreakNames.participation]: 0,
-  [logroStreakNames.attitude]: 0,
-  [logroStreakNames.completedWork]: 0
-})
+const defaultStreaks = () => Object.fromEntries(
+  logroStreakNameList.map((name) => [name, 0])
+) as Record<string, number>
 
-const recognitionStreakEntries = (state: StudentLogrosState) => Object.entries(state.streaks || {})
-  .filter(([name]) => name !== logroStreakNames.attendance)
-  .map(([, value]) => Number(value || 0))
+const normalizeStreaks = (...sources: Array<Record<string, number> | undefined>) => {
+  const clean = defaultStreaks()
+  for (const source of sources) {
+    for (const name of logroStreakNameList) {
+      clean[name] = Math.max(clean[name] || 0, Number(source?.[name] || 0))
+    }
+  }
+  return clean
+}
+
+const recognitionStreakEntries = (state: StudentLogrosState) => logroStreakNameList
+  .map((name) => Number(state.streaks?.[name] || 0))
 
 const maxRecognitionStreakValue = (state: StudentLogrosState) => Math.max(0, ...recognitionStreakEntries(state))
 
@@ -97,7 +104,7 @@ export function useLogrosContext(plantel: Ref<string> | ComputedRef<string>, gra
       studentId,
       categoryPoints: { ...base.categoryPoints, ...(input?.categoryPoints || {}) },
       recent: Array.isArray(input?.recent) ? input.recent.slice(0, 8) : [],
-      streaks: { ...base.streaks, ...(input?.streaks || {}) },
+      streaks: normalizeStreaks(input?.streaks),
       badges: Array.isArray(input?.badges) ? input.badges : []
     }
   }
@@ -150,10 +157,7 @@ export function useLogrosContext(plantel: Ref<string> | ComputedRef<string>, gra
           .sort((a, b) => dayjs(b.awardedAt).valueOf() - dayjs(a.awardedAt).valueOf())
           .filter((entry, index, list) => index === list.findIndex((candidate) => candidate.awardedAt === entry.awardedAt && candidate.category === entry.category))
           .slice(0, 8),
-        streaks: Object.fromEntries(Object.keys({ ...serverState.streaks, ...localState.streaks }).map((name) => [
-          name,
-          Math.max(Number(serverState.streaks[name] || 0), Number(localState.streaks[name] || 0))
-        ])),
+        streaks: normalizeStreaks(serverState.streaks, localState.streaks),
         badges: serverState.badges.length >= localState.badges.length ? serverState.badges : localState.badges,
         bestCategory: serverState.bestCategory || localState.bestCategory
       }
@@ -257,20 +261,47 @@ export function useLogrosContext(plantel: Ref<string> | ComputedRef<string>, gra
     if (remaining.length !== pending.length) void refreshFromServer()
   }
 
+  const sendEvent = async (event: LogroEvent) => {
+    const saved = await $fetch<{ streakBonus?: number; weeklyMilestoneBonus?: number }>('/api/logros', { method: 'POST', body: event })
+    if (saved) {
+      event.streakBonus = Number(saved.streakBonus || 0)
+      event.weeklyMilestoneBonus = Number(saved.weeklyMilestoneBonus || 0)
+    }
+    return event
+  }
+
   const award = async (studentId: string, category: LogroCategory) => {
     const event = awardLocal(studentId, category)
     try {
-      const saved = await $fetch<{ streakBonus?: number; weeklyMilestoneBonus?: number }>('/api/logros', { method: 'POST', body: event })
-      if (saved) {
-        event.streakBonus = Number(saved.streakBonus || 0)
-        event.weeklyMilestoneBonus = Number(saved.weeklyMilestoneBonus || 0)
-      }
+      await sendEvent(event)
       void flushPending()
       void refreshFromServer()
     } catch {
       writePending([...readPending(), event])
     }
     return event
+  }
+
+  const awardBatch = async (studentIds: string[], category: LogroCategory) => {
+    const uniqueIds = [...new Set(studentIds.filter(Boolean))]
+    const events = uniqueIds.map((studentId) => awardLocal(studentId, category))
+    const failed: LogroEvent[] = []
+
+    for (const event of events) {
+      try {
+        await sendEvent(event)
+      } catch {
+        failed.push(event)
+      }
+    }
+
+    if (failed.length) writePending([...readPending(), ...failed])
+    if (events.length !== failed.length) {
+      void flushPending()
+      void refreshFromServer()
+    }
+
+    return { events, saved: events.length - failed.length, failed: failed.length }
   }
 
   const rankings = computed(() => {
@@ -293,5 +324,5 @@ export function useLogrosContext(plantel: Ref<string> | ComputedRef<string>, gra
     })
   }
 
-  return { states, syncing, pendingEvents, featuredCategory, award, rankings, logroCategories, refreshFromServer, mergeServerStates, flushPending }
+  return { states, syncing, pendingEvents, featuredCategory, award, awardBatch, rankings, logroCategories, refreshFromServer, mergeServerStates, flushPending }
 }
