@@ -109,8 +109,8 @@
 }
 .context-change { display: none; }
 .group-icon {
-  --sprite-col: 0;
-  --sprite-row: 0;
+  --sprite-x: 0%;
+  --sprite-y: 0%;
   display: inline-block;
   flex: none;
   width: 21px;
@@ -121,8 +121,10 @@
   mask-image: url('/group-spritesheet-mask.png');
   -webkit-mask-size: 600% 700%;
   mask-size: 600% 700%;
-  -webkit-mask-position: calc(var(--sprite-col) * -20%) calc(var(--sprite-row) * -16.6666667%);
-  mask-position: calc(var(--sprite-col) * -20%) calc(var(--sprite-row) * -16.6666667%);
+  -webkit-mask-position: var(--sprite-x) var(--sprite-y);
+  mask-position: var(--sprite-x) var(--sprite-y);
+  -webkit-mask-mode: alpha;
+  mask-mode: alpha;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
 }
