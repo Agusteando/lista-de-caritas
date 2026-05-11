@@ -38,15 +38,17 @@ const profileCode = computed(() => props.plantel || 'LC')
             </span>
           </NuxtLink>
 
-          <span class="header-divider" aria-hidden="true" />
+          <template v-if="plantel">
+            <span class="header-divider" aria-hidden="true" />
 
-          <div class="header-campus-card" aria-label="Plantel actual">
+            <div class="header-campus-card" aria-label="Plantel actual">
             <span class="campus-icon"><School class="icon-sm" /></span>
             <span class="campus-copy">
               <strong>{{ contextTitle }}</strong>
               <small>{{ contextSubtitle }}</small>
             </span>
-          </div>
+            </div>
+          </template>
         </div>
 
         <div class="header-right-cluster">

@@ -1,7 +1,4 @@
-.group-journey {
-  display: grid;
-  gap: var(--selection-main-gap, 16px);
-}
+.group-journey { display: grid; gap: var(--selection-main-gap, 18px); }
 
 .journey-topline {
   display: flex;
@@ -30,12 +27,10 @@
   font-weight: 780;
 }
 
-.group-selection-sidebar .selection-sidebar-hero { min-height: var(--selection-sidebar-hero); }
-
 .grade-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(9px, 1vw, 12px);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(10px, 1vw, 14px);
 }
 
 .grade-card,
@@ -48,33 +43,33 @@
 }
 
 .grade-card {
-  min-height: clamp(48px, 6vh, 56px);
+  min-height: clamp(50px, 5.8vh, 60px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 9px;
   padding: 0 14px;
-  border-radius: 17px;
-  font-size: clamp(.9rem, 1vw, 1rem);
+  border-radius: 16px;
+  font-size: clamp(.92rem, 1vw, 1.02rem);
   font-weight: 820;
 }
 
 .group-grid,
 .group-loading-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(10px, 1.1vw, 14px);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(12px, 1.2vw, 18px);
 }
 
 .group-card {
   position: relative;
-  min-height: clamp(110px, 13.6vh, 134px);
+  min-height: clamp(128px, 14.5vh, 156px);
   display: grid;
   justify-items: center;
   align-content: center;
-  gap: clamp(8px, 1.1vh, 12px);
-  padding: clamp(14px, 1.6vw, 18px) 14px;
-  border-radius: 21px;
+  gap: clamp(8px, 1vh, 12px);
+  padding: clamp(14px, 1.5vw, 20px) 14px;
+  border-radius: 22px;
   text-align: center;
 }
 
@@ -91,8 +86,8 @@
 }
 
 .group-card-icon {
-  width: clamp(50px, 5vw, 58px);
-  height: clamp(50px, 5vw, 58px);
+  width: clamp(52px, 5vw, 64px);
+  height: clamp(52px, 5vw, 64px);
   display: grid;
   place-items: center;
   border-radius: 999px;
@@ -100,10 +95,7 @@
   color: #1f9d48;
 }
 
-.group-card-icon .group-icon {
-  width: 28px;
-  height: 28px;
-}
+.group-card-icon .group-icon { width: 50%; height: 50%; }
 
 .group-card-copy {
   min-width: 0;
@@ -114,7 +106,7 @@
 
 .group-card strong {
   color: #0f3f2b;
-  font-size: clamp(1.32rem, 1.6vw, 1.64rem);
+  font-size: clamp(1.35rem, 1.6vw, 1.7rem);
   line-height: 1;
   letter-spacing: -.05em;
 }
@@ -124,7 +116,7 @@
   align-items: center;
   gap: 6px;
   color: #596863;
-  font-size: clamp(.82rem, .9vw, .94rem);
+  font-size: clamp(.84rem, .9vw, .96rem);
   font-weight: 600;
 }
 
@@ -132,13 +124,10 @@
 .group-card.active {
   border-color: rgba(31,157,72,.35);
   background: linear-gradient(180deg, #f8fcf5, #f3f8ee);
-  box-shadow: 0 12px 24px rgba(31,157,72,.09);
+  box-shadow: 0 12px 24px rgba(31,157,72,.09), inset 0 0 0 1px rgba(31,157,72,.12);
 }
 
 .group-card.active .group-card-check { opacity: 1; }
-
-.quick-access-panel { background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(252,252,248,.98)); }
-
 .group-loading-grid { margin-top: 16px; }
 
 .skeleton-group-card {
@@ -170,34 +159,28 @@
 .skeleton-line.short { width: 52%; }
 .skeleton-pill { width: 82%; height: 28px; margin-top: 2px; }
 
-@media (min-width: 1100px) {
-  .grade-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-  .group-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-}
-
 @media (min-width: 1100px) and (max-height: 820px) {
   .back-link { min-height: 40px; }
   .sync-strip { padding-block: 7px; }
-  .grade-card { min-height: 42px; border-radius: 14px; }
-  .group-card { min-height: 96px; gap: 6px; padding-block: 12px; border-radius: 18px; }
-  .group-card-icon { width: 42px; height: 42px; }
-  .group-card-icon .group-icon { width: 23px; height: 23px; }
-  .group-card strong { font-size: clamp(1.14rem, 1.35vw, 1.36rem); }
+  .grade-card { min-height: 44px; border-radius: 14px; }
+  .group-card { min-height: 106px; gap: 6px; padding-block: 12px; border-radius: 18px; }
+  .group-card-icon { width: 44px; height: 44px; }
+  .group-card strong { font-size: clamp(1.14rem, 1.35vw, 1.38rem); }
   .group-card small { font-size: .78rem; }
 }
 
 @media (min-width: 1100px) and (max-height: 720px) {
   .grade-card { min-height: 38px; }
-  .group-card { min-height: 84px; }
-  .group-card-icon { width: 36px; height: 36px; }
-  .group-card-icon .group-icon { width: 20px; height: 20px; }
+  .group-card { min-height: 88px; }
+  .group-card-icon { width: 38px; height: 38px; }
 }
 
 @media (max-width: 1099px) {
+  .grade-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .group-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-@media (max-width: 820px) {
+@media (max-width: 720px) {
   .journey-topline {
     flex-direction: column;
     align-items: stretch;
@@ -208,24 +191,13 @@
     justify-content: center;
   }
 
-  .grade-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .group-card { min-height: 104px; }
-}
-
-@media (max-width: 620px) {
-  .back-link { min-height: 42px; }
-
   .grade-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .group-grid { grid-template-columns: 1fr; }
-
-  .grade-card {
-    min-height: 48px;
-    justify-content: space-between;
-  }
+  .grade-card { min-height: 50px; justify-content: space-between; }
 
   .group-card {
-    min-height: 86px;
-    grid-template-columns: 46px minmax(0, 1fr) auto;
+    min-height: 88px;
+    grid-template-columns: 48px minmax(0, 1fr) auto;
     justify-items: start;
     align-items: center;
     gap: 10px;
@@ -234,21 +206,8 @@
     border-radius: 18px;
   }
 
-  .group-card-icon {
-    width: 46px;
-    height: 46px;
-  }
-
-  .group-card-icon .group-icon {
-    width: 24px;
-    height: 24px;
-  }
-
-  .group-card-copy {
-    justify-items: start;
-    gap: 3px;
-  }
-
+  .group-card-icon { width: 48px; height: 48px; }
+  .group-card-copy { justify-items: start; gap: 3px; }
   .group-card strong { font-size: 1.12rem; }
   .group-card small { font-size: .78rem; }
 

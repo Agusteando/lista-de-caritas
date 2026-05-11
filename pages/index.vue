@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowRight, CheckCircle2, Clock3, GraduationCap, MapPin, School, Sparkles } from 'lucide-vue-next'
+import { ArrowRight, CheckCircle2, ChevronRight, Clock3, GraduationCap, School, UsersRound } from 'lucide-vue-next'
 import { PLANTELES, getPlantelByCode } from '~/utils/planteles'
 
 const planteles = PLANTELES
@@ -14,7 +14,6 @@ onMounted(() => {
   rememberedByPlantel.value = Object.fromEntries(
     planteles.map((plantel) => [plantel.code, getRememberedGroup(plantel.code) || {}])
   )
-
   selectedPlantelCode.value = lastContext.value?.plantel || planteles[0]?.code || ''
 })
 
@@ -46,9 +45,9 @@ const selectedPlantel = computed(() => getPlantelByCode(selectedPlantelCode.valu
 const selectedRemembered = computed(() => selectedPlantel.value ? rememberedByPlantel.value[selectedPlantel.value.code] || {} : {})
 const selectedTarget = computed(() => selectedPlantel.value ? plantelTarget(selectedPlantel.value.code) : '/')
 const selectedSupportLine = computed(() => {
-  if (!selectedPlantel.value) return 'Selecciona un plantel para continuar.'
+  if (!selectedPlantel.value) return 'Elige una escuela para continuar.'
   if (selectedRemembered.value?.grado && selectedRemembered.value?.grupo) return `${selectedRemembered.value.grado} · ${selectedRemembered.value.grupo}`
-  return 'Elige grado y grupo para comenzar.'
+  return 'Elige el grado y grupo para continuar.'
 })
 </script>
 
@@ -58,11 +57,10 @@ const selectedSupportLine = computed(() => {
 
     <section class="selection-layout plantel-selection-layout">
       <div class="selection-main-column">
-        <section class="selection-intro-card" aria-labelledby="plantel-start-heading">
+        <section class="selection-intro-card selection-intro-plain" aria-labelledby="plantel-start-heading">
           <div class="selection-intro-copy">
-            <span class="hero-eyebrow"><Sparkles class="icon-sm" /> lista-de-caritas app</span>
             <h2 id="plantel-start-heading">Selecciona tu plantel</h2>
-            <p>Empieza por la escuela donde vas a trabajar y continúa al grado y grupo en un flujo claro y rápido.</p>
+            <p>Elige una escuela para continuar.</p>
           </div>
 
           <ol class="selection-stepper" aria-label="Pasos para comenzar">
@@ -72,44 +70,30 @@ const selectedSupportLine = computed(() => {
           </ol>
         </section>
 
-        <section class="selection-panel choice-surface plantel-choice-panel" aria-labelledby="plantel-heading">
-          <div class="panel-heading">
-            <div>
-              <span class="panel-step-badge">1</span>
-              <div>
-                <strong id="plantel-heading">Elige plantel</strong>
-                <p>Selecciona la escuela con la que trabajarás.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="plantel-grid" aria-label="Planteles">
-            <NuxtLink
-              v-for="plantel in planteles"
-              :key="plantel.code"
-              class="plantel-card"
-              :class="[
-                `accent-${plantel.accent}`,
-                { active: selectedPlantelCode === plantel.code, remembered: rememberedByPlantel[plantel.code]?.grado && rememberedByPlantel[plantel.code]?.grupo }
-              ]"
-              :to="plantelTarget(plantel.code)"
-              :aria-label="`Elegir ${plantel.title}`"
-              @mouseenter="selectedPlantelCode = plantel.code"
-              @focus="selectedPlantelCode = plantel.code"
-              @click="selectedPlantelCode = plantel.code"
-            >
-              <span class="plantel-icon"><GraduationCap class="icon" /></span>
-              <span class="plantel-copy">
-                <span class="plantel-card-topline">
-                  <small class="plantel-code">{{ plantel.code }}</small>
-                  <em v-if="rememberedLabel(plantel.code)"><CheckCircle2 class="icon-xs" /> {{ rememberedLabel(plantel.code) }}</em>
-                </span>
-                <strong>{{ plantel.title }}</strong>
-                <small>{{ plantel.level }} · {{ plantel.city }}</small>
-              </span>
-              <span class="choice-check"><CheckCircle2 class="icon-sm" /></span>
-            </NuxtLink>
-          </div>
+        <section class="plantel-card-grid" aria-label="Planteles">
+          <NuxtLink
+            v-for="plantel in planteles"
+            :key="plantel.code"
+            class="plantel-card"
+            :class="[
+              `accent-${plantel.accent}`,
+              { active: selectedPlantelCode === plantel.code, remembered: rememberedByPlantel[plantel.code]?.grado && rememberedByPlantel[plantel.code]?.grupo }
+            ]"
+            :to="plantelTarget(plantel.code)"
+            :aria-label="`Elegir ${plantel.title}`"
+            @mouseenter="selectedPlantelCode = plantel.code"
+            @focus="selectedPlantelCode = plantel.code"
+            @click="selectedPlantelCode = plantel.code"
+          >
+            <span class="plantel-icon"><GraduationCap class="icon" /></span>
+            <span class="plantel-copy">
+              <strong>{{ plantel.title }}</strong>
+              <small>{{ plantel.level }} · {{ plantel.city }}</small>
+              <em v-if="rememberedLabel(plantel.code)"><CheckCircle2 class="icon-xs" /> {{ rememberedLabel(plantel.code) }}</em>
+            </span>
+            <span class="choice-check"><CheckCircle2 class="icon-sm" /></span>
+            <ChevronRight class="choice-chevron icon-sm" />
+          </NuxtLink>
         </section>
 
         <section class="selection-panel quick-access-panel" aria-labelledby="continue-heading">
@@ -118,7 +102,7 @@ const selectedSupportLine = computed(() => {
               <span class="quick-access-icon"><Clock3 class="icon-sm" /></span>
               <div>
                 <strong id="continue-heading">Continuar último grupo</strong>
-                <p>Ingresa rápidamente al último grupo con el que trabajaste.</p>
+                <p>Retoma tu último grupo de forma rápida.</p>
               </div>
             </div>
 
@@ -130,59 +114,60 @@ const selectedSupportLine = computed(() => {
 
           <template v-else>
             <div class="quick-access-copy">
-              <span class="quick-access-icon"><School class="icon-sm" /></span>
+              <span class="quick-access-icon"><Clock3 class="icon-sm" /></span>
               <div>
-                <strong id="continue-heading">Listo para comenzar</strong>
-                <p>Elige un plantel para continuar al siguiente paso.</p>
+                <strong id="continue-heading">Continuar último grupo</strong>
+                <p>Retoma tu último grupo de forma rápida.</p>
               </div>
             </div>
 
             <div class="quick-access-placeholder">
-              <span>Selecciona un plantel</span>
+              <span>Sin grupo reciente</span>
             </div>
           </template>
         </section>
       </div>
 
-      <aside class="selection-sidebar" aria-label="Resumen de selección">
-        <div class="selection-sidebar-hero">
-          <BrandLogo variant="hero" />
-        </div>
+      <aside class="selection-summary-shell" aria-label="Resumen de selección">
+        <header class="selection-summary-header">
+          <h3>Tu selección</h3>
+        </header>
 
-        <h3>Tu selección actual</h3>
-
-        <div class="selection-summary-card">
+        <div class="selection-summary-body">
           <article class="summary-detail-row">
-            <span class="summary-detail-icon"><School class="icon-sm" /></span>
+            <span class="summary-detail-icon" :class="selectedPlantel ? `accent-${selectedPlantel.accent}` : ''"><GraduationCap class="icon-sm" /></span>
             <span class="summary-detail-copy">
-              <small>Plantel</small>
+              <small>Plantel seleccionado</small>
               <strong>{{ selectedPlantel?.title || 'Sin selección' }}</strong>
               <em>{{ selectedPlantel?.level }}<template v-if="selectedPlantel?.city"> · {{ selectedPlantel.city }}</template></em>
             </span>
           </article>
 
           <article class="summary-detail-row">
-            <span class="summary-detail-icon"><MapPin class="icon-sm" /></span>
+            <span class="summary-detail-icon"><UsersRound class="icon-sm" /></span>
             <span class="summary-detail-copy">
               <small>Siguiente paso</small>
-              <strong>{{ selectedPlantel?.code || '—' }}</strong>
+              <strong>Grados</strong>
               <em>{{ selectedSupportLine }}</em>
             </span>
           </article>
         </div>
 
-        <NuxtLink class="primary-button selection-cta-button" :to="selectedTarget">
-          <School class="icon-sm" />
-          Ir a grados
-          <ArrowRight class="icon-sm" />
-        </NuxtLink>
+        <footer class="selection-summary-actions">
+          <NuxtLink class="primary-button selection-cta-button" :to="selectedTarget">
+            Continuar a grados
+            <ArrowRight class="icon-sm" />
+          </NuxtLink>
 
-        <NuxtLink v-if="lastContext?.plantel" class="selection-secondary-action" :to="continueTarget">
-          <Clock3 class="icon-sm" />
-          Continuar último grupo
-          <ArrowRight class="icon-sm" />
-        </NuxtLink>
+          <NuxtLink v-if="lastContext?.plantel" class="selection-secondary-action" :to="continueTarget">
+            <Clock3 class="icon-sm" />
+            <span>Continuar último grupo</span>
+            <ChevronRight class="icon-sm" />
+          </NuxtLink>
+        </footer>
       </aside>
     </section>
+
+    <SelectionFooter />
   </main>
 </template>

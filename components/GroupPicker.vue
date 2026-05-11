@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeft, ArrowRight, CheckCircle2, Clock3, RefreshCcw, School, UsersRound } from 'lucide-vue-next'
+import { ArrowLeft, ArrowRight, CheckCircle2, ChevronRight, Clock3, GraduationCap, RefreshCcw, School, UsersRound } from 'lucide-vue-next'
 import type { PlantelMeta } from '~/types/domain'
 
 const props = defineProps<{
@@ -52,7 +52,7 @@ const target = computed(() => selectedGrado.value && selectedGrupo.value
         </div>
       </div>
 
-      <section class="selection-intro-card" aria-labelledby="group-selection-heading">
+      <section class="selection-intro-card selection-intro-plain" aria-labelledby="group-selection-heading">
         <div class="selection-intro-copy">
           <h2 id="group-selection-heading">Selecciona tu grupo</h2>
           <p>Sigue los pasos para entrar al pase de lista.</p>
@@ -128,7 +128,7 @@ const target = computed(() => selectedGrado.value && selectedGrupo.value
             <span class="quick-access-icon"><Clock3 class="icon-sm" /></span>
             <div>
               <strong id="remembered-heading">Continuar último grupo</strong>
-              <p>Ingresa rápidamente al último grupo con el que trabajaste.</p>
+              <p>Retoma tu último grupo de forma rápida.</p>
             </div>
           </div>
 
@@ -140,10 +140,10 @@ const target = computed(() => selectedGrado.value && selectedGrupo.value
 
         <template v-else>
           <div class="quick-access-copy">
-            <span class="quick-access-icon"><CheckCircle2 class="icon-sm" /></span>
+            <span class="quick-access-icon"><Clock3 class="icon-sm" /></span>
             <div>
-              <strong id="remembered-heading">Selección lista</strong>
-              <p>Elige un grupo para continuar al pase de lista.</p>
+              <strong id="remembered-heading">Continuar último grupo</strong>
+              <p>Retoma tu último grupo de forma rápida.</p>
             </div>
           </div>
 
@@ -152,14 +152,12 @@ const target = computed(() => selectedGrado.value && selectedGrupo.value
       </section>
     </div>
 
-    <aside class="selection-sidebar group-selection-sidebar" aria-label="Selección actual">
-      <div class="selection-sidebar-hero group-sidebar-hero">
-        <BrandLogo variant="hero" />
-      </div>
+    <aside class="selection-summary-shell group-selection-sidebar" aria-label="Selección actual">
+      <header class="selection-summary-header">
+        <h3>Tu selección</h3>
+      </header>
 
-      <h3>Tu selección actual</h3>
-
-      <div class="selection-summary-card">
+      <div class="selection-summary-body">
         <article class="summary-detail-row">
           <span class="summary-detail-icon"><School class="icon-sm" /></span>
           <span class="summary-detail-copy">
@@ -170,7 +168,7 @@ const target = computed(() => selectedGrado.value && selectedGrupo.value
         </article>
 
         <article class="summary-detail-row">
-          <span class="summary-detail-icon"><School class="icon-sm" /></span>
+          <span class="summary-detail-icon"><GraduationCap class="icon-sm" /></span>
           <span class="summary-detail-copy">
             <small>Grado</small>
             <strong>{{ selectedGrado || 'Selecciona grado' }}</strong>
@@ -183,22 +181,23 @@ const target = computed(() => selectedGrado.value && selectedGrupo.value
           <span class="summary-detail-copy">
             <small>Grupo</small>
             <strong>{{ selectedGrupo || 'Selecciona grupo' }}</strong>
-            <em>{{ selectedGrupo ? selectedRosterLabel : 'Selecciona un grupo para continuar' }}</em>
+            <em>{{ selectedGrupo ? selectedRosterLabel : 'Selecciona un grupo para continuar.' }}</em>
           </span>
         </article>
       </div>
 
-      <NuxtLink v-if="target" class="primary-button selection-cta-button" :to="target">
-        <School class="icon-sm" />
-        Ir al pase de lista
-        <ArrowRight class="icon-sm" />
-      </NuxtLink>
+      <footer class="selection-summary-actions">
+        <NuxtLink v-if="target" class="primary-button selection-cta-button" :to="target">
+          Ir al pase de lista
+          <ArrowRight class="icon-sm" />
+        </NuxtLink>
 
-      <NuxtLink v-if="rememberedTarget" class="selection-secondary-action" :to="rememberedTarget">
-        <Clock3 class="icon-sm" />
-        Continuar último grupo
-        <ArrowRight class="icon-sm" />
-      </NuxtLink>
+        <NuxtLink v-if="rememberedTarget" class="selection-secondary-action" :to="rememberedTarget">
+          <Clock3 class="icon-sm" />
+          <span>Continuar último grupo</span>
+          <ChevronRight class="icon-sm" />
+        </NuxtLink>
+      </footer>
     </aside>
   </section>
 </template>

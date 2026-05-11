@@ -394,3 +394,15 @@
     justify-content: center;
   }
 }
+
+@media (min-width: 821px) {
+  .app-header {
+    min-height: clamp(92px, 11.5vh, 114px);
+  }
+}
+
+@media (min-width: 821px) and (max-height: 820px) {
+  .app-header {
+    min-height: clamp(76px, 10vh, 90px);
+  }
+}

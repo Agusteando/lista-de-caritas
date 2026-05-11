@@ -56,5 +56,6 @@ onMounted(async () => {
         </div>
       </div>
     </section>
+      <SelectionFooter />
   </main>
 </template>
