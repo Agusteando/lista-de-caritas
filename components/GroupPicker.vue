@@ -51,7 +51,7 @@ const target = computed(() => selectedGrado.value && selectedGrupo.value
 
     <section class="group-hero selection-hero-card">
       <div class="group-hero-brand">
-        <AnimatedLogo variant="hero" />
+        <BrandLogo variant="hero" />
       </div>
 
       <div class="selection-hero-copy">

@@ -71,7 +71,7 @@
   margin-bottom: 18px;
 }
 .logo-lockup { display: flex; align-items: center; gap: 12px; min-width: 0; }
-.animated-logo {
+.brand-logo {
   position: relative;
   display: inline-grid;
   place-items: center;
@@ -79,10 +79,9 @@
   overflow: hidden;
   isolation: isolate;
 }
-.animated-logo picture,
-.animated-logo img { display: block; width: 100%; height: 100%; }
-.animated-logo img { object-fit: contain; pointer-events: none; user-select: none; }
-.animated-logo-mark {
+.brand-logo img { display: block; width: 100%; height: 100%; }
+.brand-logo img { object-fit: contain; pointer-events: none; user-select: none; }
+.brand-logo-mark {
   width: 56px;
   height: 56px;
   border-radius: 19px;
@@ -90,8 +89,8 @@
   border: 1px solid rgba(31, 89, 72, .08);
   box-shadow: 0 14px 32px rgba(82, 117, 62, 0.18), inset 0 1px 0 rgba(255,255,255,.88);
 }
-.animated-logo-mark img { transform: scale(1.55); transform-origin: center 43%; }
-.animated-logo-hero {
+.brand-logo-mark img { transform: scale(1.55); transform-origin: center 43%; }
+.brand-logo-hero {
   width: clamp(116px, 13vw, 166px);
   height: clamp(116px, 13vw, 166px);
   border-radius: clamp(26px, 3vw, 38px);
@@ -99,7 +98,7 @@
   border: 1px solid rgba(45, 139, 75, .12);
   box-shadow: 0 24px 48px rgba(64, 118, 72, .16), inset 0 1px 0 rgba(255,255,255,.9);
 }
-.animated-logo-hero img { transform: scale(1.08); }
+.brand-logo-hero img { transform: scale(1.08); }
 .brand-title { min-width: 0; }
 .brand-title h1 { margin: 0; font-size: clamp(1.35rem, 4.8vw, 2rem); line-height: 1; letter-spacing: -.055em; }
 .brand-title p { margin: 4px 0 0; color: #7e8c84; font-size: .86rem; font-weight: 760; }
