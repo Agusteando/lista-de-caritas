@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ArrowRight, CheckCircle2, Clock3, GraduationCap, MapPin, School, Sparkles } from 'lucide-vue-next'
-import { PLANTELES } from '~/utils/planteles'
+import { PLANTELES, getPlantelByCode } from '~/utils/planteles'
 
 const planteles = PLANTELES
 
-const { getLastContext, getRememberedGroup, rememberPlantel } = usePlantelMemory()
+const { getLastContext, getRememberedGroup } = usePlantelMemory()
 const lastContext = ref<ReturnType<typeof getLastContext> | null>(null)
 const rememberedByPlantel = ref<Record<string, { grado?: string; grupo?: string }>>({})
 
@@ -15,9 +15,21 @@ onMounted(() => {
   )
 })
 
+const lastPlantelTitle = computed(() => getPlantelByCode(lastContext.value?.plantel)?.title || lastContext.value?.plantel || '')
+
+const continueTarget = computed(() => {
+  const context = lastContext.value
+  if (!context?.plantel) return '/'
+  if (context.grado && context.grupo) {
+    return `/asistencia/${context.plantel}/${encodeURIComponent(context.grado)}/${encodeURIComponent(context.grupo)}`
+  }
+  return `/${context.plantel}`
+})
+
 const lastContextLabel = computed(() => {
-  if (!lastContext.value?.plantel) return ''
-  return [lastContext.value.plantel, lastContext.value.grado, lastContext.value.grupo].filter(Boolean).join(' · ')
+  const context = lastContext.value
+  if (!context?.plantel) return ''
+  return [lastPlantelTitle.value, context.grado, context.grupo].filter(Boolean).join(' · ')
 })
 
 const rememberedLabel = (plantel: string) => {
@@ -26,70 +38,66 @@ const rememberedLabel = (plantel: string) => {
   return `${remembered.grado} ${remembered.grupo}`
 }
 
-const selectPlantel = (plantel: string) => {
-  rememberPlantel(plantel)
-  const remembered = rememberedByPlantel.value[plantel]
-  if (remembered?.grado && remembered?.grupo) {
-    return navigateTo(`/asistencia/${plantel}/${encodeURIComponent(remembered.grado)}/${encodeURIComponent(remembered.grupo)}`)
-  }
-  return navigateTo(`/asistencia/${plantel}`)
-}
+const plantelTarget = (plantel: string) => `/${plantel}?seleccionar=grupo`
 </script>
 
 <template>
-  <main class="page-shell landing-shell selection-shell">
+  <main class="page-shell landing-shell selection-shell plantel-selection-page">
     <BrandHeader />
 
     <section class="selection-hero-card plantel-start-card" aria-labelledby="plantel-start-heading">
-      <div class="selection-hero-logo">
-        <BrandLogo variant="hero" />
-      </div>
-
       <div class="selection-hero-copy plantel-start-copy">
         <span class="hero-eyebrow"><Sparkles class="icon-sm" /> lista-de-caritas app</span>
         <h2 id="plantel-start-heading">Pase de lista</h2>
-        <p>Retoma tu último grupo o elige un plantel para empezar sin pasos extra.</p>
+        <p>Empieza por tu último grupo o elige el plantel donde vas a trabajar.</p>
       </div>
 
-      <button
+      <NuxtLink
         v-if="lastContext?.plantel"
         class="continue-primary"
-        type="button"
-        @click="selectPlantel(lastContext.plantel)"
+        :to="continueTarget"
+        aria-label="Continuar desde donde te quedaste"
       >
         <span class="continue-primary-icon"><Clock3 class="icon" /></span>
         <span class="continue-primary-copy">
           <small>Continuar desde donde te quedaste</small>
           <strong>{{ lastContextLabel }}</strong>
-          <em>Abrir pase de lista</em>
+          <em>Abrir ahora</em>
         </span>
         <ArrowRight class="icon" />
-      </button>
+      </NuxtLink>
 
       <div v-else class="start-empty-state">
-        <School class="icon-sm" />
-        <span>Selecciona un plantel para guardar tu próximo acceso directo.</span>
+        <span class="continue-primary-icon"><School class="icon" /></span>
+        <span>
+          <small>Primer paso</small>
+          <strong>Elige un plantel</strong>
+          <em>Guardaremos tu último grupo para la próxima vez.</em>
+        </span>
+      </div>
+
+      <div class="selection-hero-logo">
+        <BrandLogo variant="hero" />
       </div>
     </section>
 
     <section class="plantel-section" aria-labelledby="plantel-heading">
       <div class="section-heading-row plantel-heading-row">
         <span>
-          <small>Plantel</small>
+          <small>Planteles</small>
           <strong id="plantel-heading">Elige dónde pasar lista</strong>
         </span>
         <MapPin class="icon-sm" />
       </div>
 
       <div class="plantel-grid" aria-label="Planteles">
-        <button
+        <NuxtLink
           v-for="plantel in planteles"
           :key="plantel.code"
           class="plantel-card"
           :class="[`accent-${plantel.accent}`, { remembered: rememberedByPlantel[plantel.code]?.grado && rememberedByPlantel[plantel.code]?.grupo }]"
-          type="button"
-          :aria-label="`Abrir ${plantel.title}`"
-          @click="selectPlantel(plantel.code)"
+          :to="plantelTarget(plantel.code)"
+          :aria-label="`Elegir ${plantel.title}`"
         >
           <span class="plantel-icon"><GraduationCap class="icon" /></span>
           <span class="plantel-copy">
@@ -101,9 +109,10 @@ const selectPlantel = (plantel: string) => {
             <small>{{ plantel.level }} · {{ plantel.city }}</small>
           </span>
           <span class="plantel-action">
+            <span>Elegir grupo</span>
             <ArrowRight class="icon-sm" />
           </span>
-        </button>
+        </NuxtLink>
       </div>
     </section>
   </main>
