@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { MapPin, Shuffle } from 'lucide-vue-next'
+import { ChevronDown, CircleHelp, MapPin, School, Shuffle } from 'lucide-vue-next'
+import { getPlantelByCode } from '~/utils/planteles'
 
 const props = defineProps<{
   plantel?: string
@@ -10,30 +11,64 @@ const props = defineProps<{
 
 const homeTarget = computed(() => {
   if (props.plantel && props.grado && props.grupo) return `/asistencia/${props.plantel}?cambiar=grupo`
-  if (props.plantel) return '/'
   return '/'
 })
+
+const plantelMeta = computed(() => getPlantelByCode(props.plantel))
+const contextTitle = computed(() => plantelMeta.value?.title || 'Selecciona tu plantel')
+const contextSubtitle = computed(() => {
+  if (props.grado && props.grupo) return `${props.grado} · ${props.grupo}`
+  if (plantelMeta.value) return 'Escuela'
+  return 'Escuela'
+})
+const profileCode = computed(() => props.plantel || 'LC')
 </script>
 
 <template>
   <div>
     <div class="brand-strip" aria-hidden="true" />
-    <header class="app-header">
-      <NuxtLink class="logo-lockup" :to="homeTarget">
-        <BrandLogo />
-        <span class="brand-title">
-          <h1>Pase de lista</h1>
-          <p>lista-de-caritas app</p>
-        </span>
-      </NuxtLink>
-      <div v-if="plantel" class="header-context">
-        <div class="context-chip" aria-label="Contexto actual">
-          <MapPin class="icon-sm" />
-          <span>{{ plantel }}<template v-if="grado && grupo"> · {{ grado }} {{ grupo }}</template></span>
+    <header class="app-header-bleed">
+      <div class="app-header app-header-selection">
+        <div class="header-left-cluster">
+          <NuxtLink class="logo-lockup" :to="homeTarget">
+            <BrandLogo />
+            <span class="brand-wordmark" aria-label="lista de caritas">
+              <span class="wordmark-main">lista</span>
+              <span class="wordmark-accent">de caritas</span>
+            </span>
+          </NuxtLink>
+
+          <span class="header-divider" aria-hidden="true" />
+
+          <div class="header-campus-card" aria-label="Plantel actual">
+            <span class="campus-icon"><School class="icon-sm" /></span>
+            <span class="campus-copy">
+              <strong>{{ contextTitle }}</strong>
+              <small>{{ contextSubtitle }}</small>
+            </span>
+          </div>
         </div>
-        <NuxtLink v-if="grado && grupo" class="context-change" :to="`/asistencia/${plantel}?cambiar=grupo`">
-          <Shuffle class="icon-sm" /> Cambiar grupo
-        </NuxtLink>
+
+        <div class="header-right-cluster">
+          <button class="header-utility-button" type="button" aria-label="Ayuda">
+            <CircleHelp class="icon-sm" />
+            <span>Ayuda</span>
+          </button>
+
+          <NuxtLink v-if="plantel && grado && grupo" class="header-utility-button change-group-link" :to="`/asistencia/${plantel}?cambiar=grupo`">
+            <Shuffle class="icon-sm" />
+            <span>Cambiar grupo</span>
+          </NuxtLink>
+
+          <div class="header-profile-block" aria-label="Profesor">
+            <span class="profile-badge">{{ profileCode }}</span>
+            <span class="profile-copy">
+              <strong>Profesor</strong>
+              <small v-if="props.plantel"><MapPin class="icon-xs" /> {{ props.plantel }}</small>
+            </span>
+            <ChevronDown class="icon-sm" />
+          </div>
+        </div>
       </div>
     </header>
   </div>

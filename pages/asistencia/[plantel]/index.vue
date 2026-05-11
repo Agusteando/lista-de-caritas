@@ -44,7 +44,7 @@ onMounted(async () => {
 
 <template>
   <main class="page-shell group-shell">
-    <BrandHeader :plantel="meta?.title || plantel" />
+    <BrandHeader :plantel="plantel" />
     <GroupPicker v-if="meta" :plantel="plantel" :meta="meta" :remembered="remembered" :refreshing="refreshing || pending" />
     <section v-else class="hero-card group-journey-card compact-copy">
       <span class="hero-eyebrow"><RefreshCcw class="icon-sm spin-soft" /> {{ plantel }}</span>

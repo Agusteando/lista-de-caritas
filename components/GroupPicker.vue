@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeft, ArrowRight, CheckCircle2, RefreshCcw, School, UsersRound } from 'lucide-vue-next'
+import { ArrowLeft, ArrowRight, CheckCircle2, Clock3, RefreshCcw, School, UsersRound } from 'lucide-vue-next'
 import type { PlantelMeta } from '~/types/domain'
 
 const props = defineProps<{
@@ -38,156 +38,167 @@ watch(grupos, (value) => {
 const target = computed(() => selectedGrado.value && selectedGrupo.value
   ? `/asistencia/${props.plantel}/${encodeURIComponent(selectedGrado.value)}/${encodeURIComponent(selectedGrupo.value)}`
   : '')
-
-const isRememberedSelection = computed(() => props.remembered?.grado === selectedGrado.value && props.remembered?.grupo === selectedGrupo.value)
 </script>
 
 <template>
-  <section class="group-journey group-selection-page">
-    <div class="journey-topline">
-      <NuxtLink class="ghost-button back-link" to="/">
-        <ArrowLeft class="icon-sm" /> Planteles
-      </NuxtLink>
-      <div v-if="refreshing" class="sync-strip compact-sync">
-        <RefreshCcw class="icon-sm spin-soft" /> Actualizando grupos
-      </div>
-    </div>
-
-    <section class="selection-intro-card group-intro-card" aria-labelledby="group-page-heading">
-      <div class="selection-page-copy">
-        <h2 id="group-page-heading">Selecciona tu grupo</h2>
-        <p>Sigue los pasos para entrar al pase de lista de {{ plantelTitle }}.</p>
+  <section class="group-journey group-selection-layout">
+    <div class="selection-main-column">
+      <div class="journey-topline">
+        <NuxtLink class="ghost-button back-link" to="/">
+          <ArrowLeft class="icon-sm" /> Planteles
+        </NuxtLink>
+        <div v-if="refreshing" class="sync-strip compact-sync">
+          <RefreshCcw class="icon-sm spin-soft" /> Actualizando grupos
+        </div>
       </div>
 
-      <ol class="selection-progress" aria-label="Progreso del flujo">
-        <li class="is-complete">
-          <span class="selection-progress-dot">1</span>
-          <span>Plantel</span>
-        </li>
-        <li class="is-current">
-          <span class="selection-progress-dot">2</span>
-          <span>Grupo</span>
-        </li>
-        <li>
-          <span class="selection-progress-dot">3</span>
-          <span>Pase de lista</span>
-        </li>
-      </ol>
-    </section>
+      <section class="selection-intro-card" aria-labelledby="group-selection-heading">
+        <div class="selection-intro-copy">
+          <h2 id="group-selection-heading">Selecciona tu grupo</h2>
+          <p>Sigue los pasos para entrar al pase de lista.</p>
+        </div>
 
-    <section class="selection-dashboard group-dashboard">
-      <div class="selection-main-column">
-        <section class="selection-panel grade-panel" aria-labelledby="grado-choice-heading">
-          <div class="selection-panel-head">
+        <ol class="selection-stepper" aria-label="Progreso para pase de lista">
+          <li class="active"><span>1</span><strong>Grado</strong></li>
+          <li><span>2</span><strong>Grupo</strong></li>
+          <li><span>3</span><strong>Pase de lista</strong></li>
+        </ol>
+      </section>
+
+      <section class="selection-panel choice-surface grade-panel" aria-labelledby="grade-heading">
+        <div class="panel-heading selection-heading-block">
+          <div>
+            <span class="panel-step-badge">1</span>
             <div>
-              <span class="step-badge">1</span>
-              <strong id="grado-choice-heading">Elige grado</strong>
+              <strong id="grade-heading">Elige grado</strong>
               <p>Selecciona el grado con el que trabajarás.</p>
             </div>
           </div>
+        </div>
 
-          <div class="grade-choice-grid">
-            <button
-              v-for="grado in grados"
-              :key="grado"
-              class="grade-choice-card"
-              :class="{ active: selectedGrado === grado }"
-              type="button"
-              @click="selectedGrado = grado"
-            >
-              <span>{{ grado }}</span>
-              <CheckCircle2 v-if="selectedGrado === grado" class="icon-sm" />
-            </button>
-          </div>
-        </section>
+        <div class="grade-grid">
+          <button
+            v-for="grado in grados"
+            :key="grado"
+            class="grade-card"
+            :class="{ active: selectedGrado === grado }"
+            type="button"
+            @click="selectedGrado = grado"
+          >
+            <span>{{ grado }}</span>
+            <CheckCircle2 v-if="selectedGrado === grado" class="icon-sm" />
+          </button>
+        </div>
+      </section>
 
-        <section class="selection-panel group-panel" aria-labelledby="grupo-choice-heading">
-          <div class="selection-panel-head">
+      <section class="selection-panel choice-surface groups-panel" aria-labelledby="group-heading">
+        <div class="panel-heading selection-heading-block">
+          <div>
+            <span class="panel-step-badge">2</span>
             <div>
-              <span class="step-badge">2</span>
-              <strong id="grupo-choice-heading">Elige grupo</strong>
-              <p v-if="selectedGrado">Selecciona el grupo del grado {{ selectedGrado }}.</p>
-              <p v-else>Primero selecciona un grado.</p>
+              <strong id="group-heading">Elige grupo</strong>
+              <p>Selecciona el grupo del grado <b>{{ selectedGrado }}</b>.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="group-grid">
+          <button
+            v-for="grupo in grupos"
+            :key="grupo"
+            class="group-card"
+            :class="{ active: selectedGrupo === grupo }"
+            type="button"
+            @click="selectedGrupo = grupo"
+          >
+            <span class="group-card-check"><CheckCircle2 class="icon-sm" /></span>
+            <span class="group-card-icon"><GroupIcon :label="grupo" tone="green" /></span>
+            <span class="group-card-copy">
+              <strong>{{ grupo }}</strong>
+              <small v-if="groupMeta(selectedGrado, grupo)?.rosterCount"><UsersRound class="icon-xs" /> {{ groupMeta(selectedGrado, grupo)?.rosterCount }} alumnos</small>
+              <small v-else><School class="icon-xs" /> Disponible</small>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <section class="selection-panel quick-access-panel" aria-labelledby="remembered-heading">
+        <template v-if="rememberedTarget">
+          <div class="quick-access-copy">
+            <span class="quick-access-icon"><Clock3 class="icon-sm" /></span>
+            <div>
+              <strong id="remembered-heading">Continuar último grupo</strong>
+              <p>Ingresa rápidamente al último grupo con el que trabajaste.</p>
             </div>
           </div>
 
-          <div class="group-choice-grid">
-            <button
-              v-for="grupo in grupos"
-              :key="grupo"
-              class="group-choice-card"
-              :class="{ active: selectedGrupo === grupo }"
-              type="button"
-              @click="selectedGrupo = grupo"
-            >
-              <span class="group-choice-icon"><GroupIcon :label="grupo" tone="green" /></span>
-              <span class="group-choice-copy">
-                <strong>{{ grupo }}</strong>
-                <small v-if="groupMeta(selectedGrado, grupo)?.rosterCount"><UsersRound class="icon-xs" /> {{ groupMeta(selectedGrado, grupo)?.rosterCount }} alumnos</small>
-                <small v-else><School class="icon-xs" /> Disponible</small>
-              </span>
-              <CheckCircle2 v-if="selectedGrupo === grupo" class="group-selected-check icon-sm" />
-            </button>
-          </div>
-        </section>
-
-        <NuxtLink
-          v-if="rememberedTarget && !isRememberedSelection"
-          class="selection-continue-card compact"
-          :to="rememberedTarget"
-        >
-          <span class="selection-continue-icon"><CheckCircle2 class="icon" /></span>
-          <span class="selection-continue-copy">
-            <strong>Continuar último grupo</strong>
-            <small>Vuelve rápido a {{ remembered?.grado }} · {{ remembered?.grupo }}.</small>
-          </span>
-          <span class="selection-continue-target simple-arrow">
+          <NuxtLink class="quick-access-action" :to="rememberedTarget">
+            <span>{{ remembered?.grado }} · {{ remembered?.grupo }}</span>
             <ArrowRight class="icon-sm" />
-          </span>
-        </NuxtLink>
+          </NuxtLink>
+        </template>
+
+        <template v-else>
+          <div class="quick-access-copy">
+            <span class="quick-access-icon"><CheckCircle2 class="icon-sm" /></span>
+            <div>
+              <strong id="remembered-heading">Selección lista</strong>
+              <p>Elige un grupo para continuar al pase de lista.</p>
+            </div>
+          </div>
+
+          <div class="quick-access-placeholder"><span>Sin grupo reciente</span></div>
+        </template>
+      </section>
+    </div>
+
+    <aside class="selection-sidebar group-selection-sidebar" aria-label="Selección actual">
+      <div class="selection-sidebar-hero group-sidebar-hero">
+        <BrandLogo variant="hero" />
       </div>
 
-      <aside class="selection-summary-rail group-summary-rail" aria-label="Selección actual">
-        <div class="selection-summary-hero">
-          <BrandLogo variant="hero" />
-          <h3>Tu selección actual</h3>
-        </div>
+      <h3>Tu selección actual</h3>
 
-        <div class="selection-summary-card summary-detail-card">
-          <article>
-            <span class="selection-summary-icon"><School class="icon" /></span>
-            <div>
-              <small>Plantel</small>
-              <strong>{{ plantelTitle }}</strong>
-              <p>{{ props.plantel }}</p>
-            </div>
-          </article>
+      <div class="selection-summary-card">
+        <article class="summary-detail-row">
+          <span class="summary-detail-icon"><School class="icon-sm" /></span>
+          <span class="summary-detail-copy">
+            <small>Plantel</small>
+            <strong>{{ plantelTitle }}</strong>
+            <em>{{ props.plantel }}</em>
+          </span>
+        </article>
 
-          <article>
-            <span class="selection-summary-icon"><School class="icon" /></span>
-            <div>
-              <small>Grado</small>
-              <strong>{{ selectedGrado || 'Selecciona un grado' }}</strong>
-              <p>{{ selectedGrado ? `${grupos.length} grupos disponibles` : 'Primero elige un grado' }}</p>
-            </div>
-          </article>
+        <article class="summary-detail-row">
+          <span class="summary-detail-icon"><School class="icon-sm" /></span>
+          <span class="summary-detail-copy">
+            <small>Grado</small>
+            <strong>{{ selectedGrado || 'Selecciona grado' }}</strong>
+            <em>Continúa con tu selección</em>
+          </span>
+        </article>
 
-          <article>
-            <span class="selection-summary-icon subtle"><UsersRound class="icon" /></span>
-            <div>
-              <small>Grupo</small>
-              <strong>{{ selectedGrupo || 'Selecciona un grupo' }}</strong>
-              <p>{{ selectedGrupo ? selectedRosterLabel : 'Completa la selección para continuar' }}</p>
-            </div>
-          </article>
-        </div>
+        <article class="summary-detail-row">
+          <span class="summary-detail-icon"><UsersRound class="icon-sm" /></span>
+          <span class="summary-detail-copy">
+            <small>Grupo</small>
+            <strong>{{ selectedGrupo || 'Selecciona grupo' }}</strong>
+            <em>{{ selectedGrupo ? selectedRosterLabel : 'Selecciona un grupo para continuar' }}</em>
+          </span>
+        </article>
+      </div>
 
-        <NuxtLink v-if="target" class="primary-button selection-primary-action" :to="target">
-          <School class="icon" />
-          Ir al pase de lista
-          <ArrowRight class="icon-sm" />
-        </NuxtLink>
-      </aside>
-    </section>
+      <NuxtLink v-if="target" class="primary-button selection-cta-button" :to="target">
+        <School class="icon-sm" />
+        Ir al pase de lista
+        <ArrowRight class="icon-sm" />
+      </NuxtLink>
+
+      <NuxtLink v-if="rememberedTarget" class="selection-secondary-action" :to="rememberedTarget">
+        <Clock3 class="icon-sm" />
+        Continuar último grupo
+        <ArrowRight class="icon-sm" />
+      </NuxtLink>
+    </aside>
   </section>
 </template>
