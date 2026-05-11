@@ -1,5 +1,4 @@
 import mysql, { type Pool, type PoolConnection } from 'mysql2/promise'
-import { ensureLogrosSchema } from './schema'
 
 type PoolRole = 'attendance' | 'matricula'
 
@@ -68,7 +67,5 @@ export async function withTransaction<T>(fn: (connection: PoolConnection) => Pro
 }
 
 export async function withLogrosTransaction<T>(fn: (connection: PoolConnection) => Promise<T>) {
-  const pool = useAttendanceDbPool()
-  await ensureLogrosSchema(pool)
-  return runTransaction(pool, fn)
+  return runTransaction(useAttendanceDbPool(), fn)
 }

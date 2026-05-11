@@ -2,7 +2,6 @@ import dayjs from 'dayjs'
 import { createError } from 'h3'
 import { routeGroup } from '../../../../../../utils/validation'
 import { useDbPool } from '../../../../../../utils/db'
-import { ensureLogrosSchema } from '../../../../../../utils/schema'
 import { logTechnicalFailure } from '../../../../../../utils/logger'
 import { readPortableAttendanceRows, normalizeStudentName, statusFromLegacyFields } from '../../../../../../utils/attendanceSources'
 import { loadLegacyPlantelStudents } from '../../../../../../utils/legacyRoster'
@@ -93,7 +92,6 @@ export default defineEventHandler(async (event) => {
 
   try {
     const pool = useDbPool()
-    await ensureLogrosSchema(pool)
 
     const [categoryRows] = await pool.execute(
       `SELECT student_id, category, COALESCE(SUM(points), 0) AS points

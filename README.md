@@ -115,12 +115,12 @@ Attendance is deterministic and uses the existing legacy table only:
 
 The app does not create, alter, repair, or backfill attendance tables. `Resumen semanal`, `asistencia-hoy`, attendance streaks, and attendance saves all use `asistencia` directly. Saves update an existing row for the same plantel/grado/grupo/student/date when present, otherwise they insert one legacy-compatible row.
 
-Runtime schema auto-healing is limited to the new Logros tables:
+Logros requires two app-owned tables in the `ATTENDANCE_MYSQL_*` database:
 
-- `logro_operations`
-- `logro_events`
+- `logro_operations` for idempotent Logros writes.
+- `logro_events` for the awarded Logros history.
 
-`sql/schema.sql` contains only those Logros tables for explicit installs or audits.
+The app does not create, alter, repair, or backfill these tables at runtime. Run `sql/schema.sql` manually before enabling Logros.
 
 ## Logros rules
 
@@ -170,7 +170,7 @@ Weekly ranking types:
 - `server/api/asistencia.post.ts` for deterministic writes to the existing `asistencia` table.
 - `server/api/logros.post.ts` and `server/api/planteles/[plantel]/grupos/[grado]/[grupo]/logros-estado.get.ts` for Logros writes and real DB-backed state.
 - `server/utils/db.ts` for the separate attendance and matricula DB pools.
-- `server/utils/schema.ts` for runtime schema auto-healing of Logros tables only.
+- `sql/schema.sql` for the manual Logros table creation SQL.
 - `assets/css/main.css` for the visual system.
 
 ## Validation status

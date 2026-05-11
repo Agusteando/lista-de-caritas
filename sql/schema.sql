@@ -1,5 +1,6 @@
--- lista-de-caritas app creates only the new Logros tables.
--- Run this on the ATTENDANCE_MYSQL_* database.
+-- Manual Logros table setup for lista-de-caritas app.
+-- Run this on the ATTENDANCE_MYSQL_* database before enabling Logros.
+-- The app does not create, alter, repair, or backfill tables at runtime.
 -- The existing legacy `asistencia` table is required and is never created, altered, or repaired by this app.
 -- Attendance reads and writes use that existing table directly.
 
