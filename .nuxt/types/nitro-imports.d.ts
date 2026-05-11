@@ -47,7 +47,6 @@ declare global {
   const defineWebSocketHandler: typeof import('../../node_modules/h3').defineWebSocketHandler
   const deleteCookie: typeof import('../../node_modules/h3').deleteCookie
   const dynamicEventHandler: typeof import('../../node_modules/h3').dynamicEventHandler
-  const ensureLogrosSchema: typeof import('../../server/utils/schema.ts').ensureLogrosSchema
   const eventHandler: typeof import('../../node_modules/h3').eventHandler
   const fetchWithEvent: typeof import('../../node_modules/h3').fetchWithEvent
   const fromNodeMiddleware: typeof import('../../node_modules/h3').fromNodeMiddleware
@@ -188,7 +187,6 @@ export { defineTask, runTask } from 'nitropack/runtime/internal/task';
 export { defineNitroErrorHandler } from 'nitropack/runtime/internal/error/utils';
 export { buildAssetsURL as __buildAssetsURL, publicAssetsURL as __publicAssetsURL } from 'C:/Users/hp/asistencia-docente/node_modules/@nuxt/nitro-server/dist/runtime/utils/paths';
 export { defineAppConfig } from 'C:/Users/hp/asistencia-docente/node_modules/@nuxt/nitro-server/dist/runtime/utils/config';
-export { ensureLogrosSchema } from 'C:/Users/hp/asistencia-docente/server/utils/schema';
 export { tableExists, normalizeStudentName, statusFromLegacyFields, readPortableAttendanceRows, readDailyAttendance, summarizeWeeklyAttendance } from 'C:/Users/hp/asistencia-docente/server/utils/attendanceSources';
 export { PLANTELES, GRADE_ORDER, allowedPlantel, normalizePlantel, normalizeGrade, normalizeGroup } from 'C:/Users/hp/asistencia-docente/server/utils/constants';
 export { normalizeAttendanceDate, weekBoundsForAttendanceDate } from 'C:/Users/hp/asistencia-docente/server/utils/dates';

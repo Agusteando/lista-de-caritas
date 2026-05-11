@@ -59,8 +59,8 @@ const sprite = computed(() => {
   return {
     label: labels[index] || 'OCEANÍA',
     style: {
-      '--sprite-x': `${cols === 1 ? 0 : (col / (cols - 1)) * 100}%`,
-      '--sprite-y': `${rows === 1 ? 0 : (row / (rows - 1)) * 100}%`
+      '--sprite-col': col,
+      '--sprite-row': row
     }
   }
 })
