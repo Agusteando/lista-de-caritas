@@ -2,8 +2,10 @@ import dayjs from 'dayjs'
 import { createError } from 'h3'
 import { routeGroup } from '../../../../../../utils/validation'
 import { useDbPool } from '../../../../../../utils/db'
-import { ensureDatabaseSchema } from '../../../../../../utils/schema'
+import { ensureLogrosSchema } from '../../../../../../utils/schema'
 import { logTechnicalFailure } from '../../../../../../utils/logger'
+import { readPortableAttendanceRows, normalizeStudentName, statusFromLegacyFields } from '../../../../../../utils/attendanceSources'
+import { loadLegacyPlantelStudents } from '../../../../../../utils/legacyRoster'
 
 const LOGRO_CATEGORIES = [
   'Participación',
@@ -40,11 +42,6 @@ interface EventRow {
   streak_bonus: number
   weekly_milestone_bonus: number
   awarded_at: string | Date
-}
-
-interface AttendanceRow {
-  student_id: string
-  attendance_date: string | Date
 }
 
 const emptyState = (studentId: string) => ({
@@ -96,7 +93,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const pool = useDbPool()
-    await ensureDatabaseSchema(pool)
+    await ensureLogrosSchema(pool)
 
     const [categoryRows] = await pool.execute(
       `SELECT student_id, category, COALESCE(SUM(points), 0) AS points
@@ -130,17 +127,20 @@ export default defineEventHandler(async (event) => {
       { plantel, grado, grupo }
     ) as unknown as [EventRow[], unknown]
 
-    const [attendanceRows] = await pool.execute(
-      `SELECT student_id, attendance_date
-       FROM attendance_records
-       WHERE plantel = :plantel
-         AND grado = :grado
-         AND grupo = :grupo
-         AND status = 'present'
-         AND attendance_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 120 DAY)
-       ORDER BY attendance_date DESC`,
-      { plantel, grado, grupo }
-    ) as unknown as [AttendanceRow[], unknown]
+    const attendanceStart = today.subtract(120, 'day').format('YYYY-MM-DD')
+    const attendanceRows = await readPortableAttendanceRows(pool, {
+      plantel,
+      grado,
+      grupo,
+      startDate: attendanceStart,
+      endDate: today.format('YYYY-MM-DD')
+    })
+    const rosterStudents = await loadLegacyPlantelStudents(plantel, { includePhotos: false })
+    const studentIdByName = new Map(
+      rosterStudents
+        .filter((student) => student.grado === grado && student.grupo === grupo)
+        .map((student) => [normalizeStudentName(student.nombre), student.id])
+    )
 
     const states: Record<string, ReturnType<typeof emptyState>> = {}
     const stateFor = (studentId: string) => {
@@ -187,9 +187,12 @@ export default defineEventHandler(async (event) => {
 
     const attendanceDatesByStudent = new Map<string, Set<string>>()
     for (const row of attendanceRows) {
-      const studentId = String(row.student_id)
+      const normalized = statusFromLegacyFields(row)
+      if (normalized.status !== 'present') continue
+      const studentId = studentIdByName.get(normalizeStudentName(row.nombre))
+      if (!studentId) continue
       if (!attendanceDatesByStudent.has(studentId)) attendanceDatesByStudent.set(studentId, new Set())
-      attendanceDatesByStudent.get(studentId)?.add(dayjs(row.attendance_date).format('YYYY-MM-DD'))
+      attendanceDatesByStudent.get(studentId)?.add(row.date)
     }
     for (const [studentId, dates] of attendanceDatesByStudent.entries()) {
       stateFor(studentId).streaks['Racha de asistencia'] = consecutiveCalendarDaysFromLatest(dates)

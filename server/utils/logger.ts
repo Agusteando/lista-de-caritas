@@ -1,6 +1,5 @@
 import type { H3Event } from 'h3'
 import { useDbPool } from './db'
-import { ensureDatabaseSchema } from './schema'
 
 interface LogInput {
   endpoint: string
@@ -29,15 +28,13 @@ export async function logTechnicalFailure(event: H3Event | null, input: LogInput
   }
 
   try {
-    const pool = useDbPool()
-    await ensureDatabaseSchema(pool)
-    await pool.execute(
+    await useDbPool().execute(
       `INSERT INTO internal_logs
         (endpoint, operation_id, plantel, grado, grupo, logged_at, payload_summary, failure_reason, retry_status, request_path)
        VALUES (:endpoint, :operationId, :plantel, :grado, :grupo, :timestamp, :payloadSummary, :failureReason, :retryStatus, :requestPath)`,
       record
     )
   } catch (err) {
-    console.error('internal log write failed', { record, err })
+    console.error('internal log write skipped', { record, err })
   }
 }

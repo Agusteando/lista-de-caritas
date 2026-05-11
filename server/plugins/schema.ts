@@ -1,10 +1,10 @@
 import { useDbPool } from '../utils/db'
-import { ensureDatabaseSchema } from '../utils/schema'
+import { ensureLogrosSchema } from '../utils/schema'
 
 export default defineNitroPlugin(async () => {
   try {
-    await ensureDatabaseSchema(useDbPool())
+    await ensureLogrosSchema(useDbPool())
   } catch (err) {
-    console.error('schema auto-heal deferred', err)
+    console.error('logros schema auto-heal deferred', err)
   }
 })

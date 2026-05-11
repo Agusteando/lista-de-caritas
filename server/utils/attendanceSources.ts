@@ -5,7 +5,7 @@ import { weekBoundsForAttendanceDate } from './dates'
 export type PortableAttendanceStatus = 'present' | 'absent' | 'sick' | 'unmarked'
 
 interface AttendanceSourceRow {
-  source: 'app' | 'legacy'
+  source: 'legacy'
   date: string
   studentId: string | null
   nombre: string
@@ -21,7 +21,7 @@ export interface DailyAttendanceRecord {
   status: PortableAttendanceStatus
   attendance: 0 | 1
   modalidad: '0' | '1' | '2' | '9'
-  source: 'app' | 'legacy'
+  source: 'legacy'
 }
 
 export interface WeeklyAttendanceDaySummary {
@@ -37,14 +37,6 @@ export interface WeeklyAttendanceDaySummary {
 
 const dayLabels = ['DOM', 'LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB']
 
-export function normalizeStudentName(value: unknown) {
-  return String(value || '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/\s+/g, ' ')
-    .trim()
-}
 
 export async function tableExists(pool: Pool, tableName: string) {
   const [rows] = await pool.query(
@@ -57,6 +49,15 @@ export async function tableExists(pool: Pool, tableName: string) {
   return Number(rows[0]?.total || 0) > 0
 }
 
+export function normalizeStudentName(value: unknown) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
 function normalizeModalidad(value: unknown): '0' | '1' | '2' | '9' {
   const raw = String(value ?? '').trim()
   if (raw === '1') return '1'
@@ -65,7 +66,7 @@ function normalizeModalidad(value: unknown): '0' | '1' | '2' | '9' {
   return '0'
 }
 
-function statusFromLegacyFields(row: Pick<AttendanceSourceRow, 'attendance' | 'modalidad' | 'status'>) {
+export function statusFromLegacyFields(row: Pick<AttendanceSourceRow, 'attendance' | 'modalidad' | 'status'>) {
   const modalidad = normalizeModalidad(row.modalidad)
   const attendance = Number(row.attendance ?? 0)
 
@@ -75,85 +76,45 @@ function statusFromLegacyFields(row: Pick<AttendanceSourceRow, 'attendance' | 'm
   return { status: 'absent' as const, modalidad: '0' as const, attendance: 0 as const }
 }
 
-function dedupeAttendanceRows(rows: AttendanceSourceRow[]) {
-  const ordered = [...rows].sort((a, b) => {
-    if (a.source === b.source) return String(a.updatedAt || '').localeCompare(String(b.updatedAt || ''))
-    return a.source === 'legacy' ? -1 : 1
-  })
-
+function dedupeLegacyAttendanceRows(rows: AttendanceSourceRow[]) {
+  const ordered = [...rows].sort((a, b) => String(a.updatedAt || '').localeCompare(String(b.updatedAt || '')))
   const byStudentDay = new Map<string, AttendanceSourceRow>()
+
   for (const row of ordered) {
     const nameKey = normalizeStudentName(row.nombre)
-    const studentKey = nameKey || String(row.studentId || '').trim()
-    if (!row.date || !studentKey) continue
-    byStudentDay.set(`${row.date}:${studentKey}`, row)
+    if (!row.date || !nameKey) continue
+    byStudentDay.set(`${row.date}:${nameKey}`, row)
   }
 
   return [...byStudentDay.values()]
 }
 
-async function readAppAttendanceRows(pool: Pool, params: { plantel: string; grado: string; grupo: string; startDate: string; endDate: string }) {
-  if (!(await tableExists(pool, 'attendance_records'))) return []
-
-  try {
-    const [rows] = await pool.execute(
-      `SELECT
-          'app' AS source,
-          DATE_FORMAT(attendance_date, '%Y-%m-%d') AS date,
-          student_id AS studentId,
-          nombre,
-          attendance,
-          modalidad,
-          status,
-          DATE_FORMAT(updated_at, '%Y-%m-%d %H:%i:%s') AS updatedAt
-        FROM attendance_records
-        WHERE plantel = :plantel
-          AND grado = :grado
-          AND grupo = :grupo
-          AND attendance_date >= STR_TO_DATE(:startDate, '%Y-%m-%d')
-          AND attendance_date <= STR_TO_DATE(:endDate, '%Y-%m-%d')`,
-      params
-    ) as unknown as [AttendanceSourceRow[], unknown]
-    return rows
-  } catch {
-    return []
-  }
-}
-
 async function readLegacyAttendanceRows(pool: Pool, params: { plantel: string; grado: string; grupo: string; startDate: string; endDate: string }) {
-  if (!(await tableExists(pool, 'asistencia'))) return []
+  const [rows] = await pool.execute(
+    `SELECT
+        'legacy' AS source,
+        DATE_FORMAT(fecha, '%Y-%m-%d') AS date,
+        NULL AS studentId,
+        name AS nombre,
+        attendance,
+        modalidad,
+        NULL AS status,
+        DATE_FORMAT(fecha, '%Y-%m-%d %H:%i:%s') AS updatedAt
+      FROM asistencia
+      WHERE plantel = :plantel
+        AND LOWER(TRIM(grado)) = :grado
+        AND UPPER(TRIM(grupo)) = :grupo
+        AND fecha >= STR_TO_DATE(:startDate, '%Y-%m-%d')
+        AND fecha < DATE_ADD(STR_TO_DATE(:endDate, '%Y-%m-%d'), INTERVAL 1 DAY)
+      ORDER BY fecha ASC`,
+    params
+  ) as unknown as [AttendanceSourceRow[], unknown]
 
-  try {
-    const [rows] = await pool.execute(
-      `SELECT
-          'legacy' AS source,
-          DATE_FORMAT(fecha, '%Y-%m-%d') AS date,
-          NULL AS studentId,
-          name AS nombre,
-          attendance,
-          modalidad,
-          NULL AS status,
-          DATE_FORMAT(fecha, '%Y-%m-%d %H:%i:%s') AS updatedAt
-        FROM asistencia
-        WHERE plantel = :plantel
-          AND LOWER(TRIM(grado)) = :grado
-          AND UPPER(TRIM(grupo)) = :grupo
-          AND fecha >= STR_TO_DATE(:startDate, '%Y-%m-%d')
-          AND fecha < DATE_ADD(STR_TO_DATE(:endDate, '%Y-%m-%d'), INTERVAL 1 DAY)`,
-      params
-    ) as unknown as [AttendanceSourceRow[], unknown]
-    return rows
-  } catch {
-    return []
-  }
+  return rows
 }
 
 export async function readPortableAttendanceRows(pool: Pool, params: { plantel: string; grado: string; grupo: string; startDate: string; endDate: string }) {
-  const [appRows, legacyRows] = await Promise.all([
-    readAppAttendanceRows(pool, params),
-    readLegacyAttendanceRows(pool, params)
-  ])
-  return dedupeAttendanceRows([...legacyRows, ...appRows])
+  return dedupeLegacyAttendanceRows(await readLegacyAttendanceRows(pool, params))
 }
 
 export async function readDailyAttendance(pool: Pool, params: { plantel: string; grado: string; grupo: string; attendanceDate: string }) {
@@ -168,12 +129,12 @@ export async function readDailyAttendance(pool: Pool, params: { plantel: string;
   return rows.map((row) => {
     const normalized = statusFromLegacyFields(row)
     return {
-      studentId: row.studentId || undefined,
+      studentId: undefined,
       nombre: row.nombre,
       source: row.source,
       ...normalized
     } satisfies DailyAttendanceRecord
-  }).filter((record) => record.nombre || record.studentId)
+  }).filter((record) => record.nombre)
 }
 
 export async function summarizeWeeklyAttendance(pool: Pool, params: { plantel: string; grado: string; grupo: string; date?: unknown }) {
@@ -229,8 +190,7 @@ export async function summarizeWeeklyAttendance(pool: Pool, params: { plantel: s
     const current = weeks.get(monday) || { presentes: 0, faltas: 0, marked: 0 }
     if (normalized.status === 'present') current.presentes += 1
     if (normalized.status === 'absent') current.faltas += 1
-    if (normalized.status === 'sick') current.marked += 1
-    else current.marked += 1
+    current.marked += 1
     weeks.set(monday, current)
   }
 

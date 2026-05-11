@@ -1,6 +1,6 @@
 import { createError, readBody } from 'h3'
 import { allowedPlantel, normalizeGrade, normalizeGroup, normalizePlantel } from '../utils/constants'
-import { withTransaction } from '../utils/db'
+import { withLogrosTransaction } from '../utils/db'
 import { stableHash } from '../utils/hash'
 import { logTechnicalFailure } from '../utils/logger'
 
@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
     const totalPoints = points + streakBonus + weeklyMilestoneBonus
     const payloadHash = stableHash({ studentId, plantel, grado, grupo, category, points, streakBonus, weeklyMilestoneBonus })
 
-    const result = await withTransaction(async (connection) => {
+    const result = await withLogrosTransaction(async (connection) => {
       const [existingRows] = await connection.execute(
         'SELECT operation_id, status, result_json FROM logro_operations WHERE operation_id = :operationId FOR UPDATE',
         { operationId }

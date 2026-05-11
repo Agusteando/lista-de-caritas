@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import { createError } from 'h3'
 import { routeGroup } from '../../../../../../utils/validation'
 import { useDbPool } from '../../../../../../utils/db'
-import { ensureDatabaseSchema } from '../../../../../../utils/schema'
+import { ensureLogrosSchema } from '../../../../../../utils/schema'
 import { logTechnicalFailure } from '../../../../../../utils/logger'
 
 interface SummaryRow {
@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const pool = useDbPool()
-    await ensureDatabaseSchema(pool)
+    await ensureLogrosSchema(pool)
     const [rows] = await pool.execute(
       `SELECT COALESCE(SUM(points + streak_bonus + weekly_milestone_bonus), 0) AS total_points,
               COUNT(*) AS total_events,

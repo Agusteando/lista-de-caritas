@@ -2,7 +2,7 @@
 
 Single Nuxt 3 full-stack attendance and Logros app. It keeps the legacy teacher workflow—plantel, grado, grupo, student cards, attendance states, save, and summary—while redesigning the experience around a faster mobile-first journey.
 
-The app is intentionally one deployable Nuxt/Nitro app. MySQL access, attendance writes, Logros writes, idempotency, and internal logging stay on the server side. There is no split frontend/backend app and no PWA layer.
+The app is intentionally one deployable Nuxt/Nitro app. MySQL access, attendance writes, Logros writes, and internal logging stay on the server side. There is no split frontend/backend app and no PWA layer.
 
 ## User journey
 
@@ -91,7 +91,7 @@ Use systemd, PM2, or another process manager for the built Nitro server. Put Ngi
 
 ## Environment
 
-Use two explicit database connections. Attendance data and app-owned write/log tables use `ATTENDANCE_MYSQL_*`. Student photos and Retardos support tables use `MATRICULA_MYSQL_*`.
+Use two explicit database connections. Legacy attendance data lives in the `ATTENDANCE_MYSQL_*` database and is read/written through the existing `asistencia` table. Student photos and Retardos support tables use `MATRICULA_MYSQL_*`.
 
 ```txt
 ATTENDANCE_MYSQL_HOST=127.0.0.1
@@ -109,15 +109,18 @@ MATRICULA_MYSQL_DATABASE=
 
 ## Database
 
-The runtime auto-heals the app-owned schema on the attendance connection on server start and before DB-backed routes. `sql/schema.sql` is still included for explicit installs or audits. The schema creates only app-owned write/log tables:
+Attendance is deterministic and uses the existing legacy table only:
 
-- `attendance_operations`
-- `attendance_records`
+- `asistencia`
+
+The app does not create, alter, repair, or backfill attendance tables. `Resumen semanal`, `asistencia-hoy`, attendance streaks, and attendance saves all use `asistencia` directly. Saves update an existing row for the same plantel/grado/grupo/student/date when present, otherwise they insert one legacy-compatible row.
+
+Runtime schema auto-healing is limited to the new Logros tables:
+
 - `logro_operations`
 - `logro_events`
-- `internal_logs`
 
-Attendance uses a unique key on plantel/grado/grupo/student/day so repeated submissions update the same day record. `attendance_operations` stores idempotency state by `operationId`.
+`sql/schema.sql` contains only those Logros tables for explicit installs or audits.
 
 ## Logros rules
 
@@ -164,10 +167,10 @@ Weekly ranking types:
 - `pages/asistencia/[plantel]/[grado]/[grupo].vue` for the main teacher journey.
 - `components/StudentAttendanceCard.vue` for external student photos and attendance card behavior.
 - `server/utils/legacyRoster.ts` for the simplified legacy roster source and matricula-photo DB lookup.
-- `server/api/asistencia.post.ts` for idempotent attendance writes.
+- `server/api/asistencia.post.ts` for deterministic writes to the existing `asistencia` table.
 - `server/api/logros.post.ts` and `server/api/planteles/[plantel]/grupos/[grado]/[grupo]/logros-estado.get.ts` for Logros writes and real DB-backed state.
 - `server/utils/db.ts` for the separate attendance and matricula DB pools.
-- `server/utils/schema.ts` for runtime schema auto-healing on the attendance DB.
+- `server/utils/schema.ts` for runtime schema auto-healing of Logros tables only.
 - `assets/css/main.css` for the visual system.
 
 ## Validation status

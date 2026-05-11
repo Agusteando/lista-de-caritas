@@ -2,7 +2,6 @@ import { createError, readBody } from 'h3'
 import type { ResultSetHeader } from 'mysql2/promise'
 import { allowedPlantel, normalizeGrade, normalizeGroup, normalizePlantel } from '../utils/constants'
 import { withTransaction } from '../utils/db'
-import { stableHash } from '../utils/hash'
 import { logTechnicalFailure } from '../utils/logger'
 import { normalizeAttendanceDate } from '../utils/dates'
 import { assertStatus, legacyFromStatus } from '../utils/validation'
@@ -24,6 +23,14 @@ interface AttendanceBody {
   clientSummary?: unknown
 }
 
+function mysqlDateTimeForAttendanceDate(attendanceDate: string) {
+  const now = new Date()
+  const hh = String(now.getHours()).padStart(2, '0')
+  const mm = String(now.getMinutes()).padStart(2, '0')
+  const ss = String(now.getSeconds()).padStart(2, '0')
+  return `${attendanceDate} ${hh}:${mm}:${ss}`
+}
+
 export default defineEventHandler(async (event) => {
   const body = await readBody<AttendanceBody>(event)
   const operationId = String(body.operationId || '').trim()
@@ -31,6 +38,7 @@ export default defineEventHandler(async (event) => {
   const grado = normalizeGrade(body.grado)
   const grupo = normalizeGroup(body.grupo)
   const attendanceDate = normalizeAttendanceDate(body.attendanceDate || body.submittedAt)
+  const fecha = mysqlDateTimeForAttendanceDate(attendanceDate)
 
   try {
     if (!operationId || operationId.length > 120) throw createError({ statusCode: 400, statusMessage: 'Operación no válida' })
@@ -41,57 +49,43 @@ export default defineEventHandler(async (event) => {
       const status = assertStatus(record.status)
       const legacy = legacyFromStatus(status)
       return {
-        studentId: String(record.studentId || '').trim(),
         nombre: String(record.nombre || '').trim(),
         status,
         modalidad: legacy.modalidad,
         attendance: legacy.attendance
       }
-    }).filter((record) => record.studentId && record.nombre)
-
-    const payloadHash = stableHash({ plantel, grado, grupo, attendanceDate, records })
+    }).filter((record) => record.nombre && record.status !== 'unmarked')
 
     const result = await withTransaction(async (connection) => {
-      const [existingRows] = await connection.execute(
-        'SELECT operation_id, status, payload_hash, result_json FROM attendance_operations WHERE operation_id = :operationId FOR UPDATE',
-        { operationId }
-      ) as unknown as [Array<{ operation_id: string; status: string; payload_hash: string; result_json: string | null }>, unknown]
-
-      const existing = existingRows[0]
-      if (existing?.status === 'success') {
-        return existing.result_json ? JSON.parse(existing.result_json) : { ok: true, idempotent: true }
-      }
-
-      if (!existing) {
-        await connection.execute(
-          `INSERT INTO attendance_operations
-             (operation_id, operation_type, plantel, grado, grupo, status, payload_hash, created_at, updated_at)
-           VALUES (:operationId, 'attendance_save', :plantel, :grado, :grupo, 'pending', :payloadHash, NOW(), NOW())`,
-          { operationId, plantel, grado, grupo, payloadHash }
-        )
-      }
-
       for (const record of records) {
-        await connection.execute<ResultSetHeader>(
-          `INSERT INTO attendance_records
-             (operation_id, plantel, grado, grupo, student_id, nombre, attendance_date, status, modalidad, attendance, created_at, updated_at)
-           VALUES
-             (:operationId, :plantel, :grado, :grupo, :studentId, :nombre, :attendanceDate, :status, :modalidad, :attendance, NOW(), NOW())
-           ON DUPLICATE KEY UPDATE
-             operation_id = VALUES(operation_id),
-             nombre = VALUES(nombre),
-             status = VALUES(status),
-             modalidad = VALUES(modalidad),
-             attendance = VALUES(attendance),
-             updated_at = NOW()`,
-          { operationId, plantel, grado, grupo, attendanceDate, ...record }
+        const [updateResult] = await connection.execute<ResultSetHeader>(
+          `UPDATE asistencia
+           SET attendance = :attendance,
+               modalidad = :modalidad,
+               fecha = STR_TO_DATE(:fecha, '%Y-%m-%d %H:%i:%s')
+           WHERE plantel = :plantel
+             AND LOWER(TRIM(grado)) = :grado
+             AND UPPER(TRIM(grupo)) = :grupo
+             AND name = :nombre
+             AND fecha >= STR_TO_DATE(:attendanceDate, '%Y-%m-%d')
+             AND fecha < DATE_ADD(STR_TO_DATE(:attendanceDate, '%Y-%m-%d'), INTERVAL 1 DAY)`,
+          { plantel, grado, grupo, nombre: record.nombre, attendance: record.attendance, modalidad: record.modalidad, attendanceDate, fecha }
         )
+
+        if (Number(updateResult.affectedRows || 0) === 0) {
+          await connection.execute<ResultSetHeader>(
+            `INSERT INTO asistencia
+               (name, attendance, grado, grupo, modalidad, plantel, fecha)
+             VALUES
+               (:nombre, :attendance, :grado, :grupo, :modalidad, :plantel, STR_TO_DATE(:fecha, '%Y-%m-%d %H:%i:%s'))`,
+            { plantel, grado, grupo, nombre: record.nombre, attendance: record.attendance, modalidad: record.modalidad, fecha }
+          )
+        }
       }
 
-      const summary = {
+      return {
         ok: true,
         operationId,
-        idempotent: Boolean(existing),
         plantel,
         grado,
         grupo,
@@ -102,18 +96,9 @@ export default defineEventHandler(async (event) => {
           presentes: records.filter((record) => record.status === 'present').length,
           faltas: records.filter((record) => record.status === 'absent').length,
           enfermedad: records.filter((record) => record.status === 'sick').length,
-          sinMarcar: records.filter((record) => record.status === 'unmarked').length
+          sinMarcar: Array.isArray(body.records) ? body.records.length - records.length : 0
         }
       }
-
-      await connection.execute(
-        `UPDATE attendance_operations
-         SET status = 'success', result_json = :resultJson, updated_at = NOW()
-         WHERE operation_id = :operationId`,
-        { operationId, resultJson: JSON.stringify(summary) }
-      )
-
-      return summary
     })
 
     return result
@@ -130,7 +115,7 @@ export default defineEventHandler(async (event) => {
         clientSummary: body.clientSummary
       },
       failureReason: err instanceof Error ? err.stack || err.message : String(err),
-      retryStatus: 'client_will_retry_with_same_operation_id'
+      retryStatus: 'client_will_retry_same_daily_rows'
     })
     throw createError({ statusCode: 503, statusMessage: 'No disponible' })
   }

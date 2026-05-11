@@ -1,5 +1,5 @@
 import mysql, { type Pool, type PoolConnection } from 'mysql2/promise'
-import { ensureDatabaseSchema } from './schema'
+import { ensureLogrosSchema } from './schema'
 
 type PoolRole = 'attendance' | 'matricula'
 
@@ -44,14 +44,11 @@ export function useMatriculaDbPool() {
   return matriculaPool
 }
 
-// App-owned attendance, Logros, and internal tables use the attendance database.
 export function useDbPool() {
   return useAttendanceDbPool()
 }
 
-export async function withTransaction<T>(fn: (connection: PoolConnection) => Promise<T>) {
-  const pool = useAttendanceDbPool()
-  await ensureDatabaseSchema(pool)
+async function runTransaction<T>(pool: Pool, fn: (connection: PoolConnection) => Promise<T>) {
   const connection = await pool.getConnection()
   try {
     await connection.beginTransaction()
@@ -64,4 +61,14 @@ export async function withTransaction<T>(fn: (connection: PoolConnection) => Pro
   } finally {
     connection.release()
   }
+}
+
+export async function withTransaction<T>(fn: (connection: PoolConnection) => Promise<T>) {
+  return runTransaction(useAttendanceDbPool(), fn)
+}
+
+export async function withLogrosTransaction<T>(fn: (connection: PoolConnection) => Promise<T>) {
+  const pool = useAttendanceDbPool()
+  await ensureLogrosSchema(pool)
+  return runTransaction(pool, fn)
 }
