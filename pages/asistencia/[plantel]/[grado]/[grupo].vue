@@ -190,37 +190,20 @@ const totals = computed(() => {
 
 const visibleStudents = computed(() => {
   const needle = searchTerm.value.trim().toLowerCase()
-  let list = students.value
-  if (needle) list = list.filter((student) => student.nombre.toLowerCase().includes(needle) || String(student.matricula || '').includes(needle))
-
-  if (viewMode.value === 'exceptions' && !needle) {
-    const exceptions = list.filter((student) => {
-      const current = attendance.value[student.id] || 'unmarked'
-      return current === 'absent' || current === 'sick'
-    })
-    if (exceptions.length) {
-      const exceptionIds = new Set(exceptions.map((student) => student.id))
-      const nearby = list.filter((student, index) => {
-        if (exceptionIds.has(student.id)) return true
-        const previous = list[index - 1]
-        const next = list[index + 1]
-        return (previous && exceptionIds.has(previous.id)) || (next && exceptionIds.has(next.id))
-      })
-      return nearby.length ? nearby : exceptions
-    }
-  }
-
-  return list
+  if (!needle) return students.value
+  return students.value.filter((student) => {
+    const normalizedName = normalizeStudentNameClient(student.nombre)
+    const normalizedNeedle = normalizeStudentNameClient(needle)
+    return normalizedName.includes(normalizedNeedle) || String(student.matricula || '').includes(needle)
+  })
 })
 
+const cardInteractionMode = computed<'exceptions' | 'one'>(() => viewMode.value === 'exceptions' ? 'exceptions' : 'one')
+
 const setViewMode = (nextMode: 'exceptions' | 'one' | 'compact') => {
+  if (viewMode.value === nextMode) return
   viewMode.value = nextMode
   if (import.meta.client) localStorage.setItem(viewModeStorageKey.value, nextMode)
-
-  if (nextMode === 'exceptions' && students.value.length) {
-    const hasMarkedAttendance = Object.values(attendance.value).some((value) => value !== 'unmarked')
-    if (!hasMarkedAttendance) markAllPresent()
-  }
 }
 
 const setStatus = (studentId: string, nextStatus: AttendanceStatus) => {
@@ -511,7 +494,7 @@ onMounted(() => {
             :status="attendance[student.id] || 'unmarked'"
             :highlighted="recentlyChangedStudentId === student.id || recentlyChangedStudentId === 'all'"
             :retardo="retardos[student.id]"
-            :interaction-mode="viewMode"
+            :interaction-mode="cardInteractionMode"
             @set-status="setStatus"
           />
           <template v-if="showRosterSkeleton">

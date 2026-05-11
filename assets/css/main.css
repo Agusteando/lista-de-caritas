@@ -1373,9 +1373,16 @@ img { display: block; max-width: 100%; }
 }
 .mode-segments button:active { transform: scale(.985); }
 
+.reference-density.view-exceptions .student-card.status-present {
+  box-shadow: 0 8px 24px rgba(45, 76, 46, .07), inset 0 1px 0 rgba(255,255,255,.72);
+}
 .reference-density.view-exceptions .student-card.status-absent,
-.reference-density.view-exceptions .student-card.status-sick {
+.reference-density.view-exceptions .student-card.status-sick,
+.reference-density.view-exceptions .student-card.status-unmarked {
   box-shadow: 0 0 0 3px rgba(255, 184, 63, .15), var(--shadow-card);
+}
+.reference-density.view-exceptions .student-card.status-unmarked {
+  border-color: rgba(142, 148, 144, .36);
 }
 .reference-density.view-one {
   grid-template-columns: 1fr;
