@@ -269,14 +269,29 @@ export const useAttendanceScreen = () => {
     if (nextMode === 'logros') void refreshLogrosState()
   }
 
+  const finalizeUnmarkedAsAbsent = () => {
+    const next = { ...attendance.value }
+    let changed = false
+
+    for (const student of students.value) {
+      if (!next[student.id] || next[student.id] === 'unmarked') {
+        next[student.id] = 'absent'
+        changed = true
+      }
+    }
+
+    if (changed) attendance.value = next
+  }
+
   const buildSubmission = (): AttendanceSubmission => {
     const records: AttendanceRecord[] = students.value.map((student) => {
       const current = attendance.value[student.id] || 'unmarked'
-      const legacy = statusToLegacy(current)
+      const submittedStatus: AttendanceStatus = current === 'unmarked' ? 'absent' : current
+      const legacy = statusToLegacy(submittedStatus)
       return {
         studentId: student.id,
         nombre: student.nombre,
-        status: current,
+        status: submittedStatus,
         modalidad: legacy.modalidad,
         attendance: legacy.attendance
       }
@@ -295,6 +310,7 @@ export const useAttendanceScreen = () => {
 
   const saveAttendance = async () => {
     if (!students.value.length) return
+    finalizeUnmarkedAsAbsent()
     const submission = buildSubmission()
     enqueue(submission)
     status.setSaving()

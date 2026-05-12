@@ -46,7 +46,8 @@ export default defineEventHandler(async (event) => {
     if (!Array.isArray(body.records)) throw createError({ statusCode: 400, statusMessage: 'Lista no válida' })
 
     const records = body.records.map((record) => {
-      const status = assertStatus(record.status)
+      const rawStatus = assertStatus(record.status)
+      const status = rawStatus === 'unmarked' ? 'absent' : rawStatus
       const legacy = legacyFromStatus(status)
       return {
         nombre: String(record.nombre || '').trim(),
@@ -54,7 +55,7 @@ export default defineEventHandler(async (event) => {
         modalidad: legacy.modalidad,
         attendance: legacy.attendance
       }
-    }).filter((record) => record.nombre && record.status !== 'unmarked')
+    }).filter((record) => record.nombre)
 
     const result = await withTransaction(async (connection) => {
       for (const record of records) {
