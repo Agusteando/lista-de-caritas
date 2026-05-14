@@ -48,6 +48,9 @@ export const useAttendanceScreen = () => {
   const retardosAvailable = ref(false)
   const summaryVisible = ref(false)
   const attendanceReceipt = ref<AttendanceSubmission | null>(null)
+  const attendanceConfirmationStatus = ref<'saving' | 'confirmed' | 'offline' | 'error'>('saving')
+  const attendanceConfirmedAt = ref<string | undefined>()
+  const internetOnline = ref(true)
   const refreshing = ref(false)
   const initialRosterLoad = ref(true)
   const usedCachedRoster = ref(false)
@@ -284,6 +287,12 @@ export const useAttendanceScreen = () => {
     if (changed) attendance.value = next
   }
 
+  const isBrowserOnline = () => !import.meta.client || navigator.onLine !== false
+
+  const updateInternetStatus = () => {
+    internetOnline.value = isBrowserOnline()
+  }
+
   const buildSubmission = (): AttendanceSubmission => {
     const records: AttendanceRecord[] = students.value.map((student) => {
       const current = attendance.value[student.id] || 'unmarked'
@@ -313,21 +322,36 @@ export const useAttendanceScreen = () => {
     if (!students.value.length) return
     finalizeUnmarkedAsAbsent()
     const submission = buildSubmission()
+
+    updateInternetStatus()
+    attendanceReceipt.value = submission
+    attendanceConfirmedAt.value = undefined
+    attendanceConfirmationStatus.value = internetOnline.value ? 'saving' : 'offline'
+    summaryVisible.value = true
+
     enqueue(submission)
+
+    if (!internetOnline.value) {
+      status.setPending()
+      return
+    }
+
     status.setSaving()
     try {
       await $fetch('/api/asistencia', { method: 'POST', body: submission })
       remove(submission.operationId)
       await flush()
       clearAttendanceDraft()
+      attendanceConfirmedAt.value = new Date().toISOString()
+      attendanceConfirmationStatus.value = 'confirmed'
       status.setReady()
       sounds.play('save')
       window.setTimeout(() => sounds.play('complete'), 120)
-      attendanceReceipt.value = submission
-      summaryVisible.value = true
       void refreshWeeklySummary()
       void refreshLogrosState()
     } catch {
+      updateInternetStatus()
+      attendanceConfirmationStatus.value = internetOnline.value ? 'error' : 'offline'
       status.setPending()
     }
   }
@@ -358,6 +382,9 @@ export const useAttendanceScreen = () => {
   watch(attendance, () => writeAttendanceDraft(), { deep: true })
 
   onMounted(() => {
+    updateInternetStatus()
+    window.addEventListener('online', updateInternetStatus)
+    window.addEventListener('offline', updateInternetStatus)
     draftHydrated.value = true
     loadCachedRoster()
     if (students.value.length) initialRosterLoad.value = false
@@ -370,7 +397,13 @@ export const useAttendanceScreen = () => {
       .then(() => refreshLogrosState())
   })
 
-  onBeforeUnmount(() => clearSelectionTimer())
+  onBeforeUnmount(() => {
+    clearSelectionTimer()
+    if (import.meta.client) {
+      window.removeEventListener('online', updateInternetStatus)
+      window.removeEventListener('offline', updateInternetStatus)
+    }
+  })
 
   return {
     activeLogrosStudents,
@@ -410,6 +443,9 @@ export const useAttendanceScreen = () => {
     students,
     summaryVisible,
     attendanceReceipt,
+    attendanceConfirmationStatus,
+    attendanceConfirmedAt,
+    internetOnline,
     todayLabel,
     totals,
     visibleStudents

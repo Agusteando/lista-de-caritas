@@ -3,6 +3,9 @@ const {
   activeLogrosStudents,
   attendance,
   attendanceReceipt,
+  attendanceConfirmationStatus,
+  attendanceConfirmedAt,
+  internetOnline,
   awardAllLogros,
   awardLogro,
   classCode,
@@ -145,6 +148,9 @@ const {
       :attendance-date="attendanceReceipt.attendanceDate"
       :saved-at="attendanceReceipt.submittedAt"
       :operation-id="attendanceReceipt.operationId"
+      :confirmation-status="attendanceConfirmationStatus"
+      :internet-online="internetOnline"
+      :confirmed-at="attendanceConfirmedAt"
       @close="summaryVisible = false"
     />
 

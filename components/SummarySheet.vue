@@ -1,5 +1,17 @@
 <script setup lang="ts">
-import { Camera, CheckCircle2, Clock3, HeartPulse, ShieldCheck, UserCheck, UserX } from 'lucide-vue-next'
+import {
+  AlertTriangle,
+  Camera,
+  CheckCircle2,
+  Clock3,
+  HeartPulse,
+  Loader2,
+  ShieldCheck,
+  UserCheck,
+  UserX,
+  Wifi,
+  WifiOff
+} from 'lucide-vue-next'
 
 const props = defineProps<{
   presentes: number
@@ -12,6 +24,9 @@ const props = defineProps<{
   attendanceDate: string
   savedAt: string
   operationId: string
+  confirmationStatus: 'saving' | 'confirmed' | 'offline' | 'error'
+  internetOnline: boolean
+  confirmedAt?: string
 }>()
 
 const emit = defineEmits<{ close: [] }>()
@@ -40,38 +55,74 @@ const formatDisplayTime = (value: string) => new Intl.DateTimeFormat('es-MX', {
   hour12: false
 }).format(new Date(value))
 
+const stopTimer = () => {
+  if (!timer) return
+  clearInterval(timer)
+  timer = null
+}
+
+const startLockTimer = () => {
+  stopTimer()
+  remainingSeconds.value = lockSeconds
+  const unlockAt = Date.now() + lockSeconds * 1000
+  timer = setInterval(() => {
+    remainingSeconds.value = Math.max(0, Math.ceil((unlockAt - Date.now()) / 1000))
+    if (remainingSeconds.value === 0) stopTimer()
+  }, 250)
+}
+
 const unlockLabel = computed(() => `00:${pad(remainingSeconds.value)}`)
 const canClose = computed(() => remainingSeconds.value <= 0)
 const classLabel = computed(() => `${props.grado} ${props.grupo}`.trim().toUpperCase())
 const displayDate = computed(() => formatDisplayDate(props.attendanceDate))
-const displayTime = computed(() => formatDisplayTime(props.savedAt))
+const submissionTime = computed(() => formatDisplayTime(props.savedAt))
+const confirmationTime = computed(() => props.confirmedAt ? formatDisplayTime(props.confirmedAt) : 'Pendiente')
 const folioLabel = computed(() => props.operationId.slice(-10).toUpperCase())
+
+const isConfirmed = computed(() => props.confirmationStatus === 'confirmed')
+const isSaving = computed(() => props.confirmationStatus === 'saving')
+const hasWarning = computed(() => props.confirmationStatus === 'offline' || props.confirmationStatus === 'error')
+
+const stampIcon = computed(() => {
+  if (isConfirmed.value) return CheckCircle2
+  if (props.confirmationStatus === 'offline') return WifiOff
+  if (props.confirmationStatus === 'error') return AlertTriangle
+  return Loader2
+})
+
+const stampLabel = computed(() => {
+  if (isConfirmed.value) return 'Registro confirmado por servidor'
+  if (props.confirmationStatus === 'offline') return 'Sin conexión: registro pendiente'
+  if (props.confirmationStatus === 'error') return 'No confirmado: pendiente de guardar'
+  return 'Confirmando registro con el servidor'
+})
+
+const networkLabel = computed(() => props.internetOnline ? 'Internet conectado' : 'Sin conexión a internet')
+
+const statusDescription = computed(() => {
+  if (isConfirmed.value) return 'La asistencia ya fue confirmada por el sistema. Conserva esta captura como comprobante.'
+  if (props.confirmationStatus === 'offline') return 'Tu navegador reporta que no hay internet. El registro no puede confirmarse hasta recuperar conexión.'
+  if (props.confirmationStatus === 'error') return 'No se recibió confirmación del servidor. Revisa la conexión; el registro queda pendiente para sincronizarse.'
+  return 'Mantén esta pantalla abierta mientras se verifica la conexión y el servidor confirma el registro.'
+})
 
 const tryClose = () => {
   if (!canClose.value) return
   emit('close')
 }
 
-onMounted(() => {
-  const unlockAt = Date.now() + lockSeconds * 1000
-  timer = setInterval(() => {
-    remainingSeconds.value = Math.max(0, Math.ceil((unlockAt - Date.now()) / 1000))
-    if (remainingSeconds.value === 0 && timer) {
-      clearInterval(timer)
-      timer = null
-    }
-  }, 250)
-})
+watch(() => props.operationId, startLockTimer)
 
-onBeforeUnmount(() => {
-  if (timer) clearInterval(timer)
-})
+onMounted(() => startLockTimer())
+
+onBeforeUnmount(() => stopTimer())
 </script>
 
 <template>
   <section class="receipt-modal-backdrop" role="presentation" @click="tryClose">
     <article
       class="summary-sheet attendance-proof-modal"
+      :class="{ 'is-saving': isSaving, 'is-confirmed': isConfirmed, 'has-warning': hasWarning }"
       role="dialog"
       aria-modal="true"
       aria-labelledby="attendance-proof-title"
@@ -82,16 +133,25 @@ onBeforeUnmount(() => {
         <BrandLogo />
         <div class="attendance-proof-title-group">
           <span class="official-kicker"><ShieldCheck class="icon-xs" /> Comprobante oficial</span>
-          <h3 id="attendance-proof-title">Toma de asistencia registrada</h3>
+          <h3 id="attendance-proof-title">Comprobante de toma de asistencia</h3>
           <p id="attendance-proof-description">
             Este comprobante demuestra tu toma de asistencia para el grado {{ classLabel }} para el día {{ displayDate }}.
           </p>
         </div>
       </header>
 
-      <div class="attendance-proof-stamp" aria-label="Estado guardado">
-        <CheckCircle2 class="icon" />
-        <span>Guardado correctamente</span>
+      <div class="attendance-proof-stamp" :class="{ pending: isSaving, warning: hasWarning }" aria-live="polite">
+        <component :is="stampIcon" class="icon" :class="{ spin: isSaving }" />
+        <span>{{ stampLabel }}</span>
+      </div>
+
+      <div class="attendance-network-panel" :class="{ offline: !internetOnline, confirmed: isConfirmed }" aria-live="polite">
+        <div class="attendance-network-main">
+          <Wifi v-if="internetOnline" class="icon-sm" />
+          <WifiOff v-else class="icon-sm" />
+          <strong>{{ networkLabel }}</strong>
+        </div>
+        <p>{{ statusDescription }}</p>
       </div>
 
       <dl class="attendance-proof-meta">
@@ -108,8 +168,16 @@ onBeforeUnmount(() => {
           <dd>{{ displayDate }}</dd>
         </div>
         <div>
-          <dt>Hora</dt>
-          <dd>{{ displayTime }}</dd>
+          <dt>Hora de envío</dt>
+          <dd>{{ submissionTime }}</dd>
+        </div>
+        <div>
+          <dt>Hora confirmación</dt>
+          <dd>{{ confirmationTime }}</dd>
+        </div>
+        <div>
+          <dt>Estado</dt>
+          <dd>{{ isConfirmed ? 'Confirmado' : 'Pendiente' }}</dd>
         </div>
       </dl>
 

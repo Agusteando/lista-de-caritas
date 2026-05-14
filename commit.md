@@ -1,7 +1,6 @@
-feat(attendance): add screenshottable attendance proof modal
+feat: show instant attendance proof modal with connection status
 
-- Replaces the post-save summary sheet with an official branded attendance proof modal.
-- Shows plantel, grado y grupo, attendance date, saved time, folio, and attendance statistics.
-- Adds the teacher instruction “Toma captura y mándala.”
-- Locks dismissal for 10 seconds with a visible countdown, then allows closing with a tap.
-- Stores the proof from the saved attendance submission so the displayed stats remain tied to that save action.
+- Open the attendance proof modal immediately after tapping Guardar pase de lista, before the backend request resolves.
+- Show live internet status inside the modal, including an immediate offline warning when the browser reports no connection.
+- Keep the modal in a pending/loading state while the server confirms the attendance register, then update it in place with confirmation time.
+- Preserve the 10-second close lock, official branding, attendance stats, folio, and screenshot instruction.
