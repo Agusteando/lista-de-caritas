@@ -169,16 +169,21 @@ export function useLogrosContext(plantel: Ref<string> | ComputedRef<string>, gra
 
   const refreshFromServer = async () => {
     if (!plantel.value || !grado.value || !grupo.value || !students.value.length) return
+    const requestKey = key.value
+    const requestPlantel = plantel.value
+    const requestGrado = grado.value
+    const requestGrupo = grupo.value
     syncing.value = true
     try {
       const response = await $fetch<{ states: Record<string, StudentLogrosState> }>(
-        `/api/planteles/${plantel.value}/grupos/${encodeURIComponent(grado.value)}/${encodeURIComponent(grupo.value)}/logros-estado`
+        `/api/planteles/${requestPlantel}/grupos/${encodeURIComponent(requestGrado)}/${encodeURIComponent(requestGrupo)}/logros-estado`
       )
+      if (key.value !== requestKey) return
       mergeServerStates(response.states || {})
     } catch {
       // Local optimistic state stays usable; technical details stay server-side.
     } finally {
-      syncing.value = false
+      if (key.value === requestKey) syncing.value = false
     }
   }
 

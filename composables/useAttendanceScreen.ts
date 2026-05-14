@@ -21,6 +21,16 @@ import {
   summarizeLogroState
 } from '~/utils/attendanceDisplay'
 
+type AttendanceGroupContext = {
+  plantel: string
+  grado: string
+  grupo: string
+}
+
+type AttendanceDateContext = AttendanceGroupContext & {
+  date: string
+}
+
 export const useAttendanceScreen = () => {
   const route = useRoute()
   const plantel = computed(() => String(route.params.plantel || '').toUpperCase())
@@ -32,7 +42,7 @@ export const useAttendanceScreen = () => {
   const selectedDate = ref(dayjs().format('YYYY-MM-DD'))
 
   const { rememberGroup } = usePlantelMemory()
-  const { readRosterCache, writeRosterCache, mergeStudents } = useRosterCache()
+  const { readRosterCache, writeRosterCache } = useRosterCache()
   const { createOperationId } = useOperationId()
   const { pendingCount, enqueue, remove, flush } = useAttendanceQueue()
   const status = useTeacherSafeStatus()
@@ -55,7 +65,9 @@ export const useAttendanceScreen = () => {
   const initialRosterLoad = ref(true)
   const usedCachedRoster = ref(false)
   const recentlyChangedStudentId = ref<string | null>(null)
+  const draftHydrated = ref(false)
   let selectionTimer: ReturnType<typeof setTimeout> | null = null
+  let loadSequence = 0
 
   const rosterReady = computed(() => students.value.length > 0)
   const showRosterSkeleton = computed(() => initialRosterLoad.value && !students.value.length)
@@ -64,9 +76,30 @@ export const useAttendanceScreen = () => {
   const grupoRef = computed(() => grupo.value)
   const logros = useLogrosContext(plantelRef, gradoRef, grupoRef, students)
 
-  const attendanceDraftKey = computed(() => `lista-de-caritas:attendance-draft:${plantel.value}:${grado.value}:${grupo.value}:${selectedDate.value}`)
-  const retardosCacheKey = computed(() => `lista-de-caritas:retardos:${plantel.value}:${grado.value}:${grupo.value}:${selectedDate.value}`)
-  const draftHydrated = ref(false)
+  const currentGroupContext = (): AttendanceGroupContext => ({
+    plantel: plantel.value,
+    grado: grado.value,
+    grupo: grupo.value
+  })
+
+  const currentDateContext = (): AttendanceDateContext => ({
+    ...currentGroupContext(),
+    date: selectedDate.value
+  })
+
+  const matchesGroupContext = (context: AttendanceGroupContext) =>
+    context.plantel === plantel.value && context.grado === grado.value && context.grupo === grupo.value
+
+  const matchesDateContext = (context: AttendanceDateContext) =>
+    matchesGroupContext(context) && context.date === selectedDate.value
+
+  const attendanceDraftKeyFor = (context: AttendanceDateContext) =>
+    `lista-de-caritas:attendance-draft:${context.plantel}:${context.grado}:${context.grupo}:${context.date}`
+
+  const retardosCacheKeyFor = (context: AttendanceDateContext) =>
+    `lista-de-caritas:retardos:${context.plantel}:${context.grado}:${context.grupo}:${context.date}`
+
+  const attendanceDraftKey = computed(() => attendanceDraftKeyFor(currentDateContext()))
   const todayLabel = computed(() => dayjs(selectedDate.value).format('D MMM YYYY').toLowerCase())
   const gradeDisplay = computed(() => getGradeDisplay(grado.value))
   const groupTitle = computed(() => `${gradeDisplay.value} · ${grupo.value}`)
@@ -82,10 +115,10 @@ export const useAttendanceScreen = () => {
   const logrosClassHeadline = computed(() => logrosClassCopy.value.headline)
   const logrosClassLine = computed(() => logrosClassCopy.value.line)
 
-  const readAttendanceDraft = () => {
+  const readAttendanceDraft = (context = currentDateContext()) => {
     if (!import.meta.client) return null
     try {
-      const raw = localStorage.getItem(attendanceDraftKey.value)
+      const raw = localStorage.getItem(attendanceDraftKeyFor(context))
       if (!raw) return null
       const parsed = JSON.parse(raw) as { attendance?: Record<string, AttendanceStatus> }
       return parsed.attendance || null
@@ -105,16 +138,27 @@ export const useAttendanceScreen = () => {
     }))
   }
 
-  const clearAttendanceDraft = () => {
+  const clearAttendanceDraft = (context = currentDateContext()) => {
     if (!import.meta.client) return
-    localStorage.removeItem(attendanceDraftKey.value)
+    localStorage.removeItem(attendanceDraftKeyFor(context))
   }
 
-  const applyLocalDraft = () => {
-    const draft = readAttendanceDraft()
+  const attendanceForStudents = (studentList: Student[], context = currentDateContext()) => {
+    const draft = readAttendanceDraft(context) || {}
+    const next: Record<string, AttendanceStatus> = {}
+
+    for (const student of studentList) {
+      next[student.id] = attendance.value[student.id] || draft[student.id] || 'unmarked'
+    }
+
+    return next
+  }
+
+  const applyLocalDraft = (context = currentDateContext()) => {
+    const draft = readAttendanceDraft(context)
     if (!draft) return
     const studentIds = new Set(students.value.map((student) => student.id))
-    const scopedDraft = Object.fromEntries(Object.entries(draft).filter(([studentId]) => studentIds.has(studentId)))
+    const scopedDraft = Object.fromEntries(Object.entries(draft).filter(([studentId]) => studentIds.has(studentId))) as Record<string, AttendanceStatus>
     if (Object.keys(scopedDraft).length) attendance.value = { ...attendance.value, ...scopedDraft }
   }
 
@@ -130,11 +174,35 @@ export const useAttendanceScreen = () => {
     })
   })
 
-
   const clearSelectionTimer = () => {
     if (!selectionTimer) return
     clearTimeout(selectionTimer)
     selectionTimer = null
+  }
+
+  const resetGroupState = () => {
+    draftHydrated.value = false
+    clearSelectionTimer()
+    mode.value = 'attendance'
+    searchTerm.value = ''
+    statusFilter.value = 'all'
+    students.value = []
+    attendance.value = {}
+    rosterVersion.value = undefined
+    groupMeta.value = null
+    weeklySummary.value = null
+    serverLogrosSummary.value = null
+    retardos.value = {}
+    retardosAvailable.value = false
+    summaryVisible.value = false
+    attendanceReceipt.value = null
+    attendanceConfirmationStatus.value = 'saving'
+    attendanceConfirmedAt.value = undefined
+    refreshing.value = false
+    initialRosterLoad.value = true
+    usedCachedRoster.value = false
+    recentlyChangedStudentId.value = null
+    status.setIdle()
   }
 
   const setTransientSelection = (studentId: string, delayMs: number) => {
@@ -170,67 +238,76 @@ export const useAttendanceScreen = () => {
     attendance.value = next
   }
 
-  const normalizeStudents = (incoming: Student[]) => incoming.map((student) => ({
+  const normalizeStudents = (incoming: Student[], context = currentGroupContext()) => incoming.map((student) => ({
     ...student,
-    plantel: student.plantel || plantel.value,
-    grado: student.grado || grado.value,
-    grupo: student.grupo || grupo.value
+    plantel: student.plantel || context.plantel,
+    grado: student.grado || context.grado,
+    grupo: student.grupo || context.grupo
   }))
 
-  const loadCachedRoster = () => {
-    const cached = readRosterCache(plantel.value, grado.value, grupo.value)
-    if (!cached?.students?.length) return
-    usedCachedRoster.value = true
-    students.value = normalizeStudents(cached.students)
-    rosterVersion.value = cached.version
-    groupMeta.value = cached.meta || groupMeta.value
-    for (const student of students.value) attendance.value[student.id] ||= 'unmarked'
-    applyLocalDraft()
+  const replaceStudentsForContext = (incoming: Student[], context = currentDateContext()) => {
+    const normalized = normalizeStudents(incoming, context)
+    students.value = normalized
+    attendance.value = attendanceForStudents(normalized, context)
   }
 
-  const refreshRoster = async () => {
+  const loadCachedRoster = (context = currentDateContext()) => {
+    const cached = readRosterCache(context.plantel, context.grado, context.grupo)
+    if (!cached?.students?.length) return
+    usedCachedRoster.value = true
+    replaceStudentsForContext(cached.students, context)
+    rosterVersion.value = cached.version
+    groupMeta.value = cached.meta || groupMeta.value
+  }
+
+  const refreshRoster = async (context = currentDateContext()) => {
     refreshing.value = true
     try {
-      const fresh = await $fetch<{ students: Student[]; version?: string; meta?: GroupMeta }>(`/api/planteles/${plantel.value}/grupos/${encodeURIComponent(grado.value)}/${encodeURIComponent(grupo.value)}/roster`)
-      const normalized = normalizeStudents(fresh.students || [])
-      students.value = mergeStudents(students.value, normalized)
+      const fresh = await $fetch<{ students: Student[]; version?: string; meta?: GroupMeta }>(`/api/planteles/${context.plantel}/grupos/${encodeURIComponent(context.grado)}/${encodeURIComponent(context.grupo)}/roster`)
+      if (!matchesGroupContext(context)) return
+      replaceStudentsForContext(fresh.students || [], context)
       rosterVersion.value = fresh.version
       groupMeta.value = fresh.meta || groupMeta.value
-      for (const student of students.value) attendance.value[student.id] ||= 'unmarked'
-      applyLocalDraft()
-      writeRosterCache(plantel.value, grado.value, grupo.value, students.value, fresh.version, fresh.meta)
+      applyLocalDraft(context)
+      writeRosterCache(context.plantel, context.grado, context.grupo, students.value, fresh.version, fresh.meta)
     } catch {
       // Teacher-facing UI stays calm. Details are logged on the server route.
     } finally {
-      refreshing.value = false
-      initialRosterLoad.value = false
+      if (matchesGroupContext(context)) {
+        refreshing.value = false
+        initialRosterLoad.value = false
+      }
     }
   }
 
-  const refreshToday = async () => {
+  const refreshToday = async (context = currentDateContext()) => {
     try {
-      const today = await $fetch<{ records: Array<{ studentId?: string; nombre?: string; status: AttendanceStatus }> }>(`/api/planteles/${plantel.value}/grupos/${encodeURIComponent(grado.value)}/${encodeURIComponent(grupo.value)}/asistencia-hoy?date=${selectedDate.value}`)
+      const today = await $fetch<{ records: Array<{ studentId?: string; nombre?: string; status: AttendanceStatus }> }>(`/api/planteles/${context.plantel}/grupos/${encodeURIComponent(context.grado)}/${encodeURIComponent(context.grupo)}/asistencia-hoy?date=${context.date}`)
+      if (!matchesDateContext(context)) return
       applyToday(today.records || [])
-      applyLocalDraft()
+      applyLocalDraft(context)
     } catch {
       // Teacher-facing UI stays calm. Details are logged on the server route.
     }
   }
 
-  const refreshWeeklySummary = async () => {
+  const refreshWeeklySummary = async (context = currentDateContext()) => {
     try {
-      weeklySummary.value = await $fetch<WeeklyAttendanceSummary>(`/api/planteles/${plantel.value}/grupos/${encodeURIComponent(grado.value)}/${encodeURIComponent(grupo.value)}/resumen-semanal?date=${selectedDate.value}`)
+      const summary = await $fetch<WeeklyAttendanceSummary>(`/api/planteles/${context.plantel}/grupos/${encodeURIComponent(context.grado)}/${encodeURIComponent(context.grupo)}/resumen-semanal?date=${context.date}`)
+      if (!matchesDateContext(context)) return
+      weeklySummary.value = summary
     } catch {
-      weeklySummary.value = null
+      if (matchesDateContext(context)) weeklySummary.value = null
     }
   }
 
-  const readRetardosCache = () => {
+  const readRetardosCache = (context = currentDateContext()) => {
     if (!import.meta.client) return
     try {
-      const raw = localStorage.getItem(retardosCacheKey.value)
+      const raw = localStorage.getItem(retardosCacheKeyFor(context))
       if (!raw) return
       const parsed = JSON.parse(raw) as { available?: boolean; records?: RetardoRecord[] }
+      if (!matchesDateContext(context)) return
       retardosAvailable.value = Boolean(parsed.available)
       retardos.value = Object.fromEntries((parsed.records || []).map((record) => [record.studentId, record]))
     } catch {
@@ -238,34 +315,38 @@ export const useAttendanceScreen = () => {
     }
   }
 
-  const writeRetardosCache = (available: boolean, records: RetardoRecord[]) => {
+  const writeRetardosCache = (available: boolean, records: RetardoRecord[], context = currentDateContext()) => {
     if (!import.meta.client) return
-    localStorage.setItem(retardosCacheKey.value, JSON.stringify({ available, records, savedAt: new Date().toISOString() }))
+    localStorage.setItem(retardosCacheKeyFor(context), JSON.stringify({ available, records, savedAt: new Date().toISOString() }))
   }
 
-  const refreshRetardos = async () => {
+  const refreshRetardos = async (context = currentDateContext()) => {
     if (!students.value.length) return
     try {
-      const result = await $fetch<{ available: boolean; records: RetardoRecord[] }>(`/api/planteles/${plantel.value}/grupos/${encodeURIComponent(grado.value)}/${encodeURIComponent(grupo.value)}/retardos?date=${selectedDate.value}`)
+      const result = await $fetch<{ available: boolean; records: RetardoRecord[] }>(`/api/planteles/${context.plantel}/grupos/${encodeURIComponent(context.grado)}/${encodeURIComponent(context.grupo)}/retardos?date=${context.date}`)
+      if (!matchesDateContext(context)) return
       retardosAvailable.value = Boolean(result.available)
       retardos.value = Object.fromEntries((result.records || []).map((record) => [record.studentId, record]))
-      writeRetardosCache(Boolean(result.available), result.records || [])
+      writeRetardosCache(Boolean(result.available), result.records || [], context)
     } catch {
       // Retardos are background context only; attendance remains usable.
     }
   }
 
-  const refreshLogrosSummary = async () => {
+  const refreshLogrosSummary = async (context = currentDateContext()) => {
     try {
-      serverLogrosSummary.value = await $fetch<ClassLogrosSummary>(`/api/planteles/${plantel.value}/grupos/${encodeURIComponent(grado.value)}/${encodeURIComponent(grupo.value)}/logros-resumen`)
+      const summary = await $fetch<ClassLogrosSummary>(`/api/planteles/${context.plantel}/grupos/${encodeURIComponent(context.grado)}/${encodeURIComponent(context.grupo)}/logros-resumen`)
+      if (!matchesGroupContext(context)) return
+      serverLogrosSummary.value = summary
     } catch {
-      serverLogrosSummary.value = null
+      if (matchesGroupContext(context)) serverLogrosSummary.value = null
     }
   }
 
-  const refreshLogrosState = async () => {
+  const refreshLogrosState = async (context = currentDateContext()) => {
     await logros.refreshFromServer()
-    await refreshLogrosSummary()
+    if (!matchesGroupContext(context)) return
+    await refreshLogrosSummary(context)
   }
 
   const setMode = (nextMode: 'attendance' | 'logros') => {
@@ -320,6 +401,7 @@ export const useAttendanceScreen = () => {
 
   const saveAttendance = async () => {
     if (!students.value.length) return
+    const context = currentDateContext()
     finalizeUnmarkedAsAbsent()
     const submission = buildSubmission()
 
@@ -340,16 +422,18 @@ export const useAttendanceScreen = () => {
     try {
       await $fetch('/api/asistencia', { method: 'POST', body: submission })
       remove(submission.operationId)
-      await flush()
-      clearAttendanceDraft()
+      clearAttendanceDraft(context)
+      void flush()
+      if (!matchesDateContext(context)) return
       attendanceConfirmedAt.value = new Date().toISOString()
       attendanceConfirmationStatus.value = 'confirmed'
       status.setReady()
       sounds.play('save')
       window.setTimeout(() => sounds.play('complete'), 120)
-      void refreshWeeklySummary()
-      void refreshLogrosState()
+      void refreshWeeklySummary(context)
+      void refreshLogrosState(context)
     } catch {
+      if (!matchesDateContext(context)) return
       updateInternetStatus()
       attendanceConfirmationStatus.value = internetOnline.value ? 'error' : 'offline'
       status.setPending()
@@ -375,9 +459,41 @@ export const useAttendanceScreen = () => {
     void refreshLogrosState()
   }
 
+  const loadCurrentContext = () => {
+    const context = currentDateContext()
+    const sequence = ++loadSequence
+
+    rememberGroup(context.plantel, context.grado, context.grupo)
+    resetGroupState()
+    loadCachedRoster(context)
+    readRetardosCache(context)
+    draftHydrated.value = true
+    if (students.value.length) initialRosterLoad.value = false
+    void flush()
+
+    void refreshRoster(context)
+      .then(() => {
+        if (sequence !== loadSequence || !matchesDateContext(context)) return
+        return refreshToday(context)
+      })
+      .then(() => {
+        if (sequence !== loadSequence || !matchesDateContext(context)) return
+        return refreshRetardos(context)
+      })
+      .then(() => {
+        if (sequence !== loadSequence || !matchesDateContext(context)) return
+        return refreshWeeklySummary(context)
+      })
+      .then(() => {
+        if (sequence !== loadSequence || !matchesDateContext(context)) return
+        return refreshLogrosState(context)
+      })
+  }
+
   watch([plantel, grado, grupo], () => {
-    rememberGroup(plantel.value, grado.value, grupo.value)
-  }, { immediate: true })
+    if (!import.meta.client) return
+    loadCurrentContext()
+  })
 
   watch(attendance, () => writeAttendanceDraft(), { deep: true })
 
@@ -385,16 +501,7 @@ export const useAttendanceScreen = () => {
     updateInternetStatus()
     window.addEventListener('online', updateInternetStatus)
     window.addEventListener('offline', updateInternetStatus)
-    draftHydrated.value = true
-    loadCachedRoster()
-    if (students.value.length) initialRosterLoad.value = false
-    void flush()
-    readRetardosCache()
-    void refreshRoster()
-      .then(() => refreshToday())
-      .then(() => refreshRetardos())
-      .then(() => refreshWeeklySummary())
-      .then(() => refreshLogrosState())
+    loadCurrentContext()
   })
 
   onBeforeUnmount(() => {

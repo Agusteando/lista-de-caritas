@@ -35,7 +35,7 @@ export const statusToLegacy = (value: AttendanceStatus) => {
 }
 
 export const getAttendanceTotals = (students: Student[], attendance: Record<string, AttendanceStatus>): AttendanceTotals => {
-  const values = Object.values(attendance)
+  const values = students.map((student) => attendance[student.id] || 'unmarked')
   const marked = values.filter((value) => value !== 'unmarked')
 
   return {

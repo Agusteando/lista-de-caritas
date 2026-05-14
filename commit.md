@@ -1,6 +1,7 @@
-feat: show instant attendance proof modal with connection status
+fix: isolate attendance state per group and dedupe pending saves
 
-- Open the attendance proof modal immediately after tapping Guardar pase de lista, before the backend request resolves.
-- Show live internet status inside the modal, including an immediate offline warning when the browser reports no connection.
-- Keep the modal in a pending/loading state while the server confirms the attendance register, then update it in place with confirmation time.
-- Preserve the 10-second close lock, official branding, attendance stats, folio, and screenshot instruction.
+- Reset group-specific roster, attendance, summaries, retardos, receipt, save status, and local UI state whenever the active plantel/grado/grupo changes.
+- Replace rosters for the active group instead of merging them with previously loaded groups, preventing mixed student lists in saved attendance payloads.
+- Guard async roster, attendance, retardos, weekly summary, and logros responses so stale requests cannot mutate a newly selected group.
+- Scope attendance totals to the current roster students only.
+- Collapse pending offline attendance entries by plantel, grado, grupo, and date so older queued saves cannot replay after a newer register and overwrite it.

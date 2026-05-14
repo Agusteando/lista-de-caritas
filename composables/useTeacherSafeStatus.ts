@@ -10,9 +10,10 @@ export function useTeacherSafeStatus() {
     return ''
   })
 
+  const setIdle = () => { saveState.value = 'idle' }
   const setSaving = () => { saveState.value = 'saving' }
   const setReady = () => { saveState.value = 'ready' }
   const setPending = () => { saveState.value = 'pending' }
 
-  return { saveState, label, setSaving, setReady, setPending }
+  return { saveState, label, setIdle, setSaving, setReady, setPending }
 }
