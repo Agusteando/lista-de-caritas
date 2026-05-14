@@ -2,6 +2,7 @@
 const {
   activeLogrosStudents,
   attendance,
+  attendanceReceipt,
   awardAllLogros,
   awardLogro,
   classCode,
@@ -133,14 +134,17 @@ const {
     </div>
 
     <SummarySheet
-      v-if="summaryVisible"
-      :presentes="totals.presentes"
-      :faltas="totals.faltas"
-      :enfermedad="totals.enfermedad"
-      :total="totals.total"
-      :plantel="plantel"
-      :grado="grado"
-      :grupo="grupo"
+      v-if="summaryVisible && attendanceReceipt"
+      :presentes="attendanceReceipt.clientSummary.presentes"
+      :faltas="attendanceReceipt.clientSummary.faltas"
+      :enfermedad="attendanceReceipt.clientSummary.enfermedad"
+      :total="attendanceReceipt.clientSummary.total"
+      :plantel="attendanceReceipt.plantel"
+      :grado="attendanceReceipt.grado"
+      :grupo="attendanceReceipt.grupo"
+      :attendance-date="attendanceReceipt.attendanceDate"
+      :saved-at="attendanceReceipt.submittedAt"
+      :operation-id="attendanceReceipt.operationId"
       @close="summaryVisible = false"
     />
 

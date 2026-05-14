@@ -47,6 +47,7 @@ export const useAttendanceScreen = () => {
   const retardos = ref<Record<string, RetardoRecord>>({})
   const retardosAvailable = ref(false)
   const summaryVisible = ref(false)
+  const attendanceReceipt = ref<AttendanceSubmission | null>(null)
   const refreshing = ref(false)
   const initialRosterLoad = ref(true)
   const usedCachedRoster = ref(false)
@@ -322,6 +323,7 @@ export const useAttendanceScreen = () => {
       status.setReady()
       sounds.play('save')
       window.setTimeout(() => sounds.play('complete'), 120)
+      attendanceReceipt.value = submission
       summaryVisible.value = true
       void refreshWeeklySummary()
       void refreshLogrosState()
@@ -407,6 +409,7 @@ export const useAttendanceScreen = () => {
     studentCountLabel,
     students,
     summaryVisible,
+    attendanceReceipt,
     todayLabel,
     totals,
     visibleStudents
